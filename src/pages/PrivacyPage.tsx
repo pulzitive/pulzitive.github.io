@@ -82,7 +82,7 @@ export default function PrivacyPage() {
               How Your Information Is Used
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              The collected logs are utilized strictly inside Pulzitive ecosystems:
+              The collected logs are utilized strictly inside Pulzitive platform:
             </p>
             <ul className="space-y-1.5 text-xs text-slate-400 list-none pl-1">
               <li className="flex items-start gap-1.5">
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
               </li>
               <li className="flex items-start gap-1.5">
                 <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                <span>Delivering certified Tech Academy curricula, virtual workspace sessions, and grading.</span>
+                <span>Delivering certified Digital Academy curricula, virtual workspace sessions, and grading.</span>
               </li>
               <li className="flex items-start gap-1.5">
                 <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />

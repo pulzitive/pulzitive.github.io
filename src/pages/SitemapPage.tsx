@@ -14,10 +14,10 @@ export default function SitemapPage({ onNavigate }: SitemapPageProps) {
   const sections = [
     {
       title: 'Primary Entry points',
-      description: 'The main gateways to the SAC consulting and agency network.',
+      description: 'The main gateways to the Pulzitive consulting and agency network.',
       items: [
-        { name: 'SAC Advertising Agency', page: 'home', icon: Home, desc: 'Digital marketing consultations, custom SEO audits, and agency growth strategic services.' },
-        { name: 'Tech Academy Hub', page: 'academy', icon: Layers, desc: 'Simulated multi-role educational platform containing learning workspaces and tools.' },
+        { name: 'Pulzitive Marketing Agency', page: 'home', icon: Home, desc: 'Digital marketing consultations, custom SEO audits, and agency growth strategic services.' },
+        { name: 'Digital Academy Hub', page: 'academy', icon: Layers, desc: 'Simulated multi-role educational platform containing learning workspaces and tools.' },
       ]
     },
     {
@@ -42,7 +42,7 @@ export default function SitemapPage({ onNavigate }: SitemapPageProps) {
       items: [
         { name: 'Press Releases & News', page: 'pr', icon: Newspaper, desc: 'Read official updates from our executive consultancy and tech community events.' },
         { name: 'Privacy Policy', page: 'privacy', icon: Shield, desc: 'Understand your personal data storage guidelines and Firestore safety rules.' },
-        { name: 'Terms of Use', page: 'terms', icon: FileText, desc: 'The legal framework, licensing permissions, and refund rules of the SAC Portal.' },
+        { name: 'Terms of Use', page: 'terms', icon: FileText, desc: 'The legal framework, licensing permissions, and refund rules of the Pulzitive Portal.' },
       ]
     }
   ];
@@ -53,7 +53,7 @@ export default function SitemapPage({ onNavigate }: SitemapPageProps) {
       <div className="max-w-4xl mx-auto text-center space-y-3 mb-16">
         <h1 className="text-3xl font-extrabold tracking-tight flex items-center justify-center gap-2">
           <Network className="w-8 h-8 text-emerald-400" />
-          SAC Portal Sitemap
+          Pulzitive Portal Sitemap
         </h1>
         <p className="text-xs text-slate-400 max-w-xl mx-auto">
           Use our structured map to instantly navigate through digital consulting programs, premium product templates, student forums, and legal resources.

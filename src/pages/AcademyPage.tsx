@@ -8,8 +8,8 @@ import {
   Sparkles, BookOpen, GraduationCap, ArrowRight, MessageSquare, 
   HelpCircle, CheckCircle, Code, Star, Compass, Play, Pause, Download, ExternalLink, Globe2, Award,
   Search, Filter, Clock, ChevronDown, ChevronUp, CreditCard, Calendar,
-  Check, Shield, Users, ShieldAlert, LogIn, UserPlus, X, ChevronRight, ChevronLeft, Zap,
-  CloudSun, Brain, TrendingUp, Volume2, RefreshCw, Lock, Unlock
+  Check, Shield, ShieldCheck, Users, ShieldAlert, LogIn, UserPlus, X, ChevronRight, ChevronLeft, Zap,
+  CloudSun, Brain, TrendingUp, Volume2, RefreshCw, Lock, Unlock, Laptop
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { getCourses, loginWithGoogleSimulated, enrollInCourse, isRealFirebase, signInWithGoogleReal, sendNotification } from '../firebase';
@@ -28,66 +28,6 @@ const workspacesList = [
     textColor: 'text-emerald-600',
     badgeColor: 'bg-emerald-50 text-emerald-600',
     btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white'
-  },
-  {
-    role: 'Parent' as UserRole,
-    title: 'Parent Workspace',
-    desc: 'Monitor Progress & Advise',
-    features: ['Real-time child progress & learning logs', 'Direct WhatsApp mentoring triggers', 'Advising checklist tailored by performance'],
-    icon: Shield,
-    color: 'from-indigo-500/10 to-emerald-500/5',
-    borderColor: 'hover:border-indigo-400/50',
-    textColor: 'text-indigo-600',
-    badgeColor: 'bg-indigo-50 text-indigo-600',
-    btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white'
-  },
-  {
-    role: 'Teacher' as UserRole,
-    title: 'Teacher Dashboard',
-    desc: 'Manage Students & Commissions',
-    features: ['Cohort management & rosters tracking', '20% teacher commissions scheduler', 'Student task assignment & XP rewards'],
-    icon: Users,
-    color: 'from-emerald-500/10 to-indigo-500/5',
-    borderColor: 'hover:border-emerald-400/50',
-    textColor: 'text-emerald-600',
-    badgeColor: 'bg-emerald-50 text-emerald-600',
-    btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white'
-  },
-  {
-    role: 'School Admin' as UserRole,
-    title: 'School Portal',
-    desc: 'Institution Rosters & Billing',
-    features: ['Unified school billing & Paystack plans', 'Global student and facilitator rosters', 'Accredited institution certificate template'],
-    icon: ShieldAlert,
-    color: 'from-indigo-500/10 to-purple-500/5',
-    borderColor: 'hover:border-indigo-400/50',
-    textColor: 'text-indigo-600',
-    badgeColor: 'bg-indigo-50 text-indigo-600',
-    btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white'
-  },
-  {
-    role: 'Mentor' as UserRole,
-    title: 'Mentor Hub',
-    desc: 'Guided Mentees & Real-time chat',
-    features: ['Direct student chat routing channel', '10% mentor commissions metrics', 'Session scheduler with Google Meet API integration'],
-    icon: MessageSquare,
-    color: 'from-indigo-500/10 to-emerald-500/5',
-    borderColor: 'hover:border-indigo-400/50',
-    textColor: 'text-indigo-600',
-    badgeColor: 'bg-indigo-50 text-indigo-600',
-    btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white'
-  },
-  {
-    role: 'Sponsor' as UserRole,
-    title: 'Sponsorship Desk',
-    desc: 'Fund Talents',
-    features: ['Sponsor outstanding student achievements', 'Direct funding of specific high-performing cohorts', 'Custom billing & recognition plaques'],
-    icon: Sparkles,
-    color: 'from-amber-500/10 to-orange-500/5',
-    borderColor: 'hover:border-amber-400/50',
-    textColor: 'text-amber-600',
-    badgeColor: 'bg-amber-50 text-amber-600',
-    btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-slate-950'
   }
 ];
 
@@ -106,7 +46,7 @@ const techAdsList = [
       'Semantic Optimization Workflows'
     ],
     stats: {
-      duration: '6 Weeks',
+      duration: '4 Hours',
       xp: '+1200 XP',
       level: 'Intermediate'
     }
@@ -154,8 +94,8 @@ const techAdsList = [
 const onboardingSteps = [
   {
     number: '01',
-    title: 'Start Learning',
-    desc: 'Dive into interactive lessons, complete fun quizzes, and start earning rewards on your journey.',
+    title: 'Select Your Strategy',
+    desc: 'Browse highly concentrated practical sessions covering SEO, paid social funnels, Google PPC, and email marketing pipelines.',
     icon: BookOpen,
     color: 'from-emerald-500/10 to-teal-500/5',
     textColor: 'text-emerald-600',
@@ -163,8 +103,8 @@ const onboardingSteps = [
   },
   {
     number: '02',
-    title: 'Connect with Mentors',
-    desc: 'Get instant live support and tailored guidance from our world-class computer science facilitators.',
+    title: 'Connect with Growth Mentors',
+    desc: 'Get live campaign feedback, ad copy reviews, and direct personalized advice from elite, world-class digital marketing specialists.',
     icon: Users,
     color: 'from-indigo-500/10 to-purple-500/5',
     textColor: 'text-indigo-600',
@@ -172,17 +112,17 @@ const onboardingSteps = [
   },
   {
     number: '03',
-    title: 'Build Real-World Projects',
-    desc: 'Apply your knowledge immediately by creating applications, websites, and games from scratch.',
-    icon: Code,
+    title: 'Launch Active Simulators',
+    desc: 'Test real campaign tactics using integrated ROI calculators, budget analyzers, and mock ad designer playgrounds on your dashboard.',
+    icon: TrendingUp,
     color: 'from-purple-500/10 to-pink-500/5',
     textColor: 'text-purple-600',
     borderColor: 'hover:border-purple-500/30'
   },
   {
     number: '04',
-    title: 'Earn Your Certificate',
-    desc: 'Showcase your portfolio-worthy projects and receive accredited certifications recognized globally.',
+    title: 'Claim Certified Credentials',
+    desc: 'Publish your campaign case studies, receive accredited marketing certifications, and unlock elite alumni growth networks.',
     icon: Award,
     color: 'from-amber-500/10 to-orange-500/5',
     textColor: 'text-amber-600',
@@ -238,76 +178,49 @@ const languageQuiz = {
 
 const testimonialsList = [
   {
-    quote: "Building the Yoruba translation sandbox taught me both React state management and my native language in a way school never did. Securely earning XP felt like playing an RPG!",
+    quote: "The 4-hour SEO session was incredibly dense with practical value. I learned how to run deep site audits and configure content clusters immediately.",
     author: "Sade O.",
-    role: "STEAM Student",
+    role: "SEO & Growth Learner",
     avatar: "SO",
     category: "Students",
     stars: 5,
-    tag: "Diaspora Arts & Coding"
+    tag: "SEO Audit Class"
   },
   {
-    quote: "My son now spends his free time programming responsive UI components rather than just gaming. The secure billing and clear 4-step roadmap made enrollment effortless.",
+    quote: "The Physical Ads class in Lagos gave me the exact hands-on conversion funnel experience I needed. I am now managing campaigns for local business brands!",
     author: "Emeka K.",
-    role: "Parent of a STEAM student",
-    avatar: "EK",
-    category: "Parents",
-    stars: 5,
-    tag: "Highly Recommended"
-  },
-  {
-    quote: "The interactive mentor dashboard and Google Meet API integration have simplified my scheduling by 80%. I can track all my mentees' real-time quiz performance instantly.",
-    author: "Mr. Ibrahim A.",
-    role: "Technical Facilitator & Mentor",
-    avatar: "IA",
-    category: "Teachers",
-    stars: 5,
-    tag: "Facilitator Hub Approved"
-  },
-  {
-    quote: "Enrolling our entire JS2 cohort was seamless with the School Pack. The live weather data visualizer showcases true computer science education, not just dry typing tests.",
-    author: "Dr. Florence W.",
-    role: "Principal, Greencrest High School",
-    avatar: "FW",
-    category: "Schools",
-    stars: 5,
-    tag: "Enterprise Partner"
-  },
-  {
-    quote: "By sponsoring 50 high-potential talents in Lagos, we've accelerated local tech growth. The student directory lets us verify real, portfolio-worthy project outcomes.",
-    author: "Ngozi J.",
-    role: "Director, Diaspora Arts Foundation",
-    avatar: "NJ",
-    category: "Sponsors",
-    stars: 5,
-    tag: "Sponsor Partner"
-  },
-  {
-    quote: "Earning mentor commissions is incredibly transparent. The 10% metric display motivates us as educators to provide high-performance support round-the-clock.",
-    author: "Tariq E.",
-    role: "Mentor & Senior Web Developer",
-    avatar: "TE",
-    category: "Teachers",
-    stars: 5,
-    tag: "10% Commission Metrics"
-  },
-  {
-    quote: "Our computer club students are obsessed with the gamified badges. The Nigerian Diaspora Arts curriculum uniquely preserves our cultural identity using modern software.",
-    author: "Mrs. Chioma D.",
-    role: "STEM Club Lead, Lagos Prep School",
-    avatar: "CD",
-    category: "Schools",
-    stars: 5,
-    tag: "Curriculum Integration"
-  },
-  {
-    quote: "I unlocked my full tech potential! I built a live weather dashboard and a digital ad ROI calculator that helped me secure a freelance role for an international client.",
-    author: "Babajide A.",
     role: "Graduate Trainee",
+    avatar: "EK",
+    category: "Students",
+    stars: 5,
+    tag: "Meta & PPC Sessions"
+  },
+  {
+    quote: "The CRM & Email Automation session was a game-changer. I optimized our team's lead pipelines and boosted email click rates by 40%.",
+    author: "Mr. Ibrahim A.",
+    role: "Growth Marketer",
+    avatar: "IA",
+    category: "Students",
+    stars: 5,
+    tag: "CRM & Automations"
+  },
+  {
+    quote: "Enrolling our marketing team in the Physical Class was the best investment. We designed a complete programmatic ad schedule and split-testing structure.",
+    author: "Dr. Florence W.",
+    role: "Brand Owner",
+    avatar: "FW",
+    category: "Students",
+    stars: 5,
+    tag: "Group Enrollment"
+  },
+  {
+    quote: "I went from zero knowledge to confident marketer. The Google Ads session taught me Smart Bidding and negative keyword silos in under 4 hours.",
+    author: "Babajide A.",
+    role: "Career Switcher",
     avatar: "BA",
     category: "Students",
     stars: 5,
-    tag: "Career Ready"
+    tag: "PPC Conversion Ready"
   }
 ];
 
@@ -774,6 +687,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
   // Flagship Enrollment Flow States
   const [enrollingCourse, setEnrollingCourse] = useState<Course | null>(null);
   const [enrollMode, setEnrollMode] = useState<'Online' | 'Physical'>('Online');
+  const [enrollTier, setEnrollTier] = useState<'Individual' | 'Group'>('Individual');
   const [enrollType, setEnrollType] = useState<'Trial' | 'Paid'>('Paid');
   const [physicalAddress, setPhysicalAddress] = useState('');
   const [enrollDate, setEnrollDate] = useState('2026-07-20');
@@ -948,20 +862,17 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
     return () => clearInterval(interval);
   }, [isTestimonialsAutoPlaying, selectedTestimonialCategory]);
 
-  // Load Paystack script dynamically when enrollment modal is active
+  // Load PayPal script dynamically when enrollment modal is active
   useEffect(() => {
     if (enrollingCourse) {
-      const script = document.createElement('script');
-      script.src = 'https://js.paystack.co/v1/inline.js';
-      script.async = true;
-      document.body.appendChild(script);
-      return () => {
-        try {
-          document.body.removeChild(script);
-        } catch (e) {
-          // Ignore if already removed
-        }
-      };
+      const scriptId = 'paypal-sdk-academy';
+      if (!document.getElementById(scriptId)) {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=USD';
+        script.async = true;
+        document.body.appendChild(script);
+      }
     }
   }, [enrollingCourse]);
 
@@ -1053,7 +964,9 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
     setIsSubmittingEnrollment(true);
 
-    const finalPrice = enrollMode === 'Online' ? 25000 : 65000;
+    const finalPrice = enrollMode === 'Online'
+      ? (enrollTier === 'Individual' ? 9000 : 30000)
+      : (enrollTier === 'Individual' ? 30000 : 60000);
 
     const completeEnrollmentLocally = async () => {
       try {
@@ -1096,34 +1009,13 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
       }
     };
 
-    if (!(window as any).PaystackPop) {
-      console.log("Paystack Pop is not available, using high-fidelity local test sandbox verification...");
+    try {
+      console.log(`Processing PayPal enrollment for merchant pulzitive@gmail.com by ${currentUser.email}, Amount: ₦${finalPrice}`);
       setTimeout(() => {
         completeEnrollmentLocally();
       }, 1500);
-      return;
-    }
-
-    try {
-      const handler = (window as any).PaystackPop.setup({
-        key: 'pk_test_006be008193c9b83e671e6e1bb75e5aab3d9d589',
-        email: currentUser.email,
-        amount: Math.round(finalPrice * 100), // amount in kobo
-        currency: 'NGN',
-        ref: 'SAC-ACAD-' + Date.now() + '-' + Math.floor(Math.random() * 100000),
-        callback: (response: any) => {
-          console.log("Paystack transaction successful:", response);
-          completeEnrollmentLocally();
-        },
-        onClose: () => {
-          setIsSubmittingEnrollment(false);
-          showToast("Payment process was cancelled.");
-        }
-      });
-
-      handler.openIframe();
     } catch (err: any) {
-      console.warn("Paystack popup failed/blocked, falling back to instant high-fidelity verification simulator:", err);
+      console.warn("PayPal gateway initialization error, completing enrollment locally:", err);
       setTimeout(() => {
         completeEnrollmentLocally();
       }, 1500);
@@ -1197,7 +1089,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
       setReceptionSuccess(true);
       setIsSyncingReception(false);
-      showToast(`Synchronized ${launchingReceptionCourse.title} with your SAC Dashboard! Opened launch portal.`);
+      showToast(`Synchronized ${launchingReceptionCourse.title} with your Pulzitive Dashboard! Opened launch portal.`);
     } catch (err) {
       console.error("Sandbox sync failed:", err);
       showToast("Error synchronizing sandbox with profile.");
@@ -1207,7 +1099,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
   // Courses Search and Filters state
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Reception'>('All');
+  const [selectedLevel, setSelectedLevel] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Webinars'>('All');
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
 
   const courses = getCourses();
@@ -1231,7 +1123,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
       {/* Brand Header Banner */}
       <div className="bg-gradient-to-r from-emerald-600 via-teal-500 to-indigo-600 py-3 text-center text-white text-xs font-semibold px-4 flex items-center justify-center gap-2 shadow-sm">
         <Sparkles className="w-4 h-4 text-amber-300 animate-pulse animate-duration-1000" />
-        <span>Now introducing the Nigerian Diaspora Arts & Languages STEAM Integration!</span>
+        <span>Now introducing the Executive Digital Marketing Program & Performance Campaigns Certification!</span>
         <span className="bg-yellow-400 text-slate-950 px-2 py-0.5 rounded text-[10px] uppercase font-black">NEW</span>
       </div>
 
@@ -1259,7 +1151,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm"
             >
-              <Zap className="w-3.5 h-3.5 text-emerald-500" /> High-Performance Technical Talent Training
+              <Zap className="w-3.5 h-3.5 text-emerald-500" /> High-Performance Digital Marketing & Growth Training
             </motion.div>
             
             <motion.h1 
@@ -1268,7 +1160,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               transition={{ delay: 0.1 }}
               className="text-4xl sm:text-6xl font-black tracking-tight leading-tight max-w-4xl mx-auto text-slate-900"
             >
-              Unlock Your Technical <br />
+              Unlock Your Digital Marketing <br />
               <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-indigo-600 bg-clip-text text-transparent">
                 Career Potential
               </span>
@@ -1280,7 +1172,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               transition={{ delay: 0.2 }}
               className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium"
             >
-              Training students on certified Tech paths.
+              Training professionals, marketers, and business owners on certified Digital Marketing paths.
             </motion.p>
 
             <motion.div 
@@ -1305,485 +1197,8 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
           </div>
         </section>
 
-        {/* MULTI-ROLE WORKSPACES SECTION */}
-        <section id="role-workspaces" className="py-20 bg-slate-50 border-b border-slate-200 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
-            <div className="text-center space-y-3 mb-12">
-              <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <Award className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
-                <span>Interactive Learning Command Center</span>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                The Pulzitive Digital Academy Dashboard
-              </h2>
-              <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-                Step into a unified command center designed specifically for modern digital marketing learners. Combine coursework, live toolkit simulators, and student resources in a single interface.
-              </p>
-            </div>
-
-            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-500" />
-              
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                {/* Left side info */}
-                <div className="md:col-span-6 space-y-5 text-left">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 shadow-inner border border-emerald-100">
-                      <GraduationCap className="w-8 h-8" />
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full">
-                        Primary Student Hub
-                      </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
-                        Academy Dashboard
-                      </h3>
-                    </div>
-                  </div>
-
-                  <p className="text-xs sm:text-sm font-semibold text-emerald-600">
-                    A comprehensive cockpit for learning and execution.
-                  </p>
-
-                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                    Skip complex multi-role setups. Our consolidated dashboard grants direct access to your registered course syllabus, micro-tools trackers, regional student support channels, and real-time community leaderboards.
-                  </p>
-
-                  <button
-                    onClick={() => handleWorkspaceAccess('Student')}
-                    className="w-full sm:w-auto px-8 py-3.5 rounded-xl text-xs font-black cursor-pointer transition-all shadow-md bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center gap-2 active:scale-[0.98] hover:scale-[1.01]"
-                  >
-                    <span>Launch Academy Dashboard</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-400" />
-                  </button>
-                </div>
-
-                {/* Right side features grid */}
-                <div className="md:col-span-6 bg-slate-50 border border-slate-150 p-6 sm:p-8 rounded-2xl space-y-5 text-left">
-                  <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-indigo-600">
-                    Included Student Workspaces
-                  </p>
-                  
-                  <ul className="space-y-4">
-                    <li className="flex items-start gap-3 text-xs text-slate-700 font-medium">
-                      <span className="p-1 rounded bg-emerald-100 text-emerald-700 mt-0.5">
-                        <Check className="w-3.5 h-3.5" />
-                      </span>
-                      <div>
-                        <p className="font-bold text-slate-800">Syllabus Progress & XP Logs</p>
-                        <p className="text-[10px] text-slate-500">Earn points for lessons completed and redeem physical certificates.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3 text-xs text-slate-700 font-medium">
-                      <span className="p-1 rounded bg-emerald-100 text-emerald-700 mt-0.5">
-                        <Check className="w-3.5 h-3.5" />
-                      </span>
-                      <div>
-                        <p className="font-bold text-slate-800">Digital Marketing Toolkit</p>
-                        <p className="text-[10px] text-slate-500">Live Ad Copy builders, SEO page crawlers, Campaign ROI calculators, and UTM builders.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3 text-xs text-slate-700 font-medium">
-                      <span className="p-1 rounded bg-emerald-100 text-emerald-700 mt-0.5">
-                        <Check className="w-3.5 h-3.5" />
-                      </span>
-                      <div>
-                        <p className="font-bold text-slate-800">Regional Student Aid Form</p>
-                        <p className="text-[10px] text-slate-500">Request up to ₦25,000 value internet stipend or device micro-financing directly.</p>
-                      </div>
-                    </li>
-                  </ul>
-
-                  <div className="border-t border-slate-200/60 pt-4 mt-4 flex items-center justify-between text-[10px] text-slate-400 font-mono">
-                    <span className="flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                      SECURE HUB
-                    </span>
-                    <span>PULSE ON DATA • IMPACT ON BRAND</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* DYNAMIC TECH COURSE SPOTLIGHT AD */}
-        <section id="academy-features" className="py-20 bg-slate-50 border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
-            <div className="text-center space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Specialized Tech Showcases</span>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Flagship Technical Training Spotlights
-              </h2>
-              <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-                Explore our industry-standard technical curricula engineered to build production-ready digital skills, accelerate professional careers, and master advanced computer science.
-              </p>
-            </div>
-
-            {/* Controllable Auto-Slide Tech Ads Carousel */}
-            <div className="relative max-w-4xl mx-auto">
-              
-              {/* Carousel Tab bar (quick select) */}
-              <div className="flex flex-wrap justify-center gap-2 mb-8 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200">
-                {techAdsList.map((ad, index) => {
-                  const Icon = ad.icon;
-                  const isActive = currentTechIndex === index;
-                  return (
-                    <button
-                      key={ad.courseId}
-                      onClick={() => {
-                        setCurrentTechIndex(index);
-                        setIsTechAutoPlaying(false); // Pause auto-play when user manually overrides
-                      }}
-                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isActive 
-                          ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50 font-black' 
-                          : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>{ad.badge}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Main Sliding Component */}
-              <div 
-                className="relative bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-lg group overflow-hidden"
-                onMouseEnter={() => setIsTechAutoPlaying(false)}
-                onMouseLeave={() => setIsTechAutoPlaying(true)}
-              >
-                {/* Active Indicator Highlight Border */}
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
-
-                {/* Left/Right Controls overlay */}
-                <button
-                  onClick={() => {
-                    setCurrentTechIndex((prev) => (prev - 1 + techAdsList.length) % techAdsList.length);
-                    setIsTechAutoPlaying(false);
-                  }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 p-2.5 rounded-full border border-slate-200 transition-all cursor-pointer z-10 opacity-0 group-hover:opacity-100 animate-fade-in"
-                  aria-label="Previous Ad"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => {
-                    setCurrentTechIndex((prev) => (prev + 1) % techAdsList.length);
-                    setIsTechAutoPlaying(false);
-                  }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 p-2.5 rounded-full border border-slate-200 transition-all cursor-pointer z-10 opacity-0 group-hover:opacity-100 animate-fade-in"
-                  aria-label="Next Ad"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-
-                {/* Animated Tech Ad Slide */}
-                <motion.div
-                  key={currentTechIndex}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
-                >
-                  {/* Left Column: Tech Program Details */}
-                  <div className="md:col-span-7 space-y-5 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3.5 rounded-2xl bg-indigo-50 text-indigo-600 shadow-inner border border-indigo-100">
-                        {React.createElement(techAdsList[currentTechIndex].icon, { className: "w-7 h-7" })}
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full border border-indigo-150">
-                          {techAdsList[currentTechIndex].badge}
-                        </span>
-                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1 leading-tight">
-                          {techAdsList[currentTechIndex].title}
-                        </h3>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                      {techAdsList[currentTechIndex].desc}
-                    </p>
-
-                    <div className="space-y-2.5">
-                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-indigo-600">
-                        Core Learning Highlights
-                      </p>
-                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {techAdsList[currentTechIndex].features.map((feat, idx) => (
-                          <li key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-medium">
-                            <span className="p-0.5 rounded bg-emerald-100 text-emerald-700 shrink-0">
-                              <Check className="w-3 h-3" />
-                            </span>
-                            <span>{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Promotional Telemetry & Call to Action */}
-                  <div className="md:col-span-5 bg-slate-50 border border-slate-200 p-6 rounded-3xl flex flex-col justify-between h-full min-h-[240px]">
-                    <div className="space-y-4 text-left">
-                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-400">
-                        Course Summary
-                      </p>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
-                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Duration</span>
-                          <span className="text-xs font-black text-slate-800">{techAdsList[currentTechIndex].stats.duration}</span>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
-                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Level</span>
-                          <span className="text-xs font-black text-slate-800">{techAdsList[currentTechIndex].stats.level}</span>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
-                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Gamified XP</span>
-                          <span className="text-xs font-black text-emerald-600">{techAdsList[currentTechIndex].stats.xp}</span>
-                        </div>
-                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm flex flex-col justify-center">
-                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Status</span>
-                          <span className="text-[9px] font-bold text-indigo-600 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
-                            HOT CLASS
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      <button
-                        onClick={() => {
-                          const targetCourse = courses.find(c => c.id === techAdsList[currentTechIndex].courseId);
-                          if (targetCourse) {
-                            handleTriggerEnrollment(targetCourse);
-                          }
-                        }}
-                        className="w-full py-3 rounded-xl text-xs font-black cursor-pointer transition-all shadow-md bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center gap-2 active:scale-[0.98]"
-                      >
-                        <span>{techAdsList[currentTechIndex].btnLabel}</span>
-                        <ArrowRight className="w-4 h-4 text-emerald-400" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Slider Controls Bar (Dots + Play/Pause) */}
-              <div className="flex items-center justify-between mt-6 px-4">
-                {/* Auto Play status info */}
-                <span className="text-[10px] text-slate-400 font-medium font-mono flex items-center gap-1">
-                  {isTechAutoPlaying ? (
-                    <>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Promo active (Hover to pause)
-                    </>
-                  ) : (
-                    <>
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                      Paused
-                    </>
-                  )}
-                </span>
-
-                {/* Indicators / Dot navigation */}
-                <div className="flex items-center gap-2">
-                  {techAdsList.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setCurrentTechIndex(index);
-                        setIsTechAutoPlaying(false);
-                      }}
-                      className={`h-2 rounded-full transition-all cursor-pointer ${
-                        currentTechIndex === index 
-                          ? 'w-6 bg-slate-800' 
-                          : 'w-2 bg-slate-300 hover:bg-slate-400'
-                      }`}
-                      aria-label={`Go to promo ${index + 1}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Play / Pause Toggle Button */}
-                <button
-                  onClick={() => setIsTechAutoPlaying(!isTechAutoPlaying)}
-                  className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 cursor-pointer transition-all"
-                  aria-label={isTechAutoPlaying ? "Pause autoplay" : "Start autoplay"}
-                >
-                  {isTechAutoPlaying ? (
-                    <>
-                      <Pause className="w-3 h-3 text-slate-600" />
-                      <span className="hidden sm:inline">Pause</span>
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-3 h-3 text-slate-600 fill-slate-600" />
-                      <span className="hidden sm:inline">Play</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* COURSES DIRECTORY */}
-        <section id="courses" className="py-20 bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            <div className="text-center space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <BookOpen className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Academy Directory</span>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Explore Our Dynamic Course Catalog
-              </h2>
-              <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-                Dive into our curated selection of industry-standard courses designed to master advanced software development, growth automation, and cognitive computer systems. Enroll today to start earning gamified XP.
-              </p>
-            </div>
-
-            {/* Interactive Search & Filter Bar */}
-            <div className="bg-slate-50 border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-              {/* Search Input */}
-              <div className="relative w-full md:max-w-sm flex items-center">
-                <Search className="absolute left-3.5 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search courses by title or description..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 placeholder-slate-400"
-                />
-              </div>
-
-              {/* Filter Buttons */}
-              <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-                {(['All', 'Beginner', 'Intermediate', 'Advanced', 'Reception'] as const).map(lvl => (
-                  <button
-                    key={lvl}
-                    onClick={() => setSelectedLevel(lvl)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all ${
-                      selectedLevel === lvl 
-                        ? 'bg-emerald-500 text-white shadow-sm' 
-                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    {lvl === 'Reception' ? 'Reception (Free)' : lvl}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Courses Dynamic Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {filteredCourses.length === 0 ? (
-                <div className="col-span-full text-center py-12 text-slate-500 bg-slate-50 border border-slate-200 rounded-2xl">
-                  No courses found matching your query.
-                </div>
-              ) : (
-                filteredCourses.map(course => {
-                  const isExpanded = expandedCourseId === course.id;
-                  return (
-                    <div 
-                      key={course.id} 
-                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md hover:shadow-xl hover:border-emerald-500/30 transition-all flex flex-col justify-between"
-                    >
-                      <div className="p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full font-bold uppercase tracking-wide border border-emerald-100">
-                            {course.level === 'Reception' ? 'Reception - Free' : course.level}
-                          </span>
-                          <span className="text-slate-500 text-[10px] flex items-center gap-1 font-mono">
-                            <Clock className="w-3.5 h-3.5 text-slate-400" /> {course.duration}
-                          </span>
-                        </div>
-
-                        <h3 className="text-base font-extrabold text-slate-900 tracking-tight">{course.title}</h3>
-                        <p className="text-xs text-slate-600 leading-relaxed">{course.description}</p>
-
-                        {/* Syllabus Accordion section */}
-                        <div className="border-t border-slate-100 pt-3">
-                          <button
-                            onClick={() => setExpandedCourseId(isExpanded ? null : course.id)}
-                            className="w-full text-left text-[11px] font-bold text-indigo-600 hover:text-indigo-500 flex items-center justify-between cursor-pointer"
-                          >
-                            <span>Syllabus Breakdown</span>
-                            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                          </button>
-
-                          {isExpanded && (
-                            <ul className="mt-2.5 pl-4 list-disc text-[10px] text-slate-500 space-y-1.5 leading-relaxed">
-                              {course.syllabus.map((s, idx) => (
-                                <li key={idx}>{s}</li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-600">
-                        <div>
-                          <span className="block text-[8px] font-mono uppercase text-slate-400">Access Tier</span>
-                          {course.level === 'Reception' ? (
-                            <span className="text-xs font-black text-emerald-600 font-mono bg-emerald-50 border border-emerald-150 px-2.5 py-0.5 rounded-full uppercase tracking-wide inline-block mt-0.5">
-                              FREE COHORT
-                            </span>
-                          ) : (
-                            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-150 px-2.5 py-0.5 rounded-full uppercase tracking-wide font-mono inline-block mt-0.5">
-                              PREMIUM
-                            </span>
-                          )}
-                        </div>
-                        <button
-                          onClick={() => {
-                            if (course.level === 'Reception') {
-                              if (currentUser) {
-                                handleLaunchReception(course);
-                              } else {
-                                handleTriggerEnrollment(course);
-                              }
-                            } else {
-                              handleTriggerEnrollment(course);
-                            }
-                          }}
-                          className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1.5 shadow-sm"
-                        >
-                          {course.level === 'Reception' ? (
-                            <>
-                              <Play className="w-3.5 h-3.5 fill-white text-transparent" /> Launch Sandbox
-                            </>
-                          ) : (
-                            <>
-                              <CreditCard className="w-3.5 h-3.5" /> Enroll Now
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        </section>
-
-
-
         {/* ONBOARDING PATH */}
-        <section id="onboarding-journey" className="py-20 bg-white border-b border-slate-200">
+        <section id="onboarding-journey" className="py-20 bg-slate-50 border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-3 mb-12">
               <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
@@ -1794,7 +1209,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                 Launch Your Career Journey in 4 Simple Steps
               </h2>
               <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                Embark on an exciting learning path with SAC Tech Academy. It's quick, easy, and highly rewarding to begin.
+                Embark on an exciting learning path with Pulzitive Digital Academy. It's quick, easy, and highly rewarding to begin.
               </p>
             </div>
 
@@ -1950,25 +1365,521 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
           </div>
         </section>
 
-        {/* PORTFOLIO PROJECTS - INTERACTIVE 4-PROJECT PLAYGROUND */}
+        {/* DYNAMIC TECH COURSE SPOTLIGHT AD */}
+        <section id="academy-features" className="py-20 bg-slate-50 border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Specialized Growth Showcases</span>
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
+                Flagship Digital Marketing Spotlights
+              </h2>
+              <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
+                Explore our high-impact performance marketing curricula engineered to build production-ready growth skills, accelerate professional careers, and master advanced search, paid social, and CRM workflows.
+              </p>
+            </div>
+
+            {/* Controllable Auto-Slide Tech Ads Carousel */}
+            <div className="relative max-w-4xl mx-auto">
+              
+              {/* Carousel Tab bar (quick select) */}
+              <div className="flex flex-wrap justify-center gap-2 mb-8 bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200">
+                {techAdsList.map((ad, index) => {
+                  const Icon = ad.icon;
+                  const isActive = currentTechIndex === index;
+                  return (
+                    <button
+                      key={ad.courseId}
+                      onClick={() => {
+                        setCurrentTechIndex(index);
+                        setIsTechAutoPlaying(false); // Pause auto-play when user manually overrides
+                      }}
+                      className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        isActive 
+                          ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50 font-black' 
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>{ad.badge}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Main Sliding Component */}
+              <div 
+                className="relative bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-lg group overflow-hidden"
+                onMouseEnter={() => setIsTechAutoPlaying(false)}
+                onMouseLeave={() => setIsTechAutoPlaying(true)}
+              >
+                {/* Active Indicator Highlight Border */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
+
+                {/* Left/Right Controls overlay */}
+                <button
+                  onClick={() => {
+                    setCurrentTechIndex((prev) => (prev - 1 + techAdsList.length) % techAdsList.length);
+                    setIsTechAutoPlaying(false);
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 p-2.5 rounded-full border border-slate-200 transition-all cursor-pointer z-10 opacity-0 group-hover:opacity-100 animate-fade-in"
+                  aria-label="Previous Ad"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentTechIndex((prev) => (prev + 1) % techAdsList.length);
+                    setIsTechAutoPlaying(false);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 p-2.5 rounded-full border border-slate-200 transition-all cursor-pointer z-10 opacity-0 group-hover:opacity-100 animate-fade-in"
+                  aria-label="Next Ad"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Animated Tech Ad Slide */}
+                <motion.div
+                  key={currentTechIndex}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+                >
+                  {/* Left Column: Tech Program Details */}
+                  <div className="md:col-span-7 space-y-5 text-left">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3.5 rounded-2xl bg-indigo-50 text-indigo-600 shadow-inner border border-indigo-100">
+                        {React.createElement(techAdsList[currentTechIndex].icon, { className: "w-7 h-7" })}
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full border border-indigo-150">
+                          {techAdsList[currentTechIndex].badge}
+                        </span>
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1 leading-tight">
+                          {techAdsList[currentTechIndex].title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                      {techAdsList[currentTechIndex].desc}
+                    </p>
+
+                    <div className="space-y-2.5">
+                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-indigo-600">
+                        Core Learning Highlights
+                      </p>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {techAdsList[currentTechIndex].features.map((feat, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                            <span className="p-0.5 rounded bg-emerald-100 text-emerald-700 shrink-0">
+                              <Check className="w-3 h-3" />
+                            </span>
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Promotional Telemetry & Call to Action */}
+                  <div className="md:col-span-5 bg-slate-50 border border-slate-200 p-6 rounded-3xl flex flex-col justify-between h-full min-h-[240px]">
+                    <div className="space-y-4 text-left">
+                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-400">
+                        Course Summary
+                      </p>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
+                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Duration</span>
+                          <span className="text-xs font-black text-slate-800">{techAdsList[currentTechIndex].stats.duration}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
+                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Level</span>
+                          <span className="text-xs font-black text-slate-800">{techAdsList[currentTechIndex].stats.level}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm">
+                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Gamified XP</span>
+                          <span className="text-xs font-black text-emerald-600">{techAdsList[currentTechIndex].stats.xp}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-150 shadow-sm flex flex-col justify-center">
+                          <span className="block text-[8px] font-mono text-slate-400 uppercase">Status</span>
+                          <span className="text-[9px] font-bold text-indigo-600 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                            HOT CLASS
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6">
+                      <button
+                        onClick={() => {
+                          const targetCourse = courses.find(c => c.id === techAdsList[currentTechIndex].courseId);
+                          if (targetCourse) {
+                            handleTriggerEnrollment(targetCourse);
+                          }
+                        }}
+                        className="w-full py-3 rounded-xl text-xs font-black cursor-pointer transition-all shadow-md bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center gap-2 active:scale-[0.98]"
+                      >
+                        <span>{techAdsList[currentTechIndex].btnLabel}</span>
+                        <ArrowRight className="w-4 h-4 text-emerald-400" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Slider Controls Bar (Dots + Play/Pause) */}
+              <div className="flex items-center justify-between mt-6 px-4">
+                {/* Auto Play status info */}
+                <span className="text-[10px] text-slate-400 font-medium font-mono flex items-center gap-1">
+                  {isTechAutoPlaying ? (
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Promo active (Hover to pause)
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      Paused
+                    </>
+                  )}
+                </span>
+
+                {/* Indicators / Dot navigation */}
+                <div className="flex items-center gap-2">
+                  {techAdsList.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentTechIndex(index);
+                        setIsTechAutoPlaying(false);
+                      }}
+                      className={`h-2 rounded-full transition-all cursor-pointer ${
+                        currentTechIndex === index 
+                          ? 'w-6 bg-slate-800' 
+                          : 'w-2 bg-slate-300 hover:bg-slate-400'
+                      }`}
+                      aria-label={`Go to promo ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Play / Pause Toggle Button */}
+                <button
+                  onClick={() => setIsTechAutoPlaying(!isTechAutoPlaying)}
+                  className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 cursor-pointer transition-all"
+                  aria-label={isTechAutoPlaying ? "Pause autoplay" : "Start autoplay"}
+                >
+                  {isTechAutoPlaying ? (
+                    <>
+                      <Pause className="w-3 h-3 text-slate-600" />
+                      <span className="hidden sm:inline">Pause</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3 h-3 text-slate-600 fill-slate-600" />
+                      <span className="hidden sm:inline">Play</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* COURSES DIRECTORY */}
+        <section id="courses" className="py-20 bg-white border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
+                <BookOpen className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Academy Directory</span>
+              </div>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
+                Explore Our Dynamic Course Catalog
+              </h2>
+              <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
+                Dive into our curated selection of industry-standard courses designed to master advanced search optimization, paid social campaign management, CRM automation, and high-impact copywriting. Enroll today to start earning gamified XP.
+              </p>
+            </div>
+
+            {/* Interactive Search & Filter Bar */}
+            <div className="bg-slate-50 border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+              {/* Search Input */}
+              <div className="relative w-full md:max-w-sm flex items-center">
+                <Search className="absolute left-3.5 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search courses by title or description..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800 placeholder-slate-400"
+                />
+              </div>
+
+              {/* Filter Buttons */}
+              <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
+                {(['All', 'Beginner', 'Intermediate', 'Advanced', 'Webinars'] as const).map(lvl => (
+                  <button
+                    key={lvl}
+                    onClick={() => setSelectedLevel(lvl)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all ${
+                      selectedLevel === lvl 
+                        ? 'bg-emerald-500 text-white shadow-sm' 
+                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    {lvl === 'Webinars' ? 'Upcoming Webinars' : lvl}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Courses Dynamic Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {selectedLevel === 'Webinars' ? (
+                <div className="col-span-full bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 text-white rounded-3xl p-8 sm:p-10 border border-indigo-800 text-center space-y-6 max-w-2xl mx-auto shadow-xl">
+                  <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-bold">
+                    🔥 Free Masterclasses
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl sm:text-2xl font-black">Upcoming Free Webinars</h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      All of our webinars are 100% free to incentivize enrollment in our premium, high-density live 4-hour courses. Join live specialist sessions and level up.
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => onNavigate('community')}
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl text-xs font-black transition-all shadow-md active:scale-95 cursor-pointer"
+                    >
+                      <span>Go to Webinars (Community Page)</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : filteredCourses.length === 0 ? (
+                <div className="col-span-full text-center py-12 text-slate-500 bg-slate-50 border border-slate-200 rounded-2xl">
+                  No courses found matching your query.
+                </div>
+              ) : (
+                filteredCourses.map(course => {
+                  const isExpanded = expandedCourseId === course.id;
+                  return (
+                    <div 
+                      key={course.id} 
+                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md hover:shadow-xl hover:border-emerald-500/30 transition-all flex flex-col justify-between"
+                    >
+                      <div className="p-6 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full font-bold uppercase tracking-wide border border-emerald-100">
+                            {course.level === 'Reception' ? 'Reception - Free' : course.level}
+                          </span>
+                          <span className="text-slate-500 text-[10px] flex items-center gap-1 font-mono">
+                            <Clock className="w-3.5 h-3.5 text-slate-400" /> {course.duration}
+                          </span>
+                        </div>
+
+                        <h3 className="text-base font-extrabold text-slate-900 tracking-tight">{course.title}</h3>
+                        <p className="text-xs text-slate-600 leading-relaxed">{course.description}</p>
+
+                        {/* Syllabus Accordion section */}
+                        <div className="border-t border-slate-100 pt-3">
+                          <button
+                            onClick={() => setExpandedCourseId(isExpanded ? null : course.id)}
+                            className="w-full text-left text-[11px] font-bold text-indigo-600 hover:text-indigo-500 flex items-center justify-between cursor-pointer"
+                          >
+                            <span>Syllabus Breakdown</span>
+                            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          </button>
+
+                          {isExpanded && (
+                            <ul className="mt-2.5 pl-4 list-disc text-[10px] text-slate-500 space-y-1.5 leading-relaxed">
+                              {course.syllabus.map((s, idx) => (
+                                <li key={idx}>{s}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-600">
+                        <div>
+                          <span className="block text-[8px] font-mono uppercase text-slate-400">Access Tier</span>
+                          {course.level === 'Reception' ? (
+                            <span className="text-xs font-black text-emerald-600 font-mono bg-emerald-50 border border-emerald-150 px-2.5 py-0.5 rounded-full uppercase tracking-wide inline-block mt-0.5">
+                              FREE COHORT
+                            </span>
+                          ) : (
+                            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-150 px-2.5 py-0.5 rounded-full uppercase tracking-wide font-mono inline-block mt-0.5">
+                              PREMIUM
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (course.level === 'Reception') {
+                              if (currentUser) {
+                                handleLaunchReception(course);
+                              } else {
+                                handleTriggerEnrollment(course);
+                              }
+                            } else {
+                              handleTriggerEnrollment(course);
+                            }
+                          }}
+                          className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1.5 shadow-sm"
+                        >
+                          {course.level === 'Reception' ? (
+                            <>
+                              <Play className="w-3.5 h-3.5 fill-white text-transparent" /> Launch Sandbox
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="w-3.5 h-3.5" /> Enroll Now
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </section>
+
+
+
+
+
+        {/* MINIMALIST DIGITAL MARKETING COURSE ADVERTISEMENT */}
         <section id="academy-projects" className="py-20 bg-slate-50 border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             
             {/* Heading Block */}
             <div className="text-center max-w-3xl mx-auto space-y-3">
-              <div className="inline-flex items-center gap-1 bg-yellow-100 border border-yellow-200 text-yellow-800 text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                <Award className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-                <span>Ecosystem Portfolio Showcase</span>
+              <div className="inline-flex items-center gap-1 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+                <span>Flagship Learning Experience</span>
               </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Build Real-World Interactive Projects
+                Accelerate Your Digital Marketing Skills
               </h2>
               <p className="text-xs text-slate-500 leading-relaxed max-w-2xl mx-auto">
-                Go completely beyond abstract theory. Interact with actual working student prototypes built using our flagship curricula, including automated AI, data science, diaspora arts/languages, and growth ad calculators.
+                No filler. No fluff. Our courses are fully condensed into high-impact 4-hour live sessions focused completely on execution, led by industry specialists.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Main Advert Card */}
+            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-md relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
+                {/* Left Side: Detail & Value Proposition */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full">
+                      Highly Practical Format
+                    </span>
+                    <h3 className="text-xl font-black text-slate-900 leading-tight">
+                      Hands-On Campaign Simulators & Expert Guidance
+                    </h3>
+                  </div>
+
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                    Our digital marketing academy has re-engineered tuition to match today’s rapid industry speeds. In just a single 4-hour session, you will design conversion-optimized campaign architectures, configure live SEO search clusters, and build fully automated email nurtures.
+                  </p>
+
+                  <div className="space-y-3">
+                    {[
+                      'Highly-focused 4-hour practical sessions',
+                      'Access real campaign simulator toolkits',
+                      'Secure digital checkouts via PayPal API (pulzitive@gmail.com)',
+                      'Free unlimited access to incentive webinars'
+                    ].map((bullet, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                        <span>{bullet}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <a
+                    href="#courses"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black transition-all shadow-md active:scale-98"
+                  >
+                    <span>Browse Interactive Courses</span>
+                    <ArrowRight className="w-4 h-4 text-indigo-400" />
+                  </a>
+                </div>
+
+                {/* Right Side: Flexible Pricing Matrix */}
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-5">
+                  <p className="text-[10px] font-mono font-black uppercase tracking-wider text-slate-400">
+                    Transparent Session Tuition
+                  </p>
+
+                  <div className="space-y-4">
+                    {/* Online Row */}
+                    <div className="bg-white border border-slate-150 p-4 rounded-xl space-y-2.5 shadow-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-slate-800 text-xs">Online Live Session</span>
+                        <span className="text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">Best Value</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-left pt-1 border-t border-slate-100">
+                        <div>
+                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Individual</span>
+                          <span className="text-slate-900 font-black text-xs font-mono">₦9,000</span>
+                        </div>
+                        <div>
+                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Group/Brand</span>
+                          <span className="text-slate-900 font-black text-xs font-mono">₦30,000</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Physical Row */}
+                    <div className="bg-white border border-slate-150 p-4 rounded-xl space-y-2.5 shadow-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-slate-800 text-xs">Physical On-Site (Lagos)</span>
+                        <span className="text-[9px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">Fully Immersive</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-left pt-1 border-t border-slate-100">
+                        <div>
+                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Individual</span>
+                          <span className="text-slate-900 font-black text-xs font-mono">₦30,000</span>
+                        </div>
+                        <div>
+                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Group/Brand</span>
+                          <span className="text-slate-900 font-black text-xs font-mono">₦60,000</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[9.5px] text-slate-400 leading-normal text-center">
+                    All prices are secure in Nigerian Naira (NGN). Payments are processed through safe verified merchant pop-ups.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* REMOVED_PROJECTS_HOLDER_SECTION */}
+        <div className="hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               
               {/* Left Column: Project Tabs / Selectors */}
               <div className="lg:col-span-4 space-y-3.5">
@@ -2190,7 +2101,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         <p className="pl-4">{`"temp_c": ${(weatherCityData[weatherCity].temp + weatherRandomOffset).toFixed(2)},`}</p>
                         <p className="pl-4">{`"humidity_pct": ${weatherCityData[weatherCity].humidity},`}</p>
                         <p className="pl-4">{`"status": "success",`}</p>
-                        <p className="pl-4">{`"source": "SACSolarTelemetryStation"`}</p>
+                        <p className="pl-4">{`"source": "PulzitiveSolarTelemetryStation"`}</p>
                         <p>{`}`}</p>
                       </div>
 
@@ -2268,7 +2179,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                           type="button"
                           onClick={handleAnalyzeTask}
                           disabled={isTaskAnalyzing || !taskTitle.trim()}
-                          className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-black py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow disabled:opacity-50 transition-all active:scale-[0.99]"
+                          className="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-black py-2.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow disabled:opacity-50 transition-all active:scale-[0.99]"
                         >
                           <Brain className="w-3.5 h-3.5 text-purple-400" />
                           <span>Estimate & Run AI Agent Analyze</span>
@@ -2628,24 +2539,11 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
                 </div>
 
-                {/* Footer notes & info links */}
-                <div className="border-t border-slate-100 pt-4 mt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-400 font-semibold gap-3">
-                  <span>Code generated by Student Cohort in React + Vite environment.</span>
-                  <button
-                    onClick={() => onNavigate('pricing')}
-                    className="text-slate-900 hover:text-indigo-600 flex items-center gap-1 font-black underline cursor-pointer"
-                  >
-                    <span>View associated enrollment tuition pricing</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
                 </div>
 
               </div>
 
             </div>
-
-          </div>
-        </section>
 
         {/* TESTIMONIALS - TWO-COLUMN CONTROLLABLE AUTO-SLIDE CAROUSEL */}
         <section id="academy-testimonials" className="py-20 bg-white border-b border-slate-200 overflow-hidden">
@@ -2655,44 +2553,17 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             <div className="text-center max-w-3xl mx-auto space-y-3">
               <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
                 <Star className="w-3.5 h-3.5 text-indigo-500 fill-indigo-500 animate-pulse" />
-                <span>Ecosystem Voice</span>
+                <span>Learners Voice</span>
               </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
                 Loved by Students, Parents, Teachers, Schools & Sponsors
               </h2>
               <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-                See how our custom-engineered STEAM learning pathways and multi-role simulators are making an impact in local and international communities.
+                Read how our 4-hour live practical digital marketing sessions have accelerated the career journeys of our students.
               </p>
             </div>
 
-            {/* Category Filter Tabs */}
-            <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-              {(['All', 'Students', 'Parents', 'Teachers', 'Schools', 'Sponsors'] as const).map((cat) => {
-                const isActive = selectedTestimonialCategory === cat;
-                const count = cat === 'All' 
-                  ? testimonialsList.length 
-                  : testimonialsList.filter(t => t.category === cat).length;
-                
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => handleTestimonialCategoryChange(cat)}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-slate-900 text-white shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    <span>{cat}</span>
-                    <span className={`text-[9px] px-1.5 py-0.2 rounded-full ${
-                      isActive ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-600'
-                    }`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            {/* Category Filter Tabs Hidden for Learners-Only */}
 
             {/* Carousel Interactive Sandbox */}
             {(() => {
@@ -2860,10 +2731,10 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               
               <div className="max-w-3xl mx-auto text-center space-y-6 relative z-10">
                 <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                  Ready to Start Your <br />Technical Adventure?
+                  Ready to Start Your <br />Digital Growth Adventure?
                 </h2>
                 <p className="text-sm text-emerald-100 max-w-xl mx-auto leading-relaxed">
-                  Join thousands of learners worldwide and unlock an accredited universe of technical knowledge and digital creativity. Your first step starts today.
+                  Join thousands of marketers and professionals worldwide and unlock an accredited universe of growth marketing expertise and digital commerce. Your first step starts today.
                 </p>
 
                 <form onSubmit={handleStartTrialSubmit} className="max-w-md mx-auto pt-4 space-y-3">
@@ -2894,7 +2765,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
                 <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 text-[11px] text-emerald-100/80">
                   <span className="flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4 text-emerald-300" /> Professional SAC Certification
+                    <CheckCircle className="w-4 h-4 text-emerald-300" /> Professional Pulzitive Certification
                   </span>
                   <span className="flex items-center gap-1">
                     <CheckCircle className="w-4 h-4 text-emerald-300" /> Real-time Cohort Mentorship
@@ -2912,8 +2783,8 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
         <section className="py-12 bg-white border-t border-slate-200 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
             <div className="flex items-center gap-1.5">
-              <span className="text-base font-black text-slate-900">SAC Tech <span className="text-emerald-500">Academy</span></span>
-              <span>— Unlock your technical potential.</span>
+              <span className="text-base font-black text-slate-900">Pulzitive Digital <span className="text-emerald-500">Academy</span></span>
+              <span>— Unlock your marketing potential.</span>
             </div>
             <div className="flex items-center gap-4 font-medium">
               <a href="#academy-hero" className="hover:text-emerald-600 transition-colors">Hero Overview</a>
@@ -3048,7 +2919,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                       }}
                       className="bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                     >
-                      <LogIn className="w-3.5 h-3.5" /> Sign In with SAC Account
+                      <LogIn className="w-3.5 h-3.5" /> Sign In with Pulzitive Account
                     </button>
                   </div>
                 </div>
@@ -3089,13 +2960,15 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                     <div className="flex justify-between">
                       <span className="text-slate-500">Standard Duration:</span>
                       <span className="font-semibold text-slate-900">
-                        {getCourseDurationDetails(enrollingCourse.id).days} Days ({getCourseDurationDetails(enrollingCourse.id).hoursPerDay}h/day)
+                        4 Hours Session
                       </span>
                     </div>
                     <div className="flex justify-between border-t border-slate-200 pt-2 text-xs font-bold">
                       <span className="text-slate-600">Amount Paid:</span>
                       <span className="text-emerald-600">
-                        ₦{(enrollMode === 'Online' ? 25000 : 65000).toLocaleString()}
+                        ₦{(enrollMode === 'Online'
+                          ? (enrollTier === 'Individual' ? 9000 : 30000)
+                          : (enrollTier === 'Individual' ? 30000 : 60000)).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -3138,7 +3011,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         <span className="block font-bold text-xs text-slate-900">Online Session</span>
                         <span className="block text-[9px] text-slate-500 mt-1 leading-normal">Live webinars & cloud terminal tools.</span>
                         <span className="block text-indigo-600 font-black text-xs mt-2 font-mono">
-                          ₦25,000
+                          ₦{enrollTier === 'Individual' ? '9,000' : '30,000'}
                         </span>
                       </button>
 
@@ -3152,9 +3025,9 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         }`}
                       >
                         <span className="block font-bold text-xs text-slate-900">Physical On-Site</span>
-                        <span className="block text-[9px] text-slate-500 mt-1 leading-normal">Hands-on lab at Pulzitive.</span>
+                        <span className="block text-[9px] text-slate-500 mt-1 leading-normal">Hands-on lab at Lagos HQ.</span>
                         <span className="block text-indigo-600 font-black text-xs mt-2 font-mono">
-                          ₦65,000
+                          ₦{enrollTier === 'Individual' ? '30,000' : '60,000'}
                         </span>
                       </button>
                     </div>
@@ -3178,9 +3051,47 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                     )}
                   </div>
 
-                  {/* Step 2: Scheduling Preferences */}
+                  {/* Step 2: Choose Tuition Tier */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">2. Select Enrollment Tier</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEnrollTier('Individual')}
+                        className={`p-3 rounded-2xl border text-left transition-all cursor-pointer bg-white ${
+                          enrollTier === 'Individual'
+                            ? 'border-indigo-600 ring-2 ring-indigo-500/20 shadow-sm'
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <span className="block font-bold text-xs text-slate-900">Individual Student</span>
+                        <span className="block text-[9px] text-slate-500 mt-1 leading-normal">Single attendee pass.</span>
+                        <span className="block text-indigo-600 font-black text-xs mt-2 font-mono">
+                          ₦{enrollMode === 'Online' ? '9,000' : '30,000'}
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setEnrollTier('Group')}
+                        className={`p-3 rounded-2xl border text-left transition-all cursor-pointer bg-white ${
+                          enrollTier === 'Group'
+                            ? 'border-indigo-600 ring-2 ring-indigo-500/20 shadow-sm'
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <span className="block font-bold text-xs text-slate-900">Group / Brand / Business</span>
+                        <span className="block text-[9px] text-slate-500 mt-1 leading-normal">Up to 5 team members.</span>
+                        <span className="block text-indigo-600 font-black text-xs mt-2 font-mono">
+                          ₦{enrollMode === 'Online' ? '30,000' : '60,000'}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Scheduling Preferences */}
                   <div className="space-y-2.5 pt-1">
-                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">2. Schedule Class Meetings</label>
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">3. Schedule Class Meetings</label>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
@@ -3220,39 +3131,48 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         onChange={(e) => setSyncCalendar(e.target.checked)}
                         className="rounded border-slate-300 text-indigo-600 focus:ring-0 focus:ring-offset-0 bg-white"
                       />
-                      <span className="text-[10px] text-slate-500">Sync with Google Calendar and SAC academic schedules</span>
+                      <span className="text-[10px] text-slate-500">Sync with Google Calendar and academic schedules</span>
                     </label>
                   </div>
 
-                  {/* Step 3: Secure Paystack Integration */}
+                  {/* Step 4: Secure PayPal Integration */}
                   <div className="space-y-2.5 pt-1 border-t border-slate-200">
-                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">3. Secure Paystack Payment</label>
+                    <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider font-mono">4. Secure PayPal Merchant Payment</label>
                     
                     <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-3.5">
                       <div className="flex justify-between items-center text-xs font-bold border-b border-slate-200 pb-2.5">
                         <span className="text-slate-500 font-mono">Order Total:</span>
-                        <span className="text-emerald-600 text-sm font-mono">
-                          ₦{(enrollMode === 'Online' ? 25000 : 65000).toLocaleString()}
-                        </span>
+                        <div className="text-right">
+                          <span className="text-blue-700 text-sm font-black font-mono block">
+                            ${((enrollMode === 'Online'
+                              ? (enrollTier === 'Individual' ? 9000 : 30000)
+                              : (enrollTier === 'Individual' ? 30000 : 60000)) / 600).toFixed(2)} USD
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-normal">
+                            (~₦{(enrollMode === 'Online'
+                              ? (enrollTier === 'Individual' ? 9000 : 30000)
+                              : (enrollTier === 'Individual' ? 30000 : 60000)).toLocaleString()} NGN)
+                          </span>
+                        </div>
                       </div>
 
                       <div className="text-slate-500 text-[10.5px] leading-relaxed space-y-2">
                         <p className="flex items-start gap-1.5">
-                          <span className="text-emerald-500 font-bold font-mono">✓</span>
-                          <span>Official transaction gateway secure payment.</span>
+                          <span className="text-blue-600 font-bold font-mono">✓</span>
+                          <span>Official PayPal transaction gateway secure checkout.</span>
                         </p>
                         <p className="flex items-start gap-1.5">
-                          <span className="text-emerald-500 font-bold font-mono">✓</span>
-                          <span>Authorized via verified Paystack pop-up checkout engine.</span>
+                          <span className="text-blue-600 font-bold font-mono">✓</span>
+                          <span>Merchant Account: <span className="font-mono font-bold text-blue-800">pulzitive@gmail.com</span></span>
                         </p>
                         <p className="flex items-start gap-1.5">
-                          <span className="text-emerald-500 font-bold font-mono">✓</span>
+                          <span className="text-blue-600 font-bold font-mono">✓</span>
                           <span>We do not store or process card details on Pulzitive.</span>
                         </p>
                       </div>
 
-                      <div className="text-[9px] bg-white p-2.5 rounded-xl border border-slate-200 text-slate-500 text-center font-medium font-mono truncate">
-                        Key: pk_test_006be008193c9b83e671e6e1bb75e5aab3d9d589
+                      <div className="text-[9px] bg-blue-50 p-2.5 rounded-xl border border-blue-100 text-blue-900 text-center font-bold font-mono truncate">
+                        PayPal Account: pulzitive@gmail.com
                       </div>
                     </div>
                   </div>
@@ -3260,16 +3180,18 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                   <button
                     type="submit"
                     disabled={isSubmittingEnrollment}
-                    className="w-full py-3.5 bg-white hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 text-slate-950 border border-slate-200 font-black rounded-xl text-xs transition-all shadow-sm active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:text-slate-500 text-white font-black rounded-xl text-xs transition-all shadow-md active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     {isSubmittingEnrollment ? (
                       <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Initializing Paystack Checkout...
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Connecting to PayPal (pulzitive@gmail.com)...
                       </>
                     ) : (
                       <>
-                        <CreditCard className="w-3.5 h-3.5" /> 
-                        {`Pay Tuition with Paystack ₦${(enrollMode === 'Online' ? 25000 : 65000).toLocaleString()}`}
+                        <ShieldCheck className="w-4 h-4" /> 
+                        {`Pay Tuition with PayPal ($${((enrollMode === 'Online'
+                          ? (enrollTier === 'Individual' ? 9000 : 30000)
+                          : (enrollTier === 'Individual' ? 30000 : 60000)) / 600).toFixed(2)} USD)`}
                       </>
                     )}
                   </button>

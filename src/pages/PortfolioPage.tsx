@@ -304,11 +304,11 @@ export default function PortfolioPage({
                   </p>
                 </div>
 
-                {/* Section 2: What SAC Achieved */}
+                {/* Section 2: What Pulzitive Achieved */}
                 <div className="space-y-1.5">
                   <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Growth Audits & Strategic Impact achieved by SAC</span>
+                    <span>Growth Audits & Strategic Impact achieved by Pulzitive</span>
                   </h4>
                   <p className="leading-relaxed text-slate-600">
                     {selectedClient.achieved}

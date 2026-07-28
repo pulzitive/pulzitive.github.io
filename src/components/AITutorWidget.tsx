@@ -260,7 +260,7 @@ export default function AITutorWidget() {
                 </div>
               )}
 
-              {/* Instant FAQs Options Chips (adapted for SAC AI Tutor) */}
+              {/* Instant FAQs Options Chips (adapted for Pulzitive AI Tutor) */}
               <div className="space-y-2 pt-2 border-t border-slate-200/60 shrink-0">
                 <p className="text-[9.5px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
                   <HelpCircle className="w-3.5 h-3.5 text-slate-400 font-bold" /> Frequently Asked Academy Questions:
@@ -307,7 +307,7 @@ export default function AITutorWidget() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-slate-900 text-white p-4 rounded-full shadow-2xl flex items-center justify-center cursor-pointer hover:bg-slate-800 border border-slate-800"
+        className="bg-blue-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center cursor-pointer hover:bg-blue-500 border border-blue-500"
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
         {!isOpen && (

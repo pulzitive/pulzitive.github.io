@@ -79,7 +79,7 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
-            <span className="font-extrabold text-slate-950 text-sm tracking-tight">Pulzitive Ecosystem</span>
+            <span className="font-extrabold text-slate-950 text-sm tracking-tight">Pulzitive Platform</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-500">
             A premier brand communication, Digital Marketing Intelligence, and Advertising Agency with integrated learning paths.
@@ -133,12 +133,12 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
 
         {/* Newsletter column */}
         <div className="space-y-4">
-          <h4 className="text-xs font-bold text-slate-900 tracking-wider uppercase">Technical Adventure</h4>
+          <h4 className="text-xs font-bold text-slate-900 tracking-wider uppercase">Marketing Growth</h4>
           <form onSubmit={handleSubscribe} className="space-y-3">
             {step === 1 ? (
               <>
-                <p className="text-[11px] text-slate-500 font-medium">Ready to Start Your Technical Adventure? (Step 1 of 2):</p>
-                <p className="text-[10px] text-slate-400 leading-normal">Enter your email to receive free sandbox codes, specialized curriculum updates, and custom learning roadmaps!</p>
+                <p className="text-[11px] text-slate-500 font-medium">Ready to Start Your Marketing Journey? (Step 1 of 2):</p>
+                <p className="text-[10px] text-slate-400 leading-normal">Enter your email to receive free marketing checklists, specialized curriculum updates, and custom learning roadmaps!</p>
                 <div className="flex gap-1.5">
                   <input
                     type="email"
@@ -208,7 +208,7 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
       </div>
 
       <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-400 gap-4">
-        <p>Pulzitive Ecosystem © 2026. All Rights Reserved.</p>
+        <p>Pulzitive Platform © 2026. All Rights Reserved.</p>
         <div className="flex gap-4">
           <button onClick={() => onNavigate('privacy')} className="hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none p-0">Privacy Policy</button>
           <button onClick={() => onNavigate('terms')} className="hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none p-0">Terms of Use</button>

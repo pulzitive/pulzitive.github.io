@@ -13,7 +13,7 @@ export default function PRPage() {
       title: 'Pulzitive Launches Integrated Full-Stack EdTech Hub & Agency Model',
       date: 'June 25, 2026',
       badge: 'Launch',
-      summary: 'Today, Pulzitive formally launched an ecosystem bridging corporate growth advisory with specialized marketing learning paths.',
+      summary: 'Today, Pulzitive formally launched a platform bridging corporate growth advisory with specialized marketing learning paths.',
       content: 'Under this new strategy, clients seeking high-performance search engine rankings and targeted Google/Meta campaigns can partner with certified students from the Pulzitive Academy, cultivating a sustainable recruitment funnel. "This unified approach allows us to deliver optimized business audits while empowering underrepresented talents with industry-grade certifications," noted Executive Consultant Salami Abiodun.'
     },
     {

@@ -26,11 +26,11 @@ div.bg-slate-950, main.bg-slate-950, section.bg-slate-950, header.bg-slate-950, 
   background-color: #f8fafc !important;
 }
 
-div.bg-slate-900, main.bg-slate-900, section.bg-slate-900, header.bg-slate-900, .bg-slate-900, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-900\/30 {
+div.bg-slate-900, main.bg-slate-900, section.bg-slate-900, header.bg-slate-900, .bg-slate-900, .bg-slate-850, .bg-slate-800, .bg-slate-900\/40, .bg-slate-900\/20, .bg-slate-900\/30 {
   background-color: #ffffff !important;
 }
 
-div.bg-slate-950\/40, div.bg-slate-950\/50, div.bg-slate-950\/80 {
+div.bg-slate-950\/40, div.bg-slate-950\/50, div.bg-slate-950\/80, div.bg-slate-900\/60, div.bg-slate-900\/80 {
   background-color: #f1f5f9 !important;
 }
 
@@ -65,32 +65,39 @@ div.bg-slate-950\/40, div.bg-slate-950\/50, div.bg-slate-950\/80 {
 }
 
 .text-amber-400, .text-amber-500, .text-amber-600 {
-  color: #FFD700 !important; /* Electric Yellow */
+  color: #D97706 !important; /* Amber / Yellow */
 }
 
-/* Primary/Secondary action buttons and special badges must maintain their white text with Brand Colors */
-.bg-indigo-600, .bg-indigo-700, .bg-blue-600, .bg-blue-700 {
+/* Primary/Secondary action buttons and special badges must maintain white text with Brand Colors */
+.bg-indigo-600, .bg-indigo-700, .bg-blue-600, .bg-blue-700, .bg-blue-500, .bg-blue-800 {
   background-color: #0F4C81 !important;
+  color: #ffffff !important;
 }
-.bg-indigo-600:hover, .bg-indigo-700:hover, .bg-blue-600:hover, .bg-blue-700:hover {
+.bg-indigo-600:hover, .bg-indigo-700:hover, .bg-blue-600:hover, .bg-blue-700:hover, .bg-blue-500:hover, .bg-blue-800:hover {
   background-color: #0c3d67 !important;
+  color: #ffffff !important;
 }
 
 .bg-emerald-500, .bg-emerald-600 {
   background-color: #00A86B !important;
+  color: #ffffff !important;
 }
 .bg-emerald-500:hover, .bg-emerald-600:hover {
   background-color: #008f5a !important;
+  color: #ffffff !important;
 }
 
 .bg-rose-500, .bg-rose-600 {
   background-color: #E63946 !important;
+  color: #ffffff !important;
 }
 .bg-rose-500:hover, .bg-rose-600:hover {
   background-color: #c5303c !important;
+  color: #ffffff !important;
 }
 
-.bg-emerald-500 *, .bg-emerald-600 *, .bg-indigo-600 *, .bg-indigo-700 *, .bg-rose-500 *, .bg-rose-600 *, .bg-cyan-500 *, .bg-cyan-600 * {
+/* Force pure white text and icons inside all blue, emerald, indigo, rose, and cyan buttons */
+.bg-blue-500 *, .bg-blue-600 *, .bg-blue-700 *, .bg-blue-800 *, .bg-indigo-600 *, .bg-indigo-700 *, .bg-emerald-500 *, .bg-emerald-600 *, .bg-rose-500 *, .bg-rose-600 *, .bg-cyan-500 *, .bg-cyan-600 * {
   color: #ffffff !important;
 }
 

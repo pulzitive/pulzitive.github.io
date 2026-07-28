@@ -22,6 +22,7 @@ import DashboardPage from './pages/DashboardPage';
 import PRPage from './pages/PRPage';
 import AcademyPage from './pages/AcademyPage';
 import PortfolioPage from './pages/PortfolioPage';
+import TalentsPage from './pages/TalentsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import SitemapPage from './pages/SitemapPage';
@@ -443,6 +444,18 @@ export default function App() {
           />
         )}
 
+        {activePage === 'talents' && (
+          <TalentsPage
+            currentUser={currentUser}
+            onNavigate={(page) => setActivePage(page)}
+            onCheckout={(amount, name) => handleCheckoutTrigger(amount, name)}
+            onOpenAuthModal={() => {
+              setAuthTab('signup');
+              setIsAuthOpen(true);
+            }}
+          />
+        )}
+
          {activePage === 'academy' && (
           <AcademyPage 
             onEnroll={(course) => {
@@ -459,7 +472,7 @@ export default function App() {
               if (user) {
                 triggerToast(`Logged into simulated ${user.role} workspace.`);
               } else {
-                triggerToast('Signed out of SAC Portal.');
+                triggerToast('Signed out of Pulzitive Portal.');
               }
             }}
             onNavigate={(page) => setActivePage(page)}

@@ -22,7 +22,10 @@ import {
   Edit2,
   Lock,
   Search,
-  ExternalLink
+  ExternalLink,
+  DollarSign,
+  Globe,
+  Megaphone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { saveUtmLink, getUtmLinks } from '../firebase';
@@ -38,15 +41,39 @@ interface MiniToolsProps {
 }
 
 export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false, defaultToolId, onNavigate, onOpenAuthModal }: MiniToolsProps) {
-  const [activeTool, setActiveTool] = useState<string>(defaultToolId || 'grader');
+  const [activeTool, setActiveTool] = useState<string>(defaultToolId || (showcaseOnly ? 'roas' : 'roas'));
 
   const toolsList = [
+    {
+      id: 'roas',
+      name: 'Funnel & ROAS Simulator',
+      desc: 'Simulate ad spend, CTR, conversion rate, and average order value to project campaign ROAS and CPA.',
+      icon: DollarSign,
+      isBest: true,
+      category: 'Paid Ads'
+    },
+    {
+      id: 'adcopy',
+      name: 'AI Ad Copy Architect',
+      desc: 'Assemble high-converting Meta and Google ad headlines and copy structures tailored to your industry.',
+      icon: Sparkles,
+      isBest: true,
+      category: 'Copywriting'
+    },
+    {
+      id: 'seo',
+      name: 'SEO Content Auditor',
+      desc: 'Audit page title tags and meta descriptions against search engine truncation rules in real-time.',
+      icon: Globe,
+      isBest: true,
+      category: 'SEO'
+    },
     {
       id: 'grader',
       name: 'Cold Email Grader',
       desc: 'Get an instant 0-100 score and brutal, line-by-line feedback on your cold outreach.',
       icon: Award,
-      isBest: true,
+      isBest: false,
       category: 'Outreach'
     },
     {
@@ -54,7 +81,7 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
       name: 'Problem Cost Calculator',
       desc: 'Calculate the alarming annual financial impact of your operational bottlenecks.',
       icon: Calculator,
-      isBest: true,
+      isBest: false,
       category: 'Strategy'
     },
     {
@@ -62,7 +89,7 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
       name: 'Startup Tagline Generator',
       desc: 'Generate 10 dynamic taglines including bold, luxury, minimalist, and "cursed" styles.',
       icon: Sparkles,
-      isBest: true,
+      isBest: false,
       category: 'Branding'
     },
     {
@@ -183,6 +210,9 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
                 transition={{ duration: 0.2 }}
                 className="flex-grow flex flex-col"
               >
+                {activeTool === 'roas' && <RoasSimulatorTool onBook={onBookAppointment} />}
+                {activeTool === 'adcopy' && <AdCopyArchitectTool />}
+                {activeTool === 'seo' && <SeoContentAuditorTool />}
                 {activeTool === 'grader' && <EmailGraderTool onBook={onBookAppointment} />}
                 {activeTool === 'calculator' && <ProblemCostCalculatorTool onBook={onBookAppointment} />}
                 {activeTool === 'generator' && <StartupTaglineGeneratorTool />}
@@ -286,6 +316,9 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
               transition={{ duration: 0.2 }}
               className="flex-grow flex flex-col"
             >
+              {activeTool === 'roas' && <RoasSimulatorTool onBook={onBookAppointment} />}
+              {activeTool === 'adcopy' && <AdCopyArchitectTool />}
+              {activeTool === 'seo' && <SeoContentAuditorTool />}
               {activeTool === 'grader' && <EmailGraderTool onBook={onBookAppointment} />}
               {activeTool === 'calculator' && <ProblemCostCalculatorTool onBook={onBookAppointment} />}
               {activeTool === 'generator' && <StartupTaglineGeneratorTool />}
@@ -297,6 +330,373 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
               {activeTool === 'brief' && <CampaignBriefGeneratorTool />}
             </motion.div>
           </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   0A. FUNNEL & ROAS SIMULATOR
+   ========================================================================== */
+function RoasSimulatorTool({ onBook }: { onBook?: () => void }) {
+  const [adSpend, setAdSpend] = useState<number>(150000);
+  const [ctr, setCtr] = useState<number>(2.5);
+  const [convRate, setConvRate] = useState<number>(3.0);
+  const [aov, setAov] = useState<number>(15000);
+
+  const clicks = Math.round(adSpend / 150);
+  const conversions = Math.round(clicks * (convRate / 100));
+  const cpa = Math.round(adSpend / Math.max(1, conversions));
+  const roas = (((conversions * aov) / adSpend)).toFixed(2);
+
+  return (
+    <div className="space-y-6">
+      <div className="border-b border-slate-100 pb-4">
+        <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+          <Calculator className="w-5 h-5 text-emerald-600" /> Funnel & ROAS Simulator
+        </h3>
+        <p className="text-xs text-slate-500 mt-1">
+          Adjust ad spend, CTR, conversion rate, and average order value to simulate real-time campaign performance and return on ad spend.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 text-xs text-slate-700">
+          <div className="space-y-1">
+            <div className="flex justify-between font-bold">
+              <span className="text-slate-600">Monthly Ad Budget</span>
+              <span className="text-emerald-600 font-extrabold">₦{adSpend.toLocaleString()}</span>
+            </div>
+            <input
+              type="range"
+              min={10000}
+              max={2000000}
+              step={10000}
+              value={adSpend}
+              onChange={(e) => setAdSpend(Number(e.target.value))}
+              className="w-full accent-emerald-500 bg-slate-100 h-2 rounded-lg cursor-pointer"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Click-Through Rate (CTR)</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  max="20"
+                  value={ctr}
+                  onChange={(e) => setCtr(Number(e.target.value))}
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"
+                />
+                <span className="absolute right-2.5 top-2 text-slate-400 font-bold">%</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Conversion Rate</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  max="50"
+                  value={convRate}
+                  onChange={(e) => setConvRate(Number(e.target.value))}
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"
+                />
+                <span className="absolute right-2.5 top-2 text-slate-400 font-bold">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Average Order Value (AOV)</label>
+            <div className="relative">
+              <span className="absolute left-2.5 top-2 text-emerald-600 font-bold">₦</span>
+              <input
+                type="number"
+                value={aov}
+                onChange={(e) => setAov(Number(e.target.value))}
+                className="w-full bg-white border border-slate-300 rounded-lg p-2 pl-6 text-slate-900 font-mono font-bold focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Projected Metrics Card */}
+        <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-4 flex flex-col justify-between shadow-lg">
+          <div>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block mb-3">
+              Simulated Performance Output
+            </span>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-slate-400 block text-[9px] uppercase font-mono">Estimated Clicks</span>
+                <span className="text-xl font-black">{clicks.toLocaleString()}</span>
+                <span className="text-[9px] text-slate-400 block mt-0.5">@ ₦150 Avg. CPC</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[9px] uppercase font-mono">Estimated Sales</span>
+                <span className="text-xl font-black">{conversions.toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[9px] uppercase font-mono">Cost per Sale (CPA)</span>
+                <span className="text-xl font-black text-indigo-300">₦{cpa.toLocaleString()}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[9px] uppercase font-mono">Simulated ROAS</span>
+                <span className={`text-xl font-black ${Number(roas) >= 1 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {roas}x
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {onBook && (
+            <button
+              onClick={onBook}
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer"
+            >
+              Book Strategy Meeting To Scale ROAS
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   0B. AI AD COPY ARCHITECT
+   ========================================================================== */
+function AdCopyArchitectTool() {
+  const [industry, setIndustry] = useState('E-commerce');
+  const [tone, setTone] = useState('Persuasive');
+  const [proposition, setProposition] = useState('Handcrafted corporate luxury leather shoes with fast delivery');
+  const [headlines, setHeadlines] = useState<string[]>([
+    'Handcrafted Corporate Leather',
+    'Premium Custom Fit | Shop Now',
+    'Free Shipping Nationwide'
+  ]);
+  const [description, setDescription] = useState(
+    'Get your high-quality handcrafted corporate luxury leather shoes delivered fast. Browse our collections today and claim a 15% discount on checkout.'
+  );
+
+  const handleGenerate = () => {
+    let hl1 = '';
+    let hl2 = '';
+    let hl3 = '';
+    let desc = '';
+
+    if (industry === 'E-commerce') {
+      hl1 = `${proposition.slice(0, 25)}`;
+      hl2 = 'Premium Custom Fit | Shop Now';
+      hl3 = 'Free Shipping Nationwide';
+      desc = `Get your high-quality ${proposition.toLowerCase()} delivered fast. Browse our collections today and claim a 15% discount on checkout.`;
+    } else if (industry === 'B2B SaaS') {
+      hl1 = 'Optimize Business Workflows';
+      hl2 = 'Enterprise Cloud Analytics';
+      hl3 = 'Request Free Live Demo';
+      desc = `Empower your distributed teams with advanced analytics. Secure, fast, and scalable integration designed to accelerate brand growth and intelligence.`;
+    } else if (industry === 'Local Business') {
+      hl1 = 'Premium Local Services';
+      hl2 = 'Trusted Expert Craft';
+      hl3 = 'Call For Free Booking';
+      desc = `Looking for trusted experts nearby? We provide high-quality services tailored to your budget. Contact us today for reliable and certified specialists!`;
+    } else {
+      hl1 = 'Exclusive Premium Estates';
+      hl2 = 'Luxurious Modern Living';
+      hl3 = 'Schedule Elite Private Tour';
+      desc = `Invest in prime locations with high resale value. Discover beautiful contemporary designs, secure neighborhoods, and modern premium smart features.`;
+    }
+
+    setHeadlines([hl1 || 'Premium Selection', hl2, hl3]);
+    setDescription(desc);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="border-b border-slate-100 pb-4">
+        <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-indigo-600" /> AI Ad Copy Architect
+        </h3>
+        <p className="text-xs text-slate-500 mt-1">
+          Generate optimized headlines and primary ad copy structure for Meta Ads, Google Ads, and promotional campaigns.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 text-xs text-slate-700">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Industry</label>
+              <select
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-semibold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+              >
+                <option value="E-commerce">E-commerce / Retail</option>
+                <option value="B2B SaaS">B2B Software / SaaS</option>
+                <option value="Local Business">Local Service Agency</option>
+                <option value="Real Estate">Real Estate</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Ad Copy Tone</label>
+              <select
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-semibold focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+              >
+                <option value="Persuasive">Persuasive / Direct</option>
+                <option value="Curious">Curious / Open-loop</option>
+                <option value="Urgent">FOMO / High Urgency</option>
+                <option value="Professional">Professional / Benefit</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Value Proposition / Main Offer</label>
+            <input
+              type="text"
+              value={proposition}
+              onChange={(e) => setProposition(e.target.value)}
+              placeholder="e.g. Handmade corporate luxury leather shoes with fast delivery"
+              className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+            />
+          </div>
+
+          <button
+            onClick={handleGenerate}
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" /> Assemble Optimized Copy Structure
+          </button>
+        </div>
+
+        {/* Output simulator */}
+        <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-3.5 shadow-lg flex flex-col justify-between">
+          <div className="space-y-3">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400 block">
+              Meta Ads Manager Simulator
+            </span>
+
+            <div className="space-y-1.5">
+              <span className="text-[9px] uppercase font-mono font-bold text-slate-400 block">
+                Generated Headlines (Max 30 Chars)
+              </span>
+              {headlines.map((hl, idx) => (
+                <div key={idx} className="bg-slate-800/80 border border-slate-700/60 p-2 rounded-lg text-xs font-mono flex justify-between items-center">
+                  <span className="truncate max-w-[200px]">{hl}</span>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${hl.length <= 30 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                    {hl.length}/30
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-1 pt-1">
+              <span className="text-[9px] uppercase font-mono font-bold text-slate-400 block">
+                Primary Description Copy
+              </span>
+              <p className="bg-slate-800/80 border border-slate-700/60 p-2.5 rounded-lg text-xs leading-relaxed text-slate-200">
+                {description}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================================================
+   0C. SEO CONTENT AUDITOR
+   ========================================================================== */
+function SeoContentAuditorTool() {
+  const [seoTitle, setSeoTitle] = useState('Pulzitive Executive Growth & Performance Marketing Academy');
+  const [seoDesc, setSeoDesc] = useState('Master digital growth, campaign optimization, paid ads performance, and search engine optimization with accredited certifications and live sandbox playgrounds.');
+
+  return (
+    <div className="space-y-6">
+      <div className="border-b border-slate-100 pb-4">
+        <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+          <Search className="w-5 h-5 text-teal-600" /> SEO Content Auditor
+        </h3>
+        <p className="text-xs text-slate-500 mt-1">
+          Audit page titles and meta description tags against Google Search Engine Results Page (SERP) truncation rules in real-time.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4 text-xs text-slate-700">
+          <div className="space-y-1">
+            <div className="flex justify-between items-center">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">SEO Page Title Tag</label>
+              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded ${
+                seoTitle.length >= 50 && seoTitle.length <= 60 
+                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                  : 'bg-amber-100 text-amber-700 border border-amber-200'
+              }`}>
+                {seoTitle.length} Chars ({seoTitle.length >= 50 && seoTitle.length <= 60 ? 'Optimal' : 'Needs Adjusting'})
+              </span>
+            </div>
+            <input
+              type="text"
+              value={seoTitle}
+              onChange={(e) => setSeoTitle(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none font-bold"
+            />
+            <p className="text-[9px] text-slate-400">Recommended title length: 50–60 characters to avoid truncation on desktop search.</p>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex justify-between items-center">
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Meta Description Tag</label>
+              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded ${
+                seoDesc.length >= 145 && seoDesc.length <= 160 
+                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                  : 'bg-amber-100 text-amber-700 border border-amber-200'
+              }`}>
+                {seoDesc.length} Chars ({seoDesc.length >= 145 && seoDesc.length <= 160 ? 'Optimal' : 'Needs Adjusting'})
+              </span>
+            </div>
+            <textarea
+              rows={3}
+              value={seoDesc}
+              onChange={(e) => setSeoDesc(e.target.value)}
+              className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono text-xs focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none font-medium"
+            />
+            <p className="text-[9px] text-slate-400">Recommended description length: 145–160 characters for maximum search click-through rate.</p>
+          </div>
+        </div>
+
+        {/* Google SERP Snippet Preview */}
+        <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-3 shadow-lg flex flex-col justify-between">
+          <div className="space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-teal-400 block">
+              Google Search Snippet Preview
+            </span>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-1.5 text-left">
+              <p className="text-xs text-[#1a0dab] font-sans font-medium hover:underline cursor-pointer truncate">
+                {seoTitle || 'Insert Page Title'}
+              </p>
+              <p className="text-[10px] text-[#006621] font-sans flex items-center gap-1 font-mono">
+                https://pulzitive.com <span className="text-[8px] text-[#006621]">▼</span>
+              </p>
+              <p className="text-[11px] text-[#545454] font-sans leading-relaxed">
+                {seoDesc.slice(0, 160) || 'Insert Meta description...'}
+                {seoDesc.length > 160 && '...'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -375,7 +775,7 @@ function EmailGraderTool({ onBook }: { onBook?: () => void }) {
           <button
             onClick={handleGrade}
             disabled={loading}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
             id="btn-grade-email"
           >
             {loading ? (
@@ -460,9 +860,9 @@ function EmailGraderTool({ onBook }: { onBook?: () => void }) {
             {onBook && (
               <button
                 onClick={onBook}
-                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-xl transition-all text-sm flex items-center justify-center gap-1 shadow-md shadow-slate-900/10"
+                className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-xl transition-all text-sm flex items-center justify-center gap-1 shadow-md shadow-blue-600/10"
               >
-                Let SAC Rewrite It <Sparkles className="h-4 w-4" />
+                Let Pulzitive Rewrite It <Sparkles className="h-4 w-4" />
               </button>
             )}
           </div>
@@ -705,7 +1105,7 @@ function StartupTaglineGeneratorTool() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -858,7 +1258,7 @@ function BrandTaglineGameTool() {
             </button>
             <button
               onClick={() => handleAnswer(true)}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-sm"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-sm"
             >
               🤖 Generated by AI
             </button>
@@ -888,7 +1288,7 @@ function BrandTaglineGameTool() {
 
           <button
             onClick={handleNext}
-            className="w-full max-w-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl transition-all inline-flex items-center justify-center gap-1.5"
+            className="w-full max-w-xs bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all inline-flex items-center justify-center gap-1.5"
           >
             <span>{currentIdx + 1 === gameData.length ? 'See Final Score' : 'Next Tagline'}</span>
             <ArrowRight className="h-4 w-4" />
@@ -909,7 +1309,7 @@ function BrandTaglineGameTool() {
                 ? 'Absolute Brand Maestro! You know premium, authentic copy when you see it.' 
                 : score >= 5 
                 ? 'Fairly Intuitive. AI marketing phrases are getting smarter—be careful out there!' 
-                : 'Fooled by the bots! Your outbound copy needs that human, authentic edge from SAC.'}
+                : 'Fooled by the bots! Your outbound copy needs that human, authentic edge from Pulzitive.'}
             </p>
           </div>
 
@@ -1095,7 +1495,7 @@ function MarketingSuperpowerQuizTool({ onBook }: QuizProps) {
               <div>
                 <span className="text-[10px] font-semibold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full uppercase tracking-wider">Recommended Course</span>
                 <h5 className="font-bold text-slate-800 mt-1">{archetypes[result].course}</h5>
-                <p className="text-xs text-slate-500 mt-0.5">Scale your superpower at SAC Academy.</p>
+                <p className="text-xs text-slate-500 mt-0.5">Scale your superpower at Pulzitive Digital Academy.</p>
               </div>
               <a
                 href="#courses-section"
@@ -1117,7 +1517,7 @@ function MarketingSuperpowerQuizTool({ onBook }: QuizProps) {
             {onBook && (
               <button
                 onClick={onBook}
-                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md shadow-slate-900/10"
+                className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md shadow-blue-600/10"
               >
                 Book Campaign Review
               </button>
@@ -1354,7 +1754,7 @@ function UtmLinkBuilderTool({ currentUser }: UtmProps) {
           </div>
           <button
             onClick={handleSave}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
           >
             <CheckCircle className="h-4 w-4" /> Save Link to Shared Database
           </button>
@@ -1530,7 +1930,7 @@ function ContentRepurposerTool() {
           <button
             onClick={handleRepurpose}
             disabled={loading}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -1951,7 +2351,7 @@ function CampaignBriefGeneratorTool() {
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {loading ? (
               <>

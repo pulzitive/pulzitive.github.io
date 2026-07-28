@@ -27,6 +27,24 @@ interface HomePageProps {
 
 const marketingServices = [
   {
+    title: "Brand Communication & Identity",
+    description: "Strategic brand positioning, corporate visual identity systems, brand voice matrices, and messaging frameworks engineered for market leadership.",
+    features: ["Visual Identity & Logo Guidelines", "Brand Voice & Positioning Matrix", "Brand Architecture & Equity Audits"],
+    iconName: "PenTool",
+    accent: "purple",
+    badge: "STRATEGY",
+    category: "Acquisition"
+  },
+  {
+    title: "Corporate Communication & PR",
+    description: "Executive media relations, stakeholder alignment, crisis response protocols, press releases, and global thought leadership syndication.",
+    features: ["Executive Media Kit & PR Pitching", "Crisis Communication Protocols", "Stakeholder & Investor Relations"],
+    iconName: "Megaphone",
+    accent: "indigo",
+    badge: "CORPORATE PR",
+    category: "Acquisition"
+  },
+  {
     title: "Lead Generation",
     description: "Multi-channel B2B & B2C customer capture designed to fill pipelines with validated, high-intent opportunities.",
     features: ["Automated Quiz Funnels", "Verified Contact Scraping", "Instant Lead Routing"],
@@ -91,7 +109,7 @@ const marketingServices = [
   },
   {
     title: "Affiliate Marketing",
-    description: "Referral ecosystem setups that incentivize external creators and publishers to sell your software and services.",
+    description: "Referral program setups that incentivize external creators and publishers to sell your software and services.",
     features: ["Affiliate Program Portals", "Commission Tiers Layout", "Conversion Tracking Audits"],
     iconName: "Award",
     accent: "blue",
@@ -217,7 +235,7 @@ const marketingServices = [
   },
   {
     title: "Shopify Management",
-    description: "Liquid theme adjustments, page enhancements, and app integrations to optimize your Shopify ecosystem.",
+    description: "Liquid theme adjustments, page enhancements, and app integrations to optimize your Shopify store setup.",
     features: ["Shopify App Configuration", "Product Matrix Setup", "Shopify Speed Tuning"],
     iconName: "Store",
     accent: "indigo",
@@ -550,7 +568,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     onClick={onOpenMergedModal || onOpenApptModal}
-                    className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 shadow-sm"
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 shadow-md"
                   >
                     <Calendar className="w-4 h-4" />
                     <span>Get Free Audit & Strategy Session</span>
@@ -632,7 +650,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
               <div className="pt-4">
                 <button
                   onClick={() => setShowMiniTools(true)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all shadow-md active:scale-95 hover:scale-[1.01]"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all shadow-md active:scale-95 hover:scale-[1.01]"
                 >
                   Test Tools
                 </button>
@@ -682,7 +700,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
           </div>
           <button
             onClick={() => onNavigate('portfolio')}
-            className="self-start md:self-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+            className="self-start md:self-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
           >
             <span>Explore Case Studies</span>
             <ChevronRight className="w-4 h-4 text-emerald-400" />
@@ -939,7 +957,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
             </button>
             <button
               onClick={() => onNavigate('academy')}
-              className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-800 font-bold px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all active:scale-95"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all active:scale-95 shadow-md"
             >
               Learn
             </button>

@@ -77,8 +77,8 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
 
   const initiatives = [
     {
-      title: "SAC Cares (Technical Aid)",
-      desc: "Our social program. We dedicate 5% of all Resource Vault revenue to provide micro-sponsorships and laptops to high-motivation tech students in underfunded regions.",
+      title: "Pulzitive Cares (Digital Aid)",
+      desc: "Our social program. We dedicate 5% of all course revenue to provide micro-sponsorships and laptops to high-motivation digital marketing students in underfunded regions.",
       icon: Heart,
       color: "text-rose-400 bg-rose-500/10"
     },
@@ -108,7 +108,7 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
           </span>
         </h1>
         <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
-          Join our ecosystem of certified students, professional mentors, and corporate sponsors. Collaborate, solve challenges, and win developer grants.
+          Join our network of certified students, professional mentors, and corporate sponsors. Collaborate, solve challenges, and win digital marketing grants.
         </p>
       </div>
 
@@ -148,61 +148,61 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
             ))}
           </div>
 
-          {/* Free Reception Cohorts to Persuade Premium Upsell */}
+          {/* Upcoming Free Webinars to Incentivize Premium Upsell */}
           <div className="bg-gradient-to-br from-indigo-950/25 via-slate-900/40 to-emerald-950/15 border border-slate-900 rounded-3xl p-6 space-y-6">
             <div className="space-y-1.5 text-left">
               <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] px-3 py-1 rounded-full uppercase tracking-wider font-mono font-bold">
-                🔥 Free Entry Pass
+                🔥 Free Webinars
               </div>
               <h3 className="text-sm sm:text-base font-black text-white">
-                Active & Upcoming Free Reception Cohorts
+                Upcoming Free Webinars
               </h3>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Register for these foundational sandbox cohorts completely free! Build block-coding logic, design basic games, or practice 3D graphics. Upgrade to our <span className="text-indigo-400 font-bold">Premium Specialized Curricula</span> later for professional certifications, 1-on-1 mentorship, and job board placement.
+                Join our free live masterclasses completely free! Gain essential digital marketing insights, interact with live mentors, and start your journey. All webinars are free to incentivize enrollment in our <span className="text-indigo-400 font-bold">Premium Live 4-Hour Compact Sessions</span> for advanced, high-density practical learning and career-ready certifications.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
                 {
-                  id: 'reception-tynker',
-                  title: 'Tynker Game-Based Coding',
-                  desc: 'A highly interactive platform that teaches kids to code through game design, modding Minecraft, and flying drones.',
-                  duration: 'Self-Paced',
+                  id: 'webinar-funnels',
+                  title: 'Mastering Conversion Funnels & Lead Capture',
+                  desc: 'Discover how to map user flows, design high-converting landing pages, and capture leads without wasting ad spend.',
+                  duration: 'Free Live Streaming',
                   points: '+100 XP',
-                  age: 'Ages 5-16'
+                  schedule: 'Every Wednesday • 5PM WAT'
                 },
                 {
-                  id: 'reception-swift',
-                  title: 'Apple Swift Playgrounds',
-                  desc: 'Interactive puzzle app/website that teaches real Swift code (used to build iOS apps) by guiding characters through 3D worlds.',
-                  duration: 'Self-Paced',
+                  id: 'webinar-seo',
+                  title: 'Introduction to Organic Search (SEO)',
+                  desc: 'Unveil Google’s modern ranking signals, conduct rapid competitor keyword audits, and set up your organic search foundation.',
+                  duration: 'Free Live Streaming',
                   points: '+150 XP',
-                  age: 'Ages 6+'
+                  schedule: 'Every Friday • 4PM WAT'
                 },
                 {
-                  id: 'reception-khan',
-                  title: 'Khan Academy Kids',
-                  desc: 'Uses playful animated characters and games to teach foundational logic, reading, and spatial critical thinking.',
-                  duration: 'Self-Paced',
+                  id: 'webinar-email',
+                  title: 'Email Deliverability & Deliverance Secrets',
+                  desc: 'Learn how to keep your automated newsletters out of the promotions/spam folders and drive massive click rates.',
+                  duration: 'Free Live Streaming',
                   points: '+80 XP',
-                  age: 'Ages 2-7'
+                  schedule: 'Bi-Weekly Monday • 6PM WAT'
                 },
                 {
-                  id: 'reception-codemonkey',
-                  title: 'CodeMonkey Coding Adventures',
-                  desc: 'Write actual CoffeeScript or Python code to catch bananas and solve computer science puzzles.',
-                  duration: 'Self-Paced',
+                  id: 'webinar-leads',
+                  title: 'Local Lead Generation for Small Businesses',
+                  desc: 'A complete step-by-step masterclass on getting your first 10 paying agency clients using zero-budget organic hacks.',
+                  duration: 'Free Live Streaming',
                   points: '+120 XP',
-                  age: 'Ages 5-14'
+                  schedule: 'Every Saturday • 12PM WAT'
                 },
                 {
-                  id: 'reception-codemoji',
-                  title: 'Codemoji Web Builder',
-                  desc: 'Uses fun, intuitive emojis to teach the foundational building blocks of HTML, CSS, and JS web development.',
-                  duration: 'Self-Paced',
+                  id: 'webinar-social',
+                  title: 'Running High-ROAS Social Campaigns',
+                  desc: 'Stop burning cash. Learn the exact audience-building and bid configurations that modern brands use to scale.',
+                  duration: 'Free Live Streaming',
                   points: '+110 XP',
-                  age: 'Ages 8-14'
+                  schedule: 'Monthly Special • 3PM WAT'
                 }
               ].map((rc) => (
                 <div 
@@ -212,7 +212,7 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase">
-                        RECEPTION • FREE
+                        WEBINAR • FREE
                       </span>
                       <span className="text-[10px] text-indigo-400 font-mono font-bold">{rc.points}</span>
                     </div>
@@ -224,12 +224,12 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
                   </div>
 
                   <div className="mt-5 pt-3.5 border-t border-slate-900/60 flex items-center justify-between gap-2">
-                    <span className="text-[9px] font-mono text-slate-500">{rc.age} • {rc.duration}</span>
+                    <span className="text-[9px] font-mono text-slate-500">{rc.schedule}</span>
                     <button
-                      onClick={() => onTriggerNotification?.(`Welcome to Pulzitive! To unlock your free "${rc.title}" Sandbox Cohort, please Sign In / Sign Up. Master this logic, then upgrade to our premium specialized courses!`)}
+                      onClick={() => onTriggerNotification?.(`Success! You have registered for the free live webinar "${rc.title}". You will receive a secure Google Meet stream link on your dashboard 15 minutes before we go live.`)}
                       className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[10px] transition-all cursor-pointer whitespace-nowrap active:scale-95"
                     >
-                      Register Free
+                      Register Free Webinar
                     </button>
                   </div>
                 </div>

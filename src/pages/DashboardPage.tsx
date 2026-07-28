@@ -8,9 +8,9 @@ import {
   Award, BookOpen, Calendar, HelpCircle, Users, Shield, Globe, 
   DollarSign, Sparkles, User, Brain, AlertCircle, ChevronRight, 
   Check, FileText, Send, Zap, Plus, LogIn, ExternalLink, RefreshCw,
-  Megaphone
+  Megaphone, Briefcase, MapPin, Star, SlidersHorizontal, ShieldCheck, CheckCircle2, Clock, Eye, MessageSquare
 } from 'lucide-react';
-import { UserProfile, UserRole, Course, Appointment, BrandAudit, ChatMessage, Enrollment, Announcement, MentorshipRequest } from '../types';
+import { UserProfile, UserRole, Course, Appointment, BrandAudit, ChatMessage, Enrollment, Announcement, MentorshipRequest, TalentInquiry, TalentGigOpportunity } from '../types';
 import { 
   getCourses, bookAppointment, getAppointments, saveBrandAudit, 
   getBrandAudits, requestSponsorship, getSponsorships, 
@@ -18,7 +18,8 @@ import {
   enrollInCourse, getStudentEnrollments, getAllEnrollments,
   completeLessonInDb, createAnnouncement, getAnnouncements,
   requestMentorship, getMentorshipRequests, updateMentorshipStatus,
-  inviteChild, getChildrenProgress, getAllUsers, updateUserRoleAndStatusInDb
+  inviteChild, getChildrenProgress, getAllUsers, updateUserRoleAndStatusInDb,
+  getTalentInquiries, getGigOpportunities, updateInquiryStatus
 } from '../firebase';
 import { motion } from 'motion/react';
 import { MiniTools } from '../components/MiniTools';
@@ -66,7 +67,7 @@ export default function DashboardPage({
       chatId: 'general',
       senderId: 'mentor',
       senderName: 'Dr. Sarah Carter',
-      text: "Hello! I am your assigned SAC Mentor. How can I guide you in your coding concepts today?",
+      text: "Hello! I am your assigned Pulzitive Mentor. How can I guide you in your digital marketing concepts today?",
       timestamp: new Date().toISOString()
     }
   ]);
@@ -128,6 +129,11 @@ export default function DashboardPage({
   const [annTitleInput, setAnnTitleInput] = useState('');
   const [annTextInput, setAnnTextInput] = useState('');
 
+  // Talent and Artisan Dashboard States
+  const [talentInquiries, setTalentInquiries] = useState<TalentInquiry[]>([]);
+  const [gigOpportunities, setGigOpportunities] = useState<TalentGigOpportunity[]>([]);
+  const [talentWorkspaceTab, setTalentWorkspaceTab] = useState<'artisan' | 'customer'>('artisan');
+
   // School Admin/Teacher user search and role/status edit inputs
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
@@ -145,6 +151,11 @@ export default function DashboardPage({
 
       const anns = await getAnnouncements();
       setAnnouncements(anns || []);
+
+      const inqs = await getTalentInquiries();
+      const gigs = await getGigOpportunities();
+      setTalentInquiries(inqs || []);
+      setGigOpportunities(gigs || []);
 
       if (currentUser) {
         if (currentUser.role === 'Student') {
@@ -577,7 +588,7 @@ Pulse on Data. Impact on Brand.
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shrink-0 transition-all ${
                         selectedEnrollment?.id === e.id
                           ? 'bg-white text-slate-950 border border-slate-200 shadow-sm'
-                          : 'bg-white/40 text-slate-600 border border-slate-200/50 hover:bg-white/60'
+                          : 'bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >
                       {e.courseTitle.split(' & ')[0]}
@@ -790,7 +801,7 @@ Pulse on Data. Impact on Brand.
             {/* My Projects */}
             <div className="pt-3 border-t border-slate-850/60 text-xs">
               <p className="font-bold text-slate-200">My Projects & Playgrounds</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Use the Sandboxes on the main Academy catalog to practice your HTML/CSS codes live!</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Use the Marketing Tools on the main Academy catalog to practice your campaign setup skills live!</p>
             </div>
           </div>
         </div>
@@ -826,395 +837,7 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* DIGITAL MARKETING LEARNER SIMULATORS GRID */}
-        <div className="space-y-6 pt-6 border-t border-slate-800">
-          <div className="space-y-1">
-            <h3 className="text-base font-black text-white flex items-center gap-2">
-              <Megaphone className="w-5 h-5 text-emerald-400" /> Digital Marketing Live Simulators
-            </h3>
-            <p className="text-xs text-slate-400">
-              Interactive playground dashboards designed specifically for digital marketing practitioners. Test live funnels, content schemas, and tracking setups.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* 1. CAMPAIGN ROI & ROAS CALCULATOR */}
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                  <DollarSign className="w-4 h-4 text-emerald-400" /> Funnel & ROAS Simulator
-                </h4>
-                <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
-                  Live Calculator
-                </span>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-left">
-                <div className="space-y-1">
-                  <div className="flex justify-between font-medium">
-                    <span className="text-slate-400">Monthly Ad Budget</span>
-                    <span className="text-emerald-400 font-bold">₦{adSpend.toLocaleString()}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={10000}
-                    max={2000000}
-                    step={10000}
-                    value={adSpend}
-                    onChange={(e) => setAdSpend(Number(e.target.value))}
-                    className="w-full accent-emerald-500 bg-slate-950 h-1.5 rounded-lg cursor-pointer"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Click-Through-Rate (CTR)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0.1"
-                        max="20"
-                        value={ctr}
-                        onChange={(e) => setCtr(Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono"
-                      />
-                      <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Conv. Rate</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0.1"
-                        max="50"
-                        value={convRate}
-                        onChange={(e) => setConvRate(Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono"
-                      />
-                      <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Average Order Value (AOV)</label>
-                  <div className="relative">
-                    <span className="absolute left-2.5 top-2.5 text-emerald-400 font-bold">₦</span>
-                    <input
-                      type="number"
-                      value={aov}
-                      onChange={(e) => setAov(Number(e.target.value))}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 pl-6 text-white font-mono"
-                    />
-                  </div>
-                </div>
-
-                {/* CALCULATED RESULTS DASHBOARD */}
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 grid grid-cols-2 gap-3.5 mt-2">
-                  <div>
-                    <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated Clicks</span>
-                    <span className="text-white font-black text-sm">
-                      {Math.round(adSpend / 150).toLocaleString()} <span className="text-[9px] text-slate-400 font-normal">(@ ₦150 CPC)</span>
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block uppercase font-mono text-[8px]">Conversions</span>
-                    <span className="text-white font-black text-sm">
-                      {Math.round((adSpend / 150) * (convRate / 100)).toLocaleString()}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block uppercase font-mono text-[8px]">CPA (Cost per Sale)</span>
-                    <span className="text-indigo-400 font-black text-sm">
-                      ₦{Math.round(adSpend / Math.max(1, (adSpend / 150) * (convRate / 100))).toLocaleString()}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated ROAS</span>
-                    <span className={`font-black text-sm ${((((adSpend / 150) * (convRate / 100)) * aov) / adSpend) >= 1 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {((((adSpend / 150) * (convRate / 100)) * aov) / adSpend).toFixed(2)}x
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. AI AD COPY GENERATOR */}
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                    <Sparkles className="w-4 h-4 text-indigo-400" /> AI Ad Copy Architect
-                  </h4>
-                  <span className="text-[9px] font-mono font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded">
-                    Generator
-                  </span>
-                </div>
-
-                <div className="space-y-3 text-xs text-left">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Industry</label>
-                      <select
-                        value={marketingIndustry}
-                        onChange={(e) => setMarketingIndustry(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"
-                      >
-                        <option value="E-commerce">E-commerce / Retail</option>
-                        <option value="B2B SaaS">B2B Software / SaaS</option>
-                        <option value="Local Business">Local Service Agency</option>
-                        <option value="Real Estate">Real Estate</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Ad Copy Tone</label>
-                      <select
-                        value={marketingTone}
-                        onChange={(e) => setMarketingTone(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"
-                      >
-                        <option value="Persuasive">Persuasive / Direct</option>
-                        <option value="Curious">Curious / Open-loop</option>
-                        <option value="Urgent">FOMO / High Urgency</option>
-                        <option value="Professional">Professional / Benefit</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Value Proposition / Main Offer</label>
-                    <input
-                      type="text"
-                      value={marketingProposition}
-                      onChange={(e) => setMarketingProposition(e.target.value)}
-                      placeholder="e.g. Handmade corporate luxury leather shoes with fast delivery"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white"
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      let hl1 = '';
-                      let hl2 = '';
-                      let hl3 = '';
-                      let desc = '';
-
-                      if (marketingIndustry === 'E-commerce') {
-                        hl1 = `${marketingProposition.slice(0, 25)}`;
-                        hl2 = 'Premium Custom Fit | Shop Now';
-                        hl3 = 'Free Shipping Nationwide';
-                        desc = `Get your high-quality ${marketingProposition.toLowerCase()} delivered fast. Browse our collections today and claim a 15% discount on checkout.`;
-                      } else if (marketingIndustry === 'B2B SaaS') {
-                        hl1 = 'Optimize Business Workflows';
-                        hl2 = 'Enterprise Cloud Analytics';
-                        hl3 = 'Request Free Live Demo';
-                        desc = `Empower your distributed teams with advanced analytics. Secure, fast, and scalable integration designed to accelerate brand growth and intelligence.`;
-                      } else if (marketingIndustry === 'Local Business') {
-                        hl1 = 'Premium Local Services';
-                        hl2 = 'Trusted Expert Craft';
-                        hl3 = 'Call For Free Booking';
-                        desc = `Looking for trusted experts nearby? We provide high-quality services tailored to your budget. Contact us today for reliable and certified specialists!`;
-                      } else {
-                        hl1 = 'Exclusive Premium Estates';
-                        hl2 = 'Luxurious Modern Living';
-                        hl3 = 'Schedule Elite Private Tour';
-                        desc = `Invest in prime locations with high resale value. Discover beautiful contemporary designs, secure neighborhoods, and modern premium smart features.`;
-                      }
-
-                      setGeneratedHeadlines([hl1 || 'Premium Selection', hl2, hl3]);
-                      setGeneratedDescription(desc);
-                      onTriggerNotification('High-converting ad copy generated successfully.');
-                    }}
-                    className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 py-2 rounded-xl font-bold transition-all hover:scale-[1.01]"
-                  >
-                    Assemble Optimized Copy Structure
-                  </button>
-                </div>
-              </div>
-
-              {/* GENERATED PREVIEW CONTAINER */}
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-3 text-left">
-                <span className="text-[8px] font-mono text-slate-500 uppercase block">Meta Ads Manager Mock Sandbox</span>
-                <div className="space-y-1">
-                  <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
-                    <span>Generated Headlines</span>
-                    <span className="text-[8px] text-indigo-400 font-normal">Max 30 Chars</span>
-                  </div>
-                  {generatedHeadlines.map((h, i) => (
-                    <div key={i} className="bg-slate-900 border border-slate-850 p-1.5 rounded text-[10px] font-mono text-white flex justify-between">
-                      <span>{h}</span>
-                      <span className={`text-[8px] font-mono ${h.length <= 30 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                        {h.length}/30
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-1 pt-1">
-                  <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
-                    <span>Primary Description Copy</span>
-                    <span className="text-[8px] text-indigo-400 font-normal">Targeting 90 Chars</span>
-                  </div>
-                  <p className="text-[11px] font-sans text-slate-300 leading-relaxed bg-slate-900 border border-slate-850 p-2 rounded">
-                    {generatedDescription}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. SEO TITLE & META DESCRIPTION AUDITOR */}
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                  <Globe className="w-4 h-4 text-teal-400" /> SEO Content Auditor
-                </h4>
-                <span className="text-[9px] font-mono font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded">
-                  Index Check
-                </span>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-left">
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">SEO Page Title Tag</label>
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-                      seoTitle.length >= 50 && seoTitle.length <= 60 
-                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
-                        : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
-                    }`}>
-                      {seoTitle.length} Chars ({seoTitle.length >= 50 && seoTitle.length <= 60 ? 'Optimal' : 'Needs Adjusting'})
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    value={seoTitle}
-                    onChange={(e) => setSeoTitle(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono text-xs"
-                  />
-                  <p className="text-[9px] text-slate-500">Google recommendation: keep titles between 50 and 60 characters to avoid truncation.</p>
-                </div>
-
-                <div className="space-y-1">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Meta Description Tag</label>
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-                      seoDesc.length >= 145 && seoDesc.length <= 160 
-                        ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
-                        : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
-                    }`}>
-                      {seoDesc.length} Chars ({seoDesc.length >= 145 && seoDesc.length <= 160 ? 'Optimal' : 'Needs Adjusting'})
-                    </span>
-                  </div>
-                  <textarea
-                    rows={2}
-                    value={seoDesc}
-                    onChange={(e) => setSeoDesc(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono text-xs"
-                  />
-                  <p className="text-[9px] text-slate-500">Keep description tags between 145 and 160 characters for maximum search engine CTR.</p>
-                </div>
-
-                {/* VISUAL SEARCH ENGINE SERP PREVIEW */}
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-1">
-                  <span className="text-[8px] font-mono text-slate-500 uppercase block">Google Desktop Search Snippet Preview</span>
-                  <p className="text-xs text-[#1a0dab] font-sans hover:underline cursor-pointer truncate">
-                    {seoTitle || 'Insert Page Title'}
-                  </p>
-                  <p className="text-[10px] text-[#006621] font-sans flex items-center gap-1">
-                    https://pulzitive.com <span className="text-[8px] text-[#006621]">▼</span>
-                  </p>
-                  <p className="text-[11px] text-[#545454] font-sans leading-relaxed">
-                    {seoDesc.slice(0, 160) || 'Insert Meta description...'}
-                    {seoDesc.length > 160 && '...'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 4. UTM CAMPAIGN LINK BUILDER */}
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                    <FileText className="w-4 h-4 text-emerald-400" /> UTM Link Builder
-                  </h4>
-                  <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
-                    Analytics
-                  </span>
-                </div>
-
-                <div className="space-y-3 text-xs text-left">
-                  <div className="space-y-1">
-                    <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Destination website URL</label>
-                    <input
-                      type="text"
-                      value={utmUrl}
-                      onChange={(e) => setUtmUrl(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white font-mono text-xs"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="space-y-1">
-                      <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Source</label>
-                      <input
-                        type="text"
-                        value={utmSource}
-                        onChange={(e) => setUtmSource(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white font-mono text-[11px]"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Medium</label>
-                      <input
-                        type="text"
-                        value={utmMedium}
-                        onChange={(e) => setUtmMedium(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white font-mono text-[11px]"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Campaign Name</label>
-                      <input
-                        type="text"
-                        value={utmCampaign}
-                        onChange={(e) => setUtmCampaign(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded-lg p-1.5 text-white font-mono text-[11px]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* UTM BUILD OUTPUT */}
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-4 text-left">
-                <span className="text-[8px] font-mono text-slate-500 uppercase block">Compiled Tracking URL Link</span>
-                <div className="bg-slate-900 border border-slate-850 p-2 rounded text-[10px] font-mono text-slate-300 select-all break-all leading-normal">
-                  {utmUrl}?utm_source={utmSource}&utm_medium={utmMedium}&utm_campaign={utmCampaign}
-                </div>
-                <button
-                  onClick={() => {
-                    const fullUtm = `${utmUrl}?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}`;
-                    navigator.clipboard.writeText(fullUtm);
-                    setIsCopiedUtm(true);
-                    onTriggerNotification('UTM campaign tracking link copied to clipboard!');
-                    setTimeout(() => setIsCopiedUtm(false), 2000);
-                  }}
-                  className="w-full bg-white hover:bg-slate-50 text-slate-950 py-1.5 rounded-lg font-bold text-xs cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-[0.98]"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  {isCopiedUtm ? 'Copied to Clipboard!' : 'Copy Tracking Link'}
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        {renderDigitalMarketingSimulators()}
 
       </div>
     );
@@ -1770,7 +1393,7 @@ Pulse on Data. Impact on Brand.
                 <div>
                   <p className="font-bold text-slate-200">{req.studentName}</p>
                   <p className="text-[9px] text-slate-500">{req.studentEmail}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Requested mentorship link in Ecosystem coursework.</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Requested mentorship link in Academy coursework.</p>
                 </div>
                 <button
                   onClick={() => handleApproveMentorshipRequest(req.id)}
@@ -1835,6 +1458,703 @@ Pulse on Data. Impact on Brand.
         )}
       </div>
 
+    </div>
+  );
+
+  // REUSABLE DIGITAL MARKETING SIMULATORS
+  const renderDigitalMarketingSimulators = () => (
+    <div className="space-y-6 pt-6 border-t border-slate-800">
+      <div className="space-y-1 text-left">
+        <h3 className="text-base font-black text-white flex items-center gap-2">
+          <Megaphone className="w-5 h-5 text-emerald-400" /> Digital Marketing Live Simulators
+        </h3>
+        <p className="text-xs text-slate-400">
+          Interactive performance tools and playground dashboards. Test live funnels, content schemas, SEO title tags, and UTM tracking setups.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* 1. CAMPAIGN ROI & ROAS CALCULATOR */}
+        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
+              <DollarSign className="w-4 h-4 text-emerald-400" /> Funnel & ROAS Simulator
+            </h4>
+            <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
+              Live Calculator
+            </span>
+          </div>
+
+          <div className="space-y-3.5 text-xs text-left">
+            <div className="space-y-1">
+              <div className="flex justify-between font-medium">
+                <span className="text-slate-400">Monthly Ad Budget</span>
+                <span className="text-emerald-400 font-bold">₦{adSpend.toLocaleString()}</span>
+              </div>
+              <input
+                type="range"
+                min={10000}
+                max={2000000}
+                step={10000}
+                value={adSpend}
+                onChange={(e) => setAdSpend(Number(e.target.value))}
+                className="w-full accent-emerald-500 bg-slate-950 h-1.5 rounded-lg cursor-pointer"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Click-Through-Rate (CTR)</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    max="20"
+                    value={ctr}
+                    onChange={(e) => setCtr(Number(e.target.value))}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-1 focus:ring-emerald-400 focus:outline-none"
+                  />
+                  <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Conv. Rate</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    max="50"
+                    value={convRate}
+                    onChange={(e) => setConvRate(Number(e.target.value))}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-1 focus:ring-emerald-400 focus:outline-none"
+                  />
+                  <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Average Order Value (AOV)</label>
+              <div className="relative">
+                <span className="absolute left-2.5 top-2.5 text-emerald-400 font-bold">₦</span>
+                <input
+                  type="number"
+                  value={aov}
+                  onChange={(e) => setAov(Number(e.target.value))}
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2 pl-6 text-slate-900 font-mono font-bold focus:ring-1 focus:ring-emerald-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* CALCULATED RESULTS DASHBOARD */}
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 grid grid-cols-2 gap-3.5 mt-2">
+              <div>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated Clicks</span>
+                <span className="text-white font-black text-sm">
+                  {Math.round(adSpend / 150).toLocaleString()} <span className="text-[9px] text-slate-400 font-normal">(@ ₦150 CPC)</span>
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">Conversions</span>
+                <span className="text-white font-black text-sm">
+                  {Math.round((adSpend / 150) * (convRate / 100)).toLocaleString()}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">CPA (Cost per Sale)</span>
+                <span className="text-indigo-400 font-black text-sm">
+                  ₦{Math.round(adSpend / Math.max(1, (adSpend / 150) * (convRate / 100))).toLocaleString()}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated ROAS</span>
+                <span className={`font-black text-sm ${((((adSpend / 150) * (convRate / 100)) * aov) / adSpend) >= 1 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {((((adSpend / 150) * (convRate / 100)) * aov) / adSpend).toFixed(2)}x
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. AI AD COPY GENERATOR */}
+        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                <Sparkles className="w-4 h-4 text-indigo-400" /> AI Ad Copy Architect
+              </h4>
+              <span className="text-[9px] font-mono font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded">
+                Generator
+              </span>
+            </div>
+
+            <div className="space-y-3 text-xs text-left">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Industry</label>
+                  <select
+                    value={marketingIndustry}
+                    onChange={(e) => setMarketingIndustry(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                  >
+                    <option value="E-commerce">E-commerce / Retail</option>
+                    <option value="B2B SaaS">B2B Software / SaaS</option>
+                    <option value="Local Business">Local Service Agency</option>
+                    <option value="Real Estate">Real Estate</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Ad Copy Tone</label>
+                  <select
+                    value={marketingTone}
+                    onChange={(e) => setMarketingTone(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                  >
+                    <option value="Persuasive">Persuasive / Direct</option>
+                    <option value="Curious">Curious / Open-loop</option>
+                    <option value="Urgent">FOMO / High Urgency</option>
+                    <option value="Professional">Professional / Benefit</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Value Proposition / Main Offer</label>
+                <input
+                  type="text"
+                  value={marketingProposition}
+                  onChange={(e) => setMarketingProposition(e.target.value)}
+                  placeholder="e.g. Handmade corporate luxury leather shoes with fast delivery"
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-medium placeholder-slate-400 focus:ring-1 focus:ring-emerald-400 focus:outline-none"
+                />
+              </div>
+
+              <button
+                onClick={() => {
+                  let hl1 = '';
+                  let hl2 = '';
+                  let hl3 = '';
+                  let desc = '';
+
+                  if (marketingIndustry === 'E-commerce') {
+                    hl1 = `${marketingProposition.slice(0, 25)}`;
+                    hl2 = 'Premium Custom Fit | Shop Now';
+                    hl3 = 'Free Shipping Nationwide';
+                    desc = `Get your high-quality ${marketingProposition.toLowerCase()} delivered fast. Browse our collections today and claim a 15% discount on checkout.`;
+                  } else if (marketingIndustry === 'B2B SaaS') {
+                    hl1 = 'Optimize Business Workflows';
+                    hl2 = 'Enterprise Cloud Analytics';
+                    hl3 = 'Request Free Live Demo';
+                    desc = `Empower your distributed teams with advanced analytics. Secure, fast, and scalable integration designed to accelerate brand growth and intelligence.`;
+                  } else if (marketingIndustry === 'Local Business') {
+                    hl1 = 'Premium Local Services';
+                    hl2 = 'Trusted Expert Craft';
+                    hl3 = 'Call For Free Booking';
+                    desc = `Looking for trusted experts nearby? We provide high-quality services tailored to your budget. Contact us today for reliable and certified specialists!`;
+                  } else {
+                    hl1 = 'Exclusive Premium Estates';
+                    hl2 = 'Luxurious Modern Living';
+                    hl3 = 'Schedule Elite Private Tour';
+                    desc = `Invest in prime locations with high resale value. Discover beautiful contemporary designs, secure neighborhoods, and modern premium smart features.`;
+                  }
+
+                  setGeneratedHeadlines([hl1 || 'Premium Selection', hl2, hl3]);
+                  setGeneratedDescription(desc);
+                  onTriggerNotification('High-converting ad copy generated successfully.');
+                }}
+                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 py-2 rounded-xl font-bold transition-all hover:scale-[1.01]"
+              >
+                Assemble Optimized Copy Structure
+              </button>
+            </div>
+          </div>
+
+          {/* GENERATED PREVIEW CONTAINER */}
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-3 text-left">
+            <span className="text-[8px] font-mono text-slate-500 uppercase block">Meta Ads Manager Mock Simulator</span>
+            <div className="space-y-1">
+              <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
+                <span>Generated Headlines</span>
+                <span className="text-[8px] text-indigo-400 font-normal">Max 30 Chars</span>
+              </div>
+              {generatedHeadlines.map((h, i) => (
+                <div key={i} className="bg-slate-900 border border-slate-850 p-1.5 rounded text-[10px] font-mono text-white flex justify-between">
+                  <span>{h}</span>
+                  <span className={`text-[8px] font-mono ${h.length <= 30 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {h.length}/30
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-1 pt-1">
+              <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
+                <span>Primary Description Copy</span>
+                <span className="text-[8px] text-indigo-400 font-normal">Targeting 90 Chars</span>
+              </div>
+              <p className="text-[11px] font-sans text-slate-300 leading-relaxed bg-slate-900 border border-slate-850 p-2 rounded">
+                {generatedDescription}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. SEO TITLE & META DESCRIPTION AUDITOR */}
+        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
+              <Globe className="w-4 h-4 text-teal-400" /> SEO Content Auditor
+            </h4>
+            <span className="text-[9px] font-mono font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded">
+              Index Check
+            </span>
+          </div>
+
+          <div className="space-y-3.5 text-xs text-left">
+            <div className="space-y-1">
+              <div className="flex justify-between items-center">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">SEO Page Title Tag</label>
+                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                  seoTitle.length >= 50 && seoTitle.length <= 60 
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
+                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                }`}>
+                  {seoTitle.length} Chars ({seoTitle.length >= 50 && seoTitle.length <= 60 ? 'Optimal' : 'Needs Adjusting'})
+                </span>
+              </div>
+              <input
+                type="text"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono text-xs focus:ring-1 focus:ring-emerald-400 focus:outline-none font-bold"
+              />
+              <p className="text-[9px] text-slate-500">Google recommendation: keep titles between 50 and 60 characters to avoid truncation.</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between items-center">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Meta Description Tag</label>
+                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                  seoDesc.length >= 145 && seoDesc.length <= 160 
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
+                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                }`}>
+                  {seoDesc.length} Chars ({seoDesc.length >= 145 && seoDesc.length <= 160 ? 'Optimal' : 'Needs Adjusting'})
+                </span>
+              </div>
+              <textarea
+                rows={2}
+                value={seoDesc}
+                onChange={(e) => setSeoDesc(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono text-xs focus:ring-1 focus:ring-emerald-400 focus:outline-none font-medium"
+              />
+              <p className="text-[9px] text-slate-500">Keep description tags between 145 and 160 characters for maximum search engine CTR.</p>
+            </div>
+
+            {/* VISUAL SEARCH ENGINE SERP PREVIEW */}
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-1">
+              <span className="text-[8px] font-mono text-slate-500 uppercase block">Google Desktop Search Snippet Preview</span>
+              <p className="text-xs text-[#1a0dab] font-sans hover:underline cursor-pointer truncate">
+                {seoTitle || 'Insert Page Title'}
+              </p>
+              <p className="text-[10px] text-[#006621] font-sans flex items-center gap-1">
+                https://pulzitive.com <span className="text-[8px] text-[#006621]">▼</span>
+              </p>
+              <p className="text-[11px] text-[#545454] font-sans leading-relaxed">
+                {seoDesc.slice(0, 160) || 'Insert Meta description...'}
+                {seoDesc.length > 160 && '...'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. UTM CAMPAIGN LINK BUILDER */}
+        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+          <div className="space-y-3.5">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                <FileText className="w-4 h-4 text-emerald-400" /> UTM Link Builder
+              </h4>
+              <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
+                Analytics
+              </span>
+            </div>
+
+            <div className="space-y-3 text-xs text-left">
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Destination website URL</label>
+                <input
+                  type="text"
+                  value={utmUrl}
+                  onChange={(e) => setUtmUrl(e.target.value)}
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono text-xs focus:ring-1 focus:ring-emerald-400 focus:outline-none font-medium"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div className="space-y-1">
+                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Source</label>
+                  <input
+                    type="text"
+                    value={utmSource}
+                    onChange={(e) => setUtmSource(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-1.5 text-slate-900 font-mono text-[11px] focus:ring-1 focus:ring-emerald-400 focus:outline-none font-semibold"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Medium</label>
+                  <input
+                    type="text"
+                    value={utmMedium}
+                    onChange={(e) => setUtmMedium(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-1.5 text-slate-900 font-mono text-[11px] focus:ring-1 focus:ring-emerald-400 focus:outline-none font-semibold"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Campaign Name</label>
+                  <input
+                    type="text"
+                    value={utmCampaign}
+                    onChange={(e) => setUtmCampaign(e.target.value)}
+                    className="w-full bg-white border border-slate-300 rounded-lg p-1.5 text-slate-900 font-mono text-[11px] focus:ring-1 focus:ring-emerald-400 focus:outline-none font-semibold"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* UTM BUILD OUTPUT */}
+          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-4 text-left">
+            <span className="text-[8px] font-mono text-slate-500 uppercase block">Compiled Tracking URL Link</span>
+            <div className="bg-slate-900 border border-slate-850 p-2 rounded text-[10px] font-mono text-slate-300 select-all break-all leading-normal">
+              {utmUrl}?utm_source={utmSource}&utm_medium={utmMedium}&utm_campaign={utmCampaign}
+            </div>
+            <button
+              onClick={() => {
+                const fullUtm = `${utmUrl}?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}`;
+                navigator.clipboard.writeText(fullUtm);
+                setIsCopiedUtm(true);
+                onTriggerNotification('UTM campaign tracking link copied to clipboard!');
+                setTimeout(() => setIsCopiedUtm(false), 2000);
+              }}
+              className="w-full bg-white hover:bg-slate-50 text-slate-950 py-1.5 rounded-lg font-bold text-xs cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-[0.98]"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              {isCopiedUtm ? 'Copied to Clipboard!' : 'Copy Tracking Link'}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+
+  // TALENT / ARTISAN WORKSPACE
+  const renderTalentWorkspace = () => (
+    <div className="space-y-8">
+      
+      {/* Workspace Switcher Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-slate-200 p-3 rounded-2xl shadow-sm">
+        <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
+          <button
+            onClick={() => setTalentWorkspaceTab('artisan')}
+            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
+              talentWorkspaceTab === 'artisan'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Briefcase className="w-4 h-4" />
+            <span>🛠️ Artisan / Talent Workspace</span>
+          </button>
+          <button
+            onClick={() => setTalentWorkspaceTab('customer')}
+            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
+              talentWorkspaceTab === 'customer'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            <span>👤 Customer / Employer Workspace</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-xl text-[10px] text-emerald-700 font-mono font-bold">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Firestore Live Data In-Sync</span>
+        </div>
+      </div>
+
+      {talentWorkspaceTab === 'artisan' ? (
+        <div className="space-y-8">
+          {/* Artisan Header Banner */}
+          <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Artisan & Trade Talent Portal</span>
+                </div>
+                <h2 className="text-2xl font-black text-white">
+                  {currentUser.displayName || 'Master Artisan Profile'}
+                </h2>
+                <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                  Verified Local Trade Expert • Email: <span className="text-emerald-300 font-semibold">{currentUser.email}</span>
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <button
+                  onClick={() => onNavigate('talents')}
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+                >
+                  <Briefcase className="w-4 h-4 text-white" />
+                  <span>Open Artisan Directory & Gigs</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+              <div className="flex items-center justify-between text-slate-500">
+                <span className="text-[11px] font-mono uppercase font-bold">Profile Visibility Score</span>
+                <Award className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-slate-900">95%</span>
+                <span className="text-[10px] text-emerald-600 font-bold">+18% top rank</span>
+              </div>
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2">
+                <div className="bg-emerald-500 h-full w-[95%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+              <div className="flex items-center justify-between text-slate-500">
+                <span className="text-[11px] font-mono uppercase font-bold">Local Search Views</span>
+                <Eye className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-slate-900">340+</span>
+                <span className="text-[10px] text-blue-600 font-bold">Lagos & Nigeria</span>
+              </div>
+              <p className="text-[10px] text-slate-500">Verified Badge: Active</p>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+              <div className="flex items-center justify-between text-slate-500">
+                <span className="text-[11px] font-mono uppercase font-bold">Client Inquiries</span>
+                <MessageSquare className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-slate-900">{talentInquiries.length}</span>
+                <span className="text-[10px] text-amber-600 font-bold">Live Synced</span>
+              </div>
+              <p className="text-[10px] text-slate-500">Avg Response: &lt; 15 mins</p>
+            </div>
+
+            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+              <div className="flex items-center justify-between text-slate-500">
+                <span className="text-[11px] font-mono uppercase font-bold">Active Opportunities</span>
+                <Briefcase className="w-4 h-4 text-indigo-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-slate-900">{gigOpportunities.length}</span>
+                <span className="text-[10px] text-emerald-600 font-bold">Local Gigs Feed</span>
+              </div>
+              <p className="text-[10px] text-slate-500">Local Trade Marketplace</p>
+            </div>
+          </div>
+
+          {/* Client Inquiries & Hires Section */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-emerald-600" />
+                  Client Inquiries & Direct Job Requests
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Real-time incoming job offers and inquiries sent by local employers and clients.
+                </p>
+              </div>
+              <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full self-start sm:self-auto">
+                {talentInquiries.length} Inquiries Received
+              </span>
+            </div>
+
+            {talentInquiries.length === 0 ? (
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center space-y-3">
+                <MessageSquare className="w-8 h-8 text-slate-400 mx-auto" />
+                <p className="text-xs text-slate-600 font-medium">No direct inquiries received yet.</p>
+                <p className="text-[11px] text-slate-400">
+                  Make sure your profile is listed in the Artisan Directory to start receiving direct job offers!
+                </p>
+                <button
+                  onClick={() => onNavigate('talents')}
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all inline-flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4 text-white" /> Browse & Pitch on Opportunities
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {talentInquiries.map((inquiry) => (
+                  <div key={inquiry.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
+                          {inquiry.status || 'Pending'}
+                        </span>
+                        <h4 className="text-sm font-black text-slate-900 mt-1">{inquiry.projectTitle}</h4>
+                        <p className="text-xs text-slate-500 font-medium">From: {inquiry.clientName} ({inquiry.clientEmail})</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-sm font-black text-emerald-600 block">${inquiry.offeredBudgetUsd}</span>
+                        <span className="text-[10px] text-slate-400 block">~₦{inquiry.offeredBudgetNgn?.toLocaleString()} NGN</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
+                      "{inquiry.message}"
+                    </p>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                      {/* Location Badge with WHITE background */}
+                      <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
+                        <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                        {inquiry.location}
+                      </span>
+
+                      <div className="flex items-center gap-2">
+                        {inquiry.status !== 'Accepted' && (
+                          <button
+                            onClick={async () => {
+                              await updateInquiryStatus(inquiry.id, 'Accepted');
+                              const updated = await getTalentInquiries();
+                              setTalentInquiries(updated);
+                              onTriggerNotification('Inquiry accepted! Project contract activated.');
+                            }}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
+                          >
+                            Accept Job
+                          </button>
+                        )}
+                        <button
+                          onClick={() => onTriggerNotification(`Direct message thread opened with ${inquiry.clientName}.`)}
+                          className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
+                        >
+                          Reply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Local Service Opportunities Feed */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-blue-600" />
+                  Live Local Service Opportunities
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Jobs posted by customers seeking verified mechanics, panel beaters, electricians, and artisans.
+                </p>
+              </div>
+              <button
+                onClick={() => onNavigate('talents')}
+                className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <span>View All Marketplace Gigs</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {gigOpportunities.slice(0, 4).map((gig) => (
+                <div key={gig.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
+                        {gig.category}
+                      </span>
+                      <h4 className="text-sm font-black text-slate-900 mt-1">{gig.title}</h4>
+                      <p className="text-xs text-slate-500">Posted by {gig.clientName}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="text-sm font-black text-emerald-600 block">${gig.budgetUsd}</span>
+                      <span className="text-[10px] text-slate-400 block">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
+                    {gig.description}
+                  </p>
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                    {/* Location Badge with WHITE background */}
+                    <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
+                      <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{gig.location}</span>
+                    </span>
+
+                    <button
+                      onClick={() => onNavigate('talents')}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs flex items-center gap-1"
+                    >
+                      <Send className="w-3.5 h-3.5 text-white" />
+                      <span>Pitch Proposal</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Statements & Earnings Download */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-indigo-600" />
+              Artisan Financial Statements & Invoices
+            </h3>
+            <p className="text-xs text-slate-500">
+              Generate official PDF statements for completed trade contracts, verified client payments, and tax records.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                onClick={() => {
+                  window.print();
+                  onTriggerNotification('PDF Financial Statement generated for your record.');
+                }}
+                className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shadow-sm transition-all flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4 text-white" />
+                <span>Print / Download PDF Financial Statement</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Mini Tools Integration */}
+          <div className="pt-4 border-t border-slate-200">
+            <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
+          </div>
+        </div>
+      ) : (
+        renderClientWorkspace()
+      )}
     </div>
   );
 
@@ -1935,6 +2255,9 @@ Pulse on Data. Impact on Brand.
         </div>
       )}
 
+      {/* Digital Marketing Simulators for Client Workspace */}
+      {renderDigitalMarketingSimulators()}
+
       {/* Mini-Tools Workspace Section */}
       <div className="mt-8 pt-6 border-t border-slate-800">
         <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
@@ -2031,7 +2354,7 @@ Pulse on Data. Impact on Brand.
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-900 pb-6">
           <div>
             <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-400 bg-slate-900 border border-emerald-500/10 px-2.5 py-1 rounded">
-              SAC SECURE PORTAL • {currentUser.role} ROLE
+              PULZITIVE SECURE PORTAL • {currentUser.role} ROLE
             </span>
             <h1 className="text-2xl sm:text-3xl font-black text-white mt-3 flex items-center gap-2">
               Welcome, {currentUser.displayName || 'Distinguished Guest'}
@@ -2056,8 +2379,21 @@ Pulse on Data. Impact on Brand.
             currentUser.role === 'School Admin' || 
             currentUser.role === 'Mentor' || 
             currentUser.role === 'Sponsor') && renderStudentWorkspace()}
+          {(currentUser.role === 'Talent' || currentUser.role === 'Artisan') && renderTalentWorkspace()}
           {currentUser.role === 'Client' && renderClientWorkspace()}
           {currentUser.role === 'Admin' && renderAdminWorkspace()}
+          {/* Fallback for unlisted roles */}
+          {currentUser.role !== 'Student' &&
+           currentUser.role !== 'Parent' &&
+           currentUser.role !== 'Teacher' &&
+           currentUser.role !== 'School Admin' &&
+           currentUser.role !== 'Mentor' &&
+           currentUser.role !== 'Sponsor' &&
+           currentUser.role !== 'Talent' &&
+           currentUser.role !== 'Artisan' &&
+           currentUser.role !== 'Client' &&
+           currentUser.role !== 'Admin' &&
+           renderTalentWorkspace()}
         </div>
 
       </div>

@@ -19,14 +19,14 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
 
   const academyPlans = [
     {
-      name: "Free Sandbox Verification",
+      name: "Free Portal Verification",
       price: 50,
       period: "once",
       desc: "Refundable card test authorization for immediate student portal profile completion.",
       features: [
         "Instant Student Role validation",
         "100 XP Welcome Points",
-        "Access to AI Tech Tutor Widget",
+        "Access to AI Marketing Tutor Widget",
         "Public PR & News logs"
       ],
       popular: false,
@@ -226,14 +226,19 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
               <p className="text-[11px] text-slate-400 leading-relaxed text-left min-h-12">{plan.desc}</p>
 
               {/* Price Tagging */}
-              <div className="py-2.5 border-y border-slate-800/60 text-left">
-                <p className="text-2xl font-black text-white flex items-baseline gap-1">
-                  ₦{(plan.price || plan.actualPrice || 0).toLocaleString()}
+              <div className="py-2.5 border-y border-slate-800/60 text-left space-y-1">
+                <p className="text-2xl font-black text-white flex items-baseline gap-1.5">
+                  <span>₦{(plan.price || plan.actualPrice || 0).toLocaleString()}</span>
+                  <span className="text-xs font-semibold text-emerald-400">
+                    (~${Math.round((plan.price || plan.actualPrice || 0) / 600)} USD)
+                  </span>
                   <span className="text-xs font-normal text-slate-400">/{plan.period}</span>
                 </p>
                 {plan.physicalPrice && (
-                  <p className="text-xs font-semibold text-emerald-400/80 mt-1">
-                    Physical Labs: ₦{(plan.physicalPrice || 0).toLocaleString()} <span className="text-[9px] font-normal text-slate-400">/{plan.period}</span>
+                  <p className="text-xs font-semibold text-emerald-400/90 mt-1 flex items-center gap-1.5">
+                    <span>Physical Labs: ₦{(plan.physicalPrice || 0).toLocaleString()}</span>
+                    <span className="text-emerald-300 font-mono text-[10px]">(~${Math.round(plan.physicalPrice / 600)} USD)</span>
+                    <span className="text-[9px] font-normal text-slate-400">/{plan.period}</span>
                   </p>
                 )}
               </div>

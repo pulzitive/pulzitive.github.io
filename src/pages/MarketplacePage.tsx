@@ -20,6 +20,33 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
 
   const products: Product[] = [
     {
+      id: 'prod-brand-kit',
+      title: 'Brand Identity & Positioning Playbook',
+      description: 'The executive blueprint for crafting brand equity, logo usage guidelines, visual identity, and brand voice frameworks.',
+      price: 9500,
+      category: 'E-Books',
+      rating: 5.0,
+      downloads: 1850
+    },
+    {
+      id: 'prod-corp-comm',
+      title: 'Corporate Communications & Crisis PR Blueprint',
+      description: 'Executive handbook containing crisis management protocols, media response templates, internal comms, and stakeholder alignment checklists.',
+      price: 12500,
+      category: 'E-Books',
+      rating: 4.9,
+      downloads: 1410
+    },
+    {
+      id: 'prod-pr-kit',
+      title: 'Executive PR & Media Syndication Kit',
+      description: 'Press release distribution templates, media relations pitch guides, executive bio formats, and reporter outreach databases.',
+      price: 11000,
+      category: 'E-Books',
+      rating: 4.9,
+      downloads: 980
+    },
+    {
       id: 'prod-1',
       title: 'Full-Stack Developer Starter Kit',
       description: 'The definitive guidelines & boilerplate configurations for structuring Vite, React, and Node servers.',
@@ -39,8 +66,8 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
     },
     {
       id: 'prod-3',
-      title: 'SAC breadboard IoT Core Dial',
-      description: 'Mock hardware dial for practicing prompt sequences on microchip serial connections (includes simulation links).',
+      title: 'Pulzitive Campaign Smart Analytics Dial',
+      description: 'Physical tactical hardware dial for tracking live PPC budget performance and real-time ad ROAS fluctuations.',
       price: 18000,
       category: 'Gadgets',
       rating: 4.6,
@@ -89,7 +116,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
         </div>
         <button
           onClick={() => setCartOpen(!cartOpen)}
-          className="bg-slate-900 border border-slate-850 hover:bg-slate-800 text-white p-3 rounded-2xl cursor-pointer relative flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-2xl cursor-pointer relative flex items-center gap-2 shadow-md transition-all"
         >
           <ShoppingCart className="w-5 h-5 text-emerald-400" />
           {cart.length > 0 && (
@@ -129,11 +156,11 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
                 <div className="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
                   <div>
                     <span className="block text-[8px] font-mono uppercase text-slate-500">Resource Price</span>
-                    <span className="text-xs font-black text-white">₦{(prod.price || 0).toLocaleString()}</span>
+                    <span className="text-xs font-black text-white">₦{(prod.price || 0).toLocaleString()} <span className="text-[10px] text-emerald-400 font-semibold font-mono">(~${Math.round((prod.price || 0) / 600)} USD)</span></span>
                   </div>
                   <button
                     onClick={() => addToCart(prod)}
-                    className="bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 font-semibold px-3 py-1.5 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1.5"
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1.5 shadow-sm"
                   >
                     <Plus className="w-3.5 h-3.5" /> Add to Cart
                   </button>
@@ -246,8 +273,12 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
                           </div>
 
                           <div className="py-2.5 border-y border-slate-800">
-                            <p className="text-xl font-black text-white">
-                              {plan.price} <span className="text-[10px] font-normal text-slate-400">/month</span>
+                            <p className="text-xl font-black text-white flex items-baseline gap-2">
+                              <span>{plan.price}</span>
+                              <span className="text-xs font-bold text-emerald-400">
+                                (~${Math.round(parseInt(plan.price.replace(/\D/g, '')) / 600)} USD)
+                              </span>
+                              <span className="text-[10px] font-normal text-slate-400">/month</span>
                             </p>
                           </div>
 
@@ -271,7 +302,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
                             className={`w-full font-bold py-2 rounded-xl cursor-pointer text-xs transition-all ${
                               isActive
                                 ? 'bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black'
-                                : 'bg-slate-850 hover:bg-slate-800 text-white'
+                                : 'bg-blue-600 hover:bg-blue-500 text-white'
                             }`}
                           >
                             {plan.btnLabel}
@@ -281,7 +312,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
                               e.stopPropagation();
                               onOpenApptModal?.();
                             }}
-                            className="w-full bg-slate-900/60 hover:bg-slate-900 text-slate-300 font-semibold py-1.5 rounded-xl cursor-pointer text-xs transition-colors border border-slate-800"
+                            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-1.5 rounded-xl cursor-pointer text-xs transition-colors shadow-sm"
                           >
                             {plan.secondaryBtnLabel}
                           </button>
@@ -368,7 +399,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
                 onClick={() => onCheckout(cartTotal, 'Vault Products Cart Bundle')}
                 className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl cursor-pointer text-xs transition-colors flex items-center justify-center gap-1.5"
               >
-                <ShieldCheck className="w-4 h-4" /> Secure checkout with Paystack
+                <ShieldCheck className="w-4 h-4" /> Secure checkout with PayPal (pulzitive@gmail.com)
               </button>
             </div>
           )}

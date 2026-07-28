@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { 
   Menu, X, Bell, LogIn, LogOut, ChevronDown, User, Sparkles, BookOpen, 
-  ShoppingBag, ShieldAlert, Award, Calendar, Globe, DollarSign, UserPlus
+  ShoppingBag, ShieldAlert, Award, Calendar, Globe, DollarSign, UserPlus, Briefcase
 } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
 import { 
@@ -253,13 +253,14 @@ export default function Header({
   const [authLoading, setAuthLoading] = useState(false);
 
   const availableRoles: { role: UserRole; label: string; desc: string; icon: any }[] = [
-    { role: 'Student', label: 'Student Workspace', desc: 'Track XP, Badges & Learn', icon: Award },
-    { role: 'Parent', label: 'Parent Workspace', desc: 'Monitor Progress & Advise', icon: User },
-    { role: 'Teacher', label: 'Teacher Dashboard', desc: 'Manage Students & Commissions', icon: BookOpen },
+    { role: 'Student', label: 'Student', desc: 'Track XP, Badges & Learn', icon: Award },
+    { role: 'Parent', label: 'Parent', desc: 'Monitor Progress & Advise', icon: User },
+    { role: 'Teacher', label: 'Teacher', desc: 'Manage Students & Commissions', icon: BookOpen },
     { role: 'School Admin', label: 'School Portal', desc: 'Institution Rosters & Billing', icon: ShieldAlert },
     { role: 'Mentor', label: 'Mentor Hub', desc: 'Guided Mentees & Real-time chat', icon: Globe },
     { role: 'Sponsor', label: 'Sponsorship Desk', desc: 'Fund Technical Talents', icon: DollarSign },
-    { role: 'Client', label: 'Client Workspace', desc: 'Brand Audits & Calendar Bookings', icon: Calendar },
+    { role: 'Talent', label: 'Talent Dashboard', desc: 'List Services & Get Hired', icon: Briefcase },
+    { role: 'Client', label: 'Customer / Client', desc: 'Hire Local Artisans & Services', icon: Calendar },
     { role: 'Admin', label: 'Global Administration', desc: 'Revenue, Leads & platform controls', icon: Sparkles }
   ];
 
@@ -328,13 +329,19 @@ export default function Header({
     ? availableRoles.filter(item => item.role === 'Admin')
     : isClientSignUpOnly || activePage === 'home'
       ? availableRoles.filter(item => item.role === 'Client')
-      : availableRoles.filter(item => item.role !== 'Client' && item.role !== 'Admin');
+      : activePage === 'talents'
+        ? availableRoles.filter(item => item.role === 'Talent' || item.role === 'Client')
+        : activePage === 'academy'
+          ? availableRoles.filter(item => item.role === 'Student')
+          : availableRoles.filter(item => item.role !== 'Client' && item.role !== 'Admin');
 
   React.useEffect(() => {
     if (isAdminAuth) {
       setSignUpRole('Admin');
     } else if (isClientSignUpOnly || activePage === 'home') {
       setSignUpRole('Client');
+    } else if (activePage === 'talents') {
+      setSignUpRole('Talent');
     } else {
       setSignUpRole('Student');
     }
@@ -372,6 +379,14 @@ export default function Header({
               }`}
             >
               Portfolio
+            </button>
+            <button
+              onClick={() => onNavigate('talents')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                activePage === 'talents' ? 'bg-slate-900 text-emerald-400 font-bold' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+              }`}
+            >
+              Talents
             </button>
             <button
               onClick={() => onNavigate('academy')}
@@ -486,7 +501,7 @@ export default function Header({
               <div className="relative">
                 <button
                   onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                  className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer font-medium tracking-wide transition-all"
+                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer font-medium tracking-wide transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-emerald-400" />
@@ -553,6 +568,12 @@ export default function Header({
             Portfolio
           </button>
           <button
+            onClick={() => { onNavigate('talents'); setIsMobileMenuOpen(false); }}
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+          >
+            Talents
+          </button>
+          <button
             onClick={() => { onNavigate('academy'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
@@ -597,7 +618,7 @@ export default function Header({
             </div>
           ) : (
             <div className="pt-2 border-t border-slate-800 space-y-1">
-              <p className="px-3 text-[9px] text-gray-500 uppercase font-mono">Active Workspace: {currentUser.role}</p>
+              <p className="px-3 text-[9px] text-gray-500 uppercase font-mono">Active Account: {currentUser.role}</p>
               <button
                 onClick={() => { onNavigate('dashboard'); setIsMobileMenuOpen(false); }}
                 className="block w-full text-left px-3 py-2 text-xs font-medium text-emerald-400 bg-slate-950 hover:bg-slate-800 rounded-lg border border-emerald-500/20 cursor-pointer"
@@ -633,16 +654,16 @@ export default function Header({
             <div className="flex items-center gap-3">
               <Logo size="sm" showText={false} />
               <div>
-                <h3 className="text-lg font-black text-white leading-none">Access Pulzitive Ecosystem</h3>
-                <p className="text-[10px] text-gray-400 mt-1">Live Firestore portal and course workspaces</p>
+                <h3 className="text-lg font-black text-white leading-none">Access Pulzitive Portal</h3>
+                <p className="text-[10px] text-gray-400 mt-1">Live Firestore portal</p>
               </div>
             </div>
 
             {isClientSignUpOnly && (
               <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] p-3.5 rounded-2xl space-y-1">
-                <p className="font-bold text-emerald-200">✨ Client Workspace Access Activated</p>
+                <p className="font-bold text-emerald-200">✨ Client Access Activated</p>
                 <p className="text-[10px] text-emerald-300/80 leading-relaxed">
-                  Please sign up or sign in as a <strong>Client</strong> below to instantly unlock your Website SEO audit workspace and calendar coordinates.
+                  Please sign up or sign in as a <strong>Client</strong> below to instantly unlock your Website SEO audit and calendar coordinates.
                 </p>
               </div>
             )}

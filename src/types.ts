@@ -11,7 +11,79 @@ export type UserRole =
   | 'Mentor'
   | 'Sponsor'
   | 'Client'
+  | 'Talent'
   | 'Admin';
+
+export interface TalentProfile {
+  id: string;
+  name: string;
+  email: string;
+  title: string;
+  category: string;
+  location: string;
+  hourlyRateUsd: number;
+  hourlyRateNgn: number;
+  rating: number;
+  reviewsCount: number;
+  bio: string;
+  skills: string[];
+  avatarUrl: string;
+  verifiedBadge: boolean;
+  availability: 'Available Now' | 'Part-Time' | 'Contract Only' | 'Busy';
+  portfolioLinks: { title: string; url: string }[];
+  videoPitchUrl?: string;
+  viewsCount: number;
+  completedJobsCount: number;
+  responseTimeMinutes: number;
+  isFeatured?: boolean;
+}
+
+export interface GigProposal {
+  id: string;
+  gigId: string;
+  artisanId: string;
+  artisanName: string;
+  artisanEmail: string;
+  artisanTitle: string;
+  artisanCategory: string;
+  proposedPriceUsd: number;
+  proposedPriceNgn: number;
+  pitchMessage: string;
+  status: 'Pending' | 'Hired' | 'Declined';
+  date: string;
+}
+
+export interface TalentGigOpportunity {
+  id: string;
+  title: string;
+  clientName: string;
+  clientEmail: string;
+  category: string;
+  location: string;
+  budgetUsd: number;
+  budgetNgn: number;
+  type: 'Hourly' | 'Fixed Price' | 'Milestone';
+  urgency: 'Immediate (24-48 hrs)' | 'This Week' | 'Flexible';
+  description: string;
+  postedDate: string;
+  proposalsCount: number;
+  distanceKm?: number;
+  proposals?: GigProposal[];
+}
+
+export interface TalentInquiry {
+  id: string;
+  talentId: string;
+  clientName: string;
+  clientEmail: string;
+  projectTitle: string;
+  message: string;
+  offeredBudgetUsd: number;
+  offeredBudgetNgn: number;
+  location: string;
+  status: 'Pending' | 'Accepted' | 'In Progress' | 'Completed' | 'Declined';
+  date: string;
+}
 
 export interface UserProfile {
   uid: string;

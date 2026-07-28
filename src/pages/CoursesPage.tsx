@@ -15,7 +15,7 @@ interface CoursesPageProps {
 export default function CoursesPage({ onEnroll }: CoursesPageProps) {
   const courses = getCourses();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLevel, setSelectedLevel] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Reception'>('All');
+  const [selectedLevel, setSelectedLevel] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced'>('All');
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
 
   const filteredCourses = courses.filter(c => {
@@ -30,9 +30,9 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
       
       {/* Page Header */}
       <div className="max-w-5xl mx-auto text-center space-y-3 mb-12">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">SAC Academy Course Catalog</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Pulzitive Digital Academy Course Catalog</h1>
         <p className="text-xs text-slate-400 max-w-xl mx-auto">
-          Learn cutting-edge skills in software engineering, digital media, ads conversion, and SEO auditing. Enroll today to start earning gamified XP.
+          Learn cutting-edge skills in digital media, paid ads conversion, SEO auditing, and CRM email automation. Enroll today to start earning gamified XP.
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
 
         {/* Categories */}
         <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-          {(['All', 'Beginner', 'Intermediate', 'Advanced', 'Reception'] as const).map(lvl => (
+          {(['All', 'Beginner', 'Intermediate', 'Advanced'] as const).map(lvl => (
             <button
               key={lvl}
               onClick={() => setSelectedLevel(lvl)}
@@ -63,7 +63,7 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
                   : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white'
               }`}
             >
-              {lvl === 'Reception' ? 'Reception (Free)' : lvl}
+              {lvl}
             </button>
           ))}
         </div>
@@ -79,7 +79,6 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
         ) : (
           filteredCourses.map(course => {
             const isExpanded = expandedCourseId === course.id;
-            const isFree = course.price === 0 || course.level === 'Reception';
             return (
               <div 
                 key={course.id}
@@ -90,7 +89,7 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
                   {/* Badge Row */}
                   <div className="flex items-center justify-between text-[10px] font-mono">
                     <span className="bg-slate-950 text-emerald-400 border border-emerald-400/20 px-2 py-0.5 rounded uppercase">
-                      {course.level === 'Reception' ? 'Reception (Free)' : course.level}
+                      {course.level}
                     </span>
                     <span className="text-slate-400 flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" /> {course.duration}
@@ -125,16 +124,20 @@ export default function CoursesPage({ onEnroll }: CoursesPageProps) {
 
                 <div className="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between">
                   <div>
-                    <span className="block text-[9px] font-mono uppercase text-slate-500">Course Fee</span>
-                    <span className={`text-sm font-black ${isFree ? 'text-emerald-400' : 'text-white'}`}>
-                      {isFree ? 'FREE' : `₦${course.price.toLocaleString()}`}
+                    <span className="block text-[9px] font-mono uppercase text-slate-500">Online Rate</span>
+                    <span className="text-sm font-black text-white">
+                      ₦9,000 <span className="text-[10px] text-slate-400 font-normal">Individual</span>
+                    </span>
+                    <span className="block text-[9px] font-mono uppercase text-slate-500 mt-1">Physical Rate</span>
+                    <span className="text-sm font-black text-white">
+                      ₦30,000 <span className="text-[10px] text-slate-400 font-normal">Individual</span>
                     </span>
                   </div>
                   <button
                     onClick={() => onEnroll(course)}
-                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1"
+                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer transition-colors flex items-center gap-1 self-end"
                   >
-                    <CreditCard className="w-3.5 h-3.5" /> {isFree ? 'Launch Sandbox' : 'Enroll Now'}
+                    <CreditCard className="w-3.5 h-3.5" /> Enroll Now
                   </button>
                 </div>
 

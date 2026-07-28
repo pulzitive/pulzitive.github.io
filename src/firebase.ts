@@ -33,7 +33,7 @@ import {
   getDocFromServer
 } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
-import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest } from './types';
+import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry } from './types';
 
 // Detect whether real Firebase is configured
 export const isRealFirebase = 
@@ -140,7 +140,10 @@ const LOCAL_STORAGE_KEYS = {
   SUBSCRIBERS: 'sac_subscribers',
   ENROLLMENTS: 'sac_enrollments',
   ANNOUNCEMENTS: 'sac_announcements',
-  MENTORSHIP_REQUESTS: 'sac_mentorship_requests'
+  MENTORSHIP_REQUESTS: 'sac_mentorship_requests',
+  TALENTS: 'sac_talents',
+  GIGS: 'sac_gigs',
+  TALENT_INQUIRIES: 'sac_talent_inquiries'
 };
 
 const getLocalStorage = <T>(key: string, defaultValue: T): T => {
@@ -164,8 +167,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'SEO Mastery & Technical Auditing',
     description: 'Master on-page optimization, semantic content clusters, technical indexing audits, and core web vitals speed calibration.',
     longDescription: 'Our flagship SEO service and training course. Learn how to perform deep crawler audits, resolve indexing blocks, calibrate schema configurations, pair display fonts like Montserrat for superior readability, and command first-page Google rankings.',
-    duration: '6 Weeks',
-    price: 15000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Intermediate',
     syllabus: [
       'Keyword Intent & Competitor Content Crawls',
@@ -185,8 +188,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'Paid Social Ads & Conversion Funnels',
     description: 'Design, configure, and scale high-yielding programmatic campaigns on Facebook, Instagram, and TikTok.',
     longDescription: 'Perfect for business owners and consultants. Learn to navigate the Meta Ads Manager, integrate the Conversions API, build Custom and Lookalike audiences, write compelling direct-response copy, and run split-testing structures.',
-    duration: '8 Weeks',
-    price: 18000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Advanced',
     syllabus: [
       'Meta pixel & Conversions API Configurations',
@@ -206,8 +209,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'Google Search Ads & Performance Max',
     description: 'Dominate Google search results for commercial intent queries with advanced PPC bidding architectures.',
     longDescription: 'An elite Google Ads service and learning guide. Learn to target high-intent search terms, configure negative keyword sheets, build responsive search ads, master Smart Bidding algorithms, and build complete Performance Max campaigns.',
-    duration: '8 Weeks',
-    price: 20000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Advanced',
     syllabus: [
       'PPC Campaign Frameworks & Match Types',
@@ -227,8 +230,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'CRM Pipelines & Email Automation',
     description: 'Maximize customer lifetime value with automated retention sequences, drip campaigns, and behavior triggers.',
     longDescription: 'Turn cold traffic into recurring revenue. Master CRM integrations, behavior-driven email segmentation, cart abandonment triggers, promotional newsletter copywriting, and deliverability protocols (DKIM/SPF/DMARC).',
-    duration: '6 Weeks',
-    price: 12000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Intermediate',
     syllabus: [
       'Email List Building & High-Converting Lead Magnets',
@@ -248,8 +251,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'Content Marketing & AI-Powered Copywriting',
     description: 'Deploy authority editorial plans and scale premium copywriting pipelines using customized Google Gemini workflows.',
     longDescription: 'Learn how to scale content operations without losing your brand voice. Master the AIDA & PAS copywriting frameworks, perform SEO copywriting audits, design high-authority content schedules, and build custom generative prompts.',
-    duration: '4 Weeks',
-    price: 10000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Beginner',
     syllabus: [
       'Copywriting Principles: AIDA & PAS Frameworks',
@@ -269,8 +272,8 @@ const INITIAL_COURSES: Course[] = [
     title: 'CRO Diagnostics & Growth Analytics',
     description: 'Stop wasting traffic. Track and optimize landing pages and conversion actions with GA4 and Hotjar.',
     longDescription: 'The ultimate web intelligence and optimization training. Learn how to set up clean Google Analytics 4 tracking events, deploy triggers via Google Tag Manager, interpret session recordings, and eliminate form checkout friction.',
-    duration: '6 Weeks',
-    price: 15000,
+    duration: '4 Hours Session',
+    price: 9000,
     level: 'Advanced',
     syllabus: [
       'Google Analytics 4 & Custom Conversion Events',
@@ -284,6 +287,48 @@ const INITIAL_COURSES: Course[] = [
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop',
     tags: ['GA4', 'Tag Manager', 'Heatmapping'],
     points: '+1200 XP'
+  },
+  {
+    id: 'dm-brand-strategy',
+    title: 'Brand Communication & Identity Strategy',
+    description: 'Master strategic brand positioning, visual identity systems, brand voice guidelines, and high-impact corporate narratives.',
+    longDescription: 'Our flagship Brand Strategy and Identity masterclass. Learn how to craft distinctive brand positioning, design cohesive visual identity architectures, formulate brand voice guidelines, and build corporate messaging frameworks that command market authority.',
+    duration: '4 Hours Session',
+    price: 9000,
+    level: 'Advanced',
+    syllabus: [
+      'Brand Audit & Competitive Positioning Analysis',
+      'Visual Identity System & Brand Architecture Design',
+      'Brand Voice, Tone & Messaging Matrices',
+      'Brand Equity Measurement & Governance Models',
+      'Multi-Channel Brand Activation & Launch Campaigns'
+    ],
+    category: 'Brand Strategy & Identity',
+    ageRange: 'Adults & Professionals',
+    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600&auto=format&fit=crop',
+    tags: ['Brand Strategy', 'Visual Identity', 'Brand Voice'],
+    points: '+1800 XP'
+  },
+  {
+    id: 'dm-corp-comm',
+    title: 'Corporate Communication, PR & Media Relations',
+    description: 'Master executive media relations, stakeholder alignment, press release distribution, and crisis communication management.',
+    longDescription: 'An elite Corporate Communications and Media Strategy program. Learn to handle executive stakeholder messaging, build crisis management protocols, execute high-converting PR press releases, drive thought leadership, and foster media relations.',
+    duration: '4 Hours Session',
+    price: 9000,
+    level: 'Advanced',
+    syllabus: [
+      'Corporate Reputation & Crisis Communication Protocols',
+      'Executive Thought Leadership & Media Pitching',
+      'Press Release Architecture & Global PR Syndication',
+      'Stakeholder Alignment & Internal Communications',
+      'Media Analytics & PR Sentiment Scoring'
+    ],
+    category: 'Corporate PR & Media Services',
+    ageRange: 'Adults & Professionals',
+    image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop',
+    tags: ['Corporate PR', 'Media Relations', 'Crisis Mgmt'],
+    points: '+1800 XP'
   }
 ];
 
@@ -377,7 +422,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.NOTIFICATIONS)) {
     {
       id: 'notif-1',
       userId: 'student-demo',
-      text: 'Welcome to SAC Edtech Hub! Your profile is verified.',
+      text: 'Welcome to Pulzitive Digital Academy! Your profile is verified.',
       timestamp: new Date().toISOString(),
       read: false
     }
@@ -470,6 +515,602 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.SPONSORSHIPS)) {
   ];
   setLocalStorage(LOCAL_STORAGE_KEYS.SPONSORSHIPS, defaultSponsorships);
 }
+
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
+  const defaultTalents: TalentProfile[] = [
+    {
+      id: 'tal-1',
+      name: 'Engr. Kazeem Adebayo',
+      email: 'kazeem.auto@pulzitive.com',
+      title: 'Master Auto Mechanic & OBD Diagnostic Specialist',
+      category: 'Mechanic',
+      location: 'Lekki Phase 1, Lagos',
+      hourlyRateUsd: 25,
+      hourlyRateNgn: 15000,
+      rating: 5.0,
+      reviewsCount: 48,
+      bio: 'Certified master automobile engineer with 12+ years experience servicing Japanese, European, and American vehicles. Computer OBD diagnostics, full engine overhaul, transmission repair, and routine maintenance.',
+      skills: ['OBD Diagnostics', 'Engine Overhaul', 'Brake Systems', 'Suspension Tuning', 'Transmission Service'],
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Toyota & Benz Engine Diagnostic Lab', url: 'https://pulzitive.com/artisans/kazeem' }
+      ],
+      viewsCount: 2840,
+      completedJobsCount: 74,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
+    {
+      id: 'tal-2',
+      name: 'Chidi Okonkwo',
+      email: 'chidi.bodywork@pulzitive.com',
+      title: 'Executive Panel Beater & Bodywork Specialist',
+      category: 'Panel Beater',
+      location: 'Ikeja, Lagos',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.9,
+      reviewsCount: 39,
+      bio: 'Specialist in accident restoration, dent pulling, oven-baked spray painting, chassis alignment, and custom body modifications.',
+      skills: ['Dent Pulling', 'Oven Spray Painting', 'Chassis Realignment', 'Fiberglass Restoration', 'Scratch Removal'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Luxury Car Accident Restoration Showcase', url: 'https://pulzitive.com/artisans/chidi' }
+      ],
+      viewsCount: 1920,
+      completedJobsCount: 52,
+      responseTimeMinutes: 15,
+      isFeatured: true
+    },
+    {
+      id: 'tal-3',
+      name: 'Malam Haruna Ibrahim',
+      email: 'haruna.rewire@pulzitive.com',
+      title: 'Auto Electrician & Car Rewire Master',
+      category: 'Car Rewire',
+      location: 'Abuja, NG',
+      hourlyRateUsd: 18,
+      hourlyRateNgn: 11000,
+      rating: 5.0,
+      reviewsCount: 62,
+      bio: 'Expert car rewiring specialist fixing alternator failures, starter motors, battery drain issues, ECU wiring, and custom LED installations.',
+      skills: ['Complete Rewiring', 'ECU Harness Repair', 'Alternator Overhaul', 'Keyless Entry & Alarms', 'Battery Testing'],
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'ECU Harness & Full Vehicle Rewire Project', url: 'https://pulzitive.com/artisans/haruna' }
+      ],
+      viewsCount: 3100,
+      completedJobsCount: 88,
+      responseTimeMinutes: 8,
+      isFeatured: true
+    },
+    {
+      id: 'tal-4',
+      name: 'Engr. Rotimi Bakare',
+      email: 'rotimi.ac@pulzitive.com',
+      title: 'Executive Automotive & Domestic AC Technician',
+      category: 'AC Technician',
+      location: 'Victoria Island, Lagos',
+      hourlyRateUsd: 22,
+      hourlyRateNgn: 13000,
+      rating: 4.9,
+      reviewsCount: 44,
+      bio: 'Automotive and residential cooling expert. Gas refilling, compressor repairs, leak detection, and split unit installations.',
+      skills: ['R134a Gas Refill', 'Compressor Repair', 'Leak Pressure Test', 'HVAC Installation', 'Condenser Replacement'],
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Corporate AC Maintenance & Vehicle Chillers', url: 'https://pulzitive.com/artisans/rotimi' }
+      ],
+      viewsCount: 2150,
+      completedJobsCount: 61,
+      responseTimeMinutes: 12,
+      isFeatured: true
+    },
+    {
+      id: 'tal-5',
+      name: 'Samuel Alabi',
+      email: 'samuel.electric@pulzitive.com',
+      title: 'Certified Electrical Wiring & Solar Technician',
+      category: 'Electrician',
+      location: 'Ibadan, NG',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.8,
+      reviewsCount: 31,
+      bio: 'Residential and commercial electrician. Conduit wiring, changeover switch setup, solar inverter installation, and surge protection.',
+      skills: ['Conduit Wiring', 'Inverter Setup', 'Breaker Box Panel', 'Fault Finding', 'Industrial Lighting'],
+      avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Solar Inverter & Duplex Electrical Project', url: 'https://pulzitive.com/artisans/samuel' }
+      ],
+      viewsCount: 1680,
+      completedJobsCount: 41,
+      responseTimeMinutes: 20,
+      isFeatured: false
+    },
+    {
+      id: 'tal-6',
+      name: 'Bisi Olaitan',
+      email: 'bisi.tailor@pulzitive.com',
+      title: 'Bespoke Master Tailor & Fashion Designer',
+      category: 'Tailor',
+      location: 'Surulere, Lagos',
+      hourlyRateUsd: 25,
+      hourlyRateNgn: 15000,
+      rating: 5.0,
+      reviewsCount: 57,
+      bio: 'Specializing in Senator suits, Agbada embroidery, female native wear, corporate apparel, and custom wedding outfits.',
+      skills: ['Senator Wear', 'Agbada Embroidery', 'Corporate Suits', 'Native Dresses', 'Pattern Drafting'],
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Executive Groom & Celebrity Outfit Catalogue', url: 'https://pulzitive.com/artisans/bisi' }
+      ],
+      viewsCount: 3900,
+      completedJobsCount: 95,
+      responseTimeMinutes: 5,
+      isFeatured: true
+    },
+    {
+      id: 'tal-7',
+      name: 'Emeka Nnamdi',
+      email: 'emeka.shoes@pulzitive.com',
+      title: 'Handcrafted Leather Shoe Maker & Cobbler',
+      category: 'Shoe Maker',
+      location: 'Aba / Port Harcourt, NG',
+      hourlyRateUsd: 18,
+      hourlyRateNgn: 11000,
+      rating: 4.9,
+      reviewsCount: 41,
+      bio: 'Crafting premium genuine leather loafers, Oxford shoes, palm slippers, and custom boots built for durability and elegance.',
+      skills: ['Italian Leather Craft', 'Sole Goodyear Welt', 'Custom Sizing', 'Leather Dyeing', 'Shoe Restoration'],
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Genuine Italian Leather Footwear Collection', url: 'https://pulzitive.com/artisans/emeka' }
+      ],
+      viewsCount: 2310,
+      completedJobsCount: 68,
+      responseTimeMinutes: 14,
+      isFeatured: true
+    },
+    {
+      id: 'tal-8',
+      name: 'Engr. Babatunde Sanusi',
+      email: 'babatunde.plumber@pulzitive.com',
+      title: 'Master Plumber & Pipelining Engineer',
+      category: 'Plumber',
+      location: 'Lekki Phase 2, Lagos',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.9,
+      reviewsCount: 50,
+      bio: 'Expert in PPR hot & cold water pipes, borehole water treatment system setup, pressure pumps, drain unblocking, and modern bathroom fittings.',
+      skills: ['PPR Pipe Welding', 'Water Pump Repair', 'Borehole Filtration', 'Drain Unblocking', 'Sanitary Ware'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Luxury Villa PPR Plumbing & Pump System', url: 'https://pulzitive.com/artisans/babatunde' }
+      ],
+      viewsCount: 2780,
+      completedJobsCount: 83,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
+    {
+      id: 'tal-9',
+      name: 'Kabiru Structural Welders',
+      email: 'kabiru.welder@pulzitive.com',
+      title: 'Heavy Metal Welder & Security Gate Fabricator',
+      category: 'Welder',
+      location: 'Agege, Lagos',
+      hourlyRateUsd: 22,
+      hourlyRateNgn: 13000,
+      rating: 4.8,
+      reviewsCount: 29,
+      bio: 'Fabricating automated security gates, burglary proofing, structural iron beams, stainless steel handrails, and industrial water tank stands.',
+      skills: ['Arc & TIG Welding', 'Automated Gates', 'Stainless Handrails', 'Burglary Proofing', 'Iron Roof Trusses'],
+      avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Stainless Steel & Wrought Iron Gate Designs', url: 'https://pulzitive.com/artisans/kabiru' }
+      ],
+      viewsCount: 1450,
+      completedJobsCount: 37,
+      responseTimeMinutes: 18,
+      isFeatured: false
+    },
+    {
+      id: 'tal-10',
+      name: 'Chief Ojo Woodworks',
+      email: 'ojo.furniture@pulzitive.com',
+      title: 'Custom Wood Furniture & Cabinet Maker',
+      category: 'Furniture',
+      location: 'Ikorodu, Lagos',
+      hourlyRateUsd: 25,
+      hourlyRateNgn: 15000,
+      rating: 5.0,
+      reviewsCount: 46,
+      bio: 'Handcrafted mahogany, teak, and HDF kitchen cabinets, wardrobes, executive office desks, and luxury sofa frames.',
+      skills: ['HDF Kitchen Cabinets', 'Wardrobe Fitting', 'Teak & Mahogany Wood', 'Wood Spraying', 'Upholstery'],
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Modular HDF Kitchen & Walk-in Closet Showcase', url: 'https://pulzitive.com/artisans/ojo' }
+      ],
+      viewsCount: 3200,
+      completedJobsCount: 59,
+      responseTimeMinutes: 15,
+      isFeatured: true
+    },
+    {
+      id: 'tal-11',
+      name: 'Master Carpenter Yusuf',
+      email: 'yusuf.carpenter@pulzitive.com',
+      title: 'Roofing Truss & Structural Carpenter',
+      category: 'Carpenter',
+      location: 'Abuja, NG',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.9,
+      reviewsCount: 35,
+      bio: 'High precision roof framing, Gerard stone-coated roofing tile installation, wooden door hanging, and formwork construction.',
+      skills: ['Roof Truss Construction', 'Gerard Roof Tiles', 'Wooden Doors', 'Concrete Formwork', 'Ceiling Framing'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Estate Roof Truss & Timber Framing Projects', url: 'https://pulzitive.com/artisans/yusuf' }
+      ],
+      viewsCount: 1890,
+      completedJobsCount: 44,
+      responseTimeMinutes: 12,
+      isFeatured: false
+    },
+    {
+      id: 'tal-12',
+      name: 'Tyre Doctor Vulcanizer',
+      email: 'doctor.vulcanizer@pulzitive.com',
+      title: 'Emergency Vulcanizer & Wheel Balancing Expert',
+      category: 'Vulcanizer',
+      location: 'Lagos Island, NG',
+      hourlyRateUsd: 15,
+      hourlyRateNgn: 9000,
+      rating: 5.0,
+      reviewsCount: 82,
+      bio: '24/7 Mobile emergency vulcanizing service. Tubeless tyre patch, computerized wheel balancing, tyre alignment, and rim repair.',
+      skills: ['Tubeless Patching', 'Mobile Emergency Service', 'Computer Balancing', 'Tyre Pressure Check', 'Alloy Rim Alignment'],
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: '24/7 Rapid Mobile Vulcanizing Fleet', url: 'https://pulzitive.com/artisans/vulcanizer' }
+      ],
+      viewsCount: 4100,
+      completedJobsCount: 112,
+      responseTimeMinutes: 5,
+      isFeatured: true
+    },
+    {
+      id: 'tal-13',
+      name: 'David Lens Photography',
+      email: 'david.photo@pulzitive.com',
+      title: 'Event & Portrait Photographer',
+      category: 'Photographer',
+      location: 'Lekki, Lagos',
+      hourlyRateUsd: 30,
+      hourlyRateNgn: 18000,
+      rating: 4.9,
+      reviewsCount: 51,
+      bio: 'Capturing weddings, corporate summits, fashion lookbooks, and high resolution studio portraits with drone aerial coverage.',
+      skills: ['Studio Lighting', 'Wedding Photography', '4K Drone Aerials', 'Photo Retouching', 'Event Coverage'],
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'High Fashion & Luxury Wedding Gallery', url: 'https://pulzitive.com/artisans/david' }
+      ],
+      viewsCount: 3500,
+      completedJobsCount: 77,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
+    {
+      id: 'tal-14',
+      name: 'GreenField Land Scrapers',
+      email: 'greenfield.land@pulzitive.com',
+      title: 'Land Scraper, Lawn Care & Garden Specialist',
+      category: 'Land Scraper',
+      location: 'Abuja, NG',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.8,
+      reviewsCount: 27,
+      bio: 'Professional land scraping, site leveling, interlocking paving stone installation, lawn turfing, and ornamental garden design.',
+      skills: ['Land Scraping & Leveling', 'Lawn Turf Installation', 'Interlocking Paving', 'Garden Irrigation', 'Hedge Trimming'],
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Residential Compound Land Scraping & Interlock', url: 'https://pulzitive.com/artisans/greenfield' }
+      ],
+      viewsCount: 1320,
+      completedJobsCount: 33,
+      responseTimeMinutes: 15,
+      isFeatured: false
+    },
+    {
+      id: 'tal-15',
+      name: 'Apex Commercial Printers',
+      email: 'apex.printers@pulzitive.com',
+      title: 'Large Format & Commercial Printing Press Operator',
+      category: 'Printers',
+      location: 'Shomolu, Lagos',
+      hourlyRateUsd: 22,
+      hourlyRateNgn: 13000,
+      rating: 4.9,
+      reviewsCount: 64,
+      bio: 'Direct-to-garment shirt printing, flex banners, corporate souvenirs, brochure printing, and embossed business cards.',
+      skills: ['Flex & SAV Printing', 'Screen Printing', 'DTF Shirt Printing', 'Monogramming', 'Corporate Souvenirs'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Commercial Press & Campaign Printing Catalogue', url: 'https://pulzitive.com/artisans/printers' }
+      ],
+      viewsCount: 2900,
+      completedJobsCount: 89,
+      responseTimeMinutes: 8,
+      isFeatured: true
+    },
+    {
+      id: 'tal-16',
+      name: 'Chidi CoolTech Repairs',
+      email: 'chidi.fridge@pulzitive.com',
+      title: 'Master Commercial & Domestic Freezer/Fridge Technician',
+      category: 'Freezer/Fridge technician',
+      location: 'Ikeja / Surulere, Lagos',
+      hourlyRateUsd: 22,
+      hourlyRateNgn: 13000,
+      rating: 5.0,
+      reviewsCount: 48,
+      bio: 'Expert in industrial cold room setup, inverter refrigerator gas refilling (R134a & R600a), compressor replacement, defrost system troubleshooting, and chest freezer leak repairs.',
+      skills: ['Fridge Gas Refilling', 'Cold Room Maintenance', 'Compressor Replacement', 'Inverter Fridge Board Repair', 'Thermostat & Defrost Repair'],
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Supermarket Cold Room & Double-Door Refrigerator Overhauls', url: 'https://pulzitive.com/artisans/chidi' }
+      ],
+      viewsCount: 3120,
+      completedJobsCount: 76,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
+    {
+      id: 'tal-17',
+      name: 'Kelechi Wall Master Painters',
+      email: 'kelechi.painter@pulzitive.com',
+      title: 'Professional Interior & Exterior Decorating Painter',
+      category: 'Painter',
+      location: 'Victoria Island / Lekki, Lagos',
+      hourlyRateUsd: 20,
+      hourlyRateNgn: 12000,
+      rating: 4.9,
+      reviewsCount: 52,
+      bio: 'Specializing in Italian POP screeding, 3D wall panel painting, Venetian plastering, exterior damp-proof paint application, and spray painting for residential & commercial properties.',
+      skills: ['POP Screeding', 'Satin & Silk Paint', 'Venetian Stucco Plaster', 'Damp-Proof Waterproofing', 'Spray Painting'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Luxury Penthouse Screeding & Stucco Wall Finishing', url: 'https://pulzitive.com/artisans/kelechi' }
+      ],
+      viewsCount: 2840,
+      completedJobsCount: 63,
+      responseTimeMinutes: 12,
+      isFeatured: true
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.TALENTS, defaultTalents);
+}
+
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.GIGS)) {
+  const defaultGigs: TalentGigOpportunity[] = [
+    {
+      id: 'gig-1',
+      title: 'Full Automobile Engine Diagnostic & Brake Pad Replacement (Toyota Camry 2018)',
+      clientName: 'Alhaji Salami',
+      clientEmail: 'salami@example.com',
+      category: 'Mechanic',
+      location: 'Lekki Phase 1, Lagos',
+      budgetUsd: 120,
+      budgetNgn: 72000,
+      type: 'Fixed Price',
+      urgency: 'Immediate (24-48 hrs)',
+      description: 'Car has engine check light on and squeaking brakes. Need a certified mechanic to perform full OBD scan and replace front & rear brake pads.',
+      postedDate: new Date(Date.now() - 6 * 3600 * 1000).toISOString(),
+      proposalsCount: 6,
+      distanceKm: 2.1
+    },
+    {
+      id: 'gig-2',
+      title: '3 Senator Suit Outfits & Agbada Embroidery for Wedding',
+      clientName: 'Chief Abiodun',
+      clientEmail: 'abiodun@example.com',
+      category: 'Tailor',
+      location: 'Victoria Island, Lagos',
+      budgetUsd: 250,
+      budgetNgn: 150000,
+      type: 'Fixed Price',
+      urgency: 'This Week',
+      description: 'Need a master tailor to stitch 3 sets of navy blue Senator suits and 1 heavy embroidered white cashmere Agbada outfit.',
+      postedDate: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+      proposalsCount: 8,
+      distanceKm: 3.5
+    },
+    {
+      id: 'gig-3',
+      title: 'Duplex Land Scraping, Site Leveling & Interlocking Stone Installation',
+      clientName: 'Dr. Alabi',
+      clientEmail: 'alabi@example.com',
+      category: 'Land Scraper',
+      location: 'Ikeja GRA, Lagos',
+      budgetUsd: 500,
+      budgetNgn: 300000,
+      type: 'Milestone',
+      urgency: 'Flexible',
+      description: 'Requiring an experienced land scraper to clear, level, and install interlocking paving stones for a 500 sqm compound.',
+      postedDate: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+      proposalsCount: 5,
+      distanceKm: 5.2
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.GIGS, defaultGigs);
+}
+
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES)) {
+  const defaultInquiries: TalentInquiry[] = [
+    {
+      id: 'inq-1',
+      talentId: 'tal-1',
+      clientName: 'Zenith Retail Corp',
+      clientEmail: 'manager@zenithretail.com',
+      projectTitle: 'E-Commerce AI Chatbot & Custom Integration',
+      message: 'Hi Tunde, we saw your verified profile on Pulzitive Talents. We want to hire you to integrate a Gemini-powered shopping assistant on our React store.',
+      offeredBudgetUsd: 950,
+      offeredBudgetNgn: 570000,
+      location: 'Ikeja, Lagos',
+      status: 'Pending',
+      date: new Date(Date.now() - 18 * 3600 * 1000).toISOString()
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, defaultInquiries);
+}
+
+export const getTalents = async (): Promise<TalentProfile[]> => {
+  const talents = getLocalStorage<TalentProfile[]>(LOCAL_STORAGE_KEYS.TALENTS, []);
+  const validArtisanCategories = [
+    'Mechanic', 'Panel Beater', 'Car Rewire', 'AC Technician', 'Freezer/Fridge technician', 'Electrician',
+    'Car Wash', 'Dry Cleaner', 'Tailor', 'Shoe Maker', 'Plumber', 'Painter', 'Welder',
+    'Printers', 'Furniture', 'Carpenter', 'Vulcanizer', 'Photographer', 'Land Scraper'
+  ];
+  // Filter out non-artisan legacy data
+  const filtered = talents.filter(t => validArtisanCategories.includes(t.category));
+  if (filtered.length < 3) {
+    // Re-initialize local storage with artisan defaults
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.TALENTS);
+    window.location.reload();
+  }
+  return filtered.length > 0 ? filtered : talents;
+};
+
+export const saveTalentProfile = async (talent: TalentProfile): Promise<void> => {
+  const talents = getLocalStorage<TalentProfile[]>(LOCAL_STORAGE_KEYS.TALENTS, []);
+  const idx = talents.findIndex(t => t.id === talent.id || (t.email && talent.email && t.email.toLowerCase() === talent.email.toLowerCase()));
+  if (idx >= 0) {
+    talents[idx] = { ...talents[idx], ...talent };
+  } else {
+    talents.unshift(talent);
+  }
+  setLocalStorage(LOCAL_STORAGE_KEYS.TALENTS, talents);
+};
+
+export const getGigOpportunities = async (): Promise<TalentGigOpportunity[]> => {
+  const gigs = getLocalStorage<TalentGigOpportunity[]>(LOCAL_STORAGE_KEYS.GIGS, []);
+  const validArtisanCategories = [
+    'Mechanic', 'Panel Beater', 'Car Rewire', 'AC Technician', 'Freezer/Fridge technician', 'Electrician',
+    'Car Wash', 'Dry Cleaner', 'Tailor', 'Shoe Maker', 'Plumber', 'Painter', 'Welder',
+    'Printers', 'Furniture', 'Carpenter', 'Vulcanizer', 'Photographer', 'Land Scraper'
+  ];
+  const filtered = gigs.filter(g => validArtisanCategories.includes(g.category));
+  return filtered.length > 0 ? filtered : gigs;
+};
+
+export const postGigOpportunity = async (gig: TalentGigOpportunity): Promise<void> => {
+  const gigs = getLocalStorage<TalentGigOpportunity[]>(LOCAL_STORAGE_KEYS.GIGS, []);
+  gigs.unshift(gig);
+  setLocalStorage(LOCAL_STORAGE_KEYS.GIGS, gigs);
+};
+
+export const getTalentInquiries = async (_talentIdOrEmail?: string): Promise<TalentInquiry[]> => {
+  const inquiries = getLocalStorage<TalentInquiry[]>(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, []);
+  return inquiries;
+};
+
+export const sendTalentInquiry = async (inquiry: TalentInquiry): Promise<void> => {
+  const inquiries = getLocalStorage<TalentInquiry[]>(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, []);
+  inquiries.unshift(inquiry);
+  setLocalStorage(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, inquiries);
+};
+
+export const updateInquiryStatus = async (inquiryId: string, status: TalentInquiry['status']): Promise<void> => {
+  const inquiries = getLocalStorage<TalentInquiry[]>(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, []);
+  const found = inquiries.find(i => i.id === inquiryId);
+  if (found) {
+    found.status = status;
+    setLocalStorage(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, inquiries);
+  }
+};
+
+export const submitGigProposal = async (proposal: import('./types').GigProposal): Promise<void> => {
+  const gigs = getLocalStorage<TalentGigOpportunity[]>(LOCAL_STORAGE_KEYS.GIGS, []);
+  const found = gigs.find(g => g.id === proposal.gigId);
+  if (found) {
+    if (!found.proposals) found.proposals = [];
+    found.proposals.unshift(proposal);
+    found.proposalsCount = found.proposals.length;
+    setLocalStorage(LOCAL_STORAGE_KEYS.GIGS, gigs);
+  }
+};
+
+export const hireArtisanForGig = async (gigId: string, proposalId: string): Promise<import('./types').TalentInquiry | null> => {
+  const gigs = getLocalStorage<TalentGigOpportunity[]>(LOCAL_STORAGE_KEYS.GIGS, []);
+  const gig = gigs.find(g => g.id === gigId);
+  if (!gig || !gig.proposals) return null;
+  
+  const proposal = gig.proposals.find(p => p.id === proposalId);
+  if (!proposal) return null;
+
+  proposal.status = 'Hired';
+  setLocalStorage(LOCAL_STORAGE_KEYS.GIGS, gigs);
+
+  // Create an active inquiry / contract in Talent Inquiries
+  const newInquiry: TalentInquiry = {
+    id: `inq-hired-${Date.now()}`,
+    talentId: proposal.artisanId,
+    clientName: gig.clientName,
+    clientEmail: gig.clientEmail,
+    projectTitle: `${gig.title} (${proposal.artisanCategory})`,
+    message: `Contract Awarded: ${proposal.pitchMessage}`,
+    offeredBudgetUsd: proposal.proposedPriceUsd,
+    offeredBudgetNgn: proposal.proposedPriceNgn,
+    location: gig.location,
+    status: 'Accepted',
+    date: new Date().toISOString()
+  };
+
+  const inquiries = getLocalStorage<TalentInquiry[]>(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, []);
+  inquiries.unshift(newInquiry);
+  setLocalStorage(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, inquiries);
+
+  return newInquiry;
+};
 
 // --- CORE FIREBASE AUTH & FIRESTORE FUNCTIONS (WITH FALLBACK) ---
 
@@ -608,10 +1249,10 @@ export const loginWithGoogleSimulated = async (roleSelection: UserRole): Promise
     roleSelection === 'Teacher' ? 'Mr. Babajide Alao' :
     roleSelection === 'Mentor' ? 'Dr. Sarah Carter' :
     roleSelection === 'Client' ? 'Abiodun Salami' :
-    roleSelection === 'Admin' ? 'SAC Global Admin' :
+    roleSelection === 'Admin' ? 'Pulzitive Global Admin' :
     'Jane Doe';
     
-  const email = `${roleSelection.toLowerCase()}@sac.com`;
+  const email = `${roleSelection.toLowerCase()}@pulzitive.com`;
   
   const existingProf = await getProfile(mockUid);
   if (existingProf) {
@@ -669,9 +1310,33 @@ export const signUpWithEmailReal = async (
 };
 
 export const signInWithEmailReal = async (email: string, password: string): Promise<UserProfile> => {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  // Check local profile store for matching user or demo accounts
+  const localUsers = getLocalStorage<Record<string, UserProfile>>(LOCAL_STORAGE_KEYS.USERS, {});
+  const matchedLocalUser = Object.values(localUsers).find(
+    u => u.email && u.email.trim().toLowerCase() === normalizedEmail
+  );
+
   if (!isRealFirebase || !auth) {
-    throw new Error("Firebase is not initialized or configured");
+    if (matchedLocalUser) {
+      setLocalStorage(LOCAL_STORAGE_KEYS.CURRENT_USER, matchedLocalUser);
+      return matchedLocalUser;
+    }
+    const fallbackProfile: UserProfile = {
+      uid: `user-${Date.now()}`,
+      email: email,
+      displayName: email.split('@')[0],
+      role: 'Student',
+      profileCompleted: true,
+      xp: 100,
+      badges: ['New Member']
+    };
+    await saveProfile(fallbackProfile);
+    setLocalStorage(LOCAL_STORAGE_KEYS.CURRENT_USER, fallbackProfile);
+    return fallbackProfile;
   }
+
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const firebaseUser = userCredential.user;
@@ -694,8 +1359,46 @@ export const signInWithEmailReal = async (email: string, password: string): Prom
       setLocalStorage(LOCAL_STORAGE_KEYS.CURRENT_USER, newProfile);
       return newProfile;
     }
-  } catch (err) {
-    console.error("Firebase Sign-In error:", err);
+  } catch (err: any) {
+    console.warn("Firebase Sign-In notice:", err?.message || err);
+
+    // If local demo/preset account exists, return it cleanly
+    if (matchedLocalUser) {
+      setLocalStorage(LOCAL_STORAGE_KEYS.CURRENT_USER, matchedLocalUser);
+      return matchedLocalUser;
+    }
+
+    // Attempt auto-registration if account isn't created in Firebase Auth yet
+    if (
+      err.code === 'auth/invalid-credential' || 
+      err.code === 'auth/user-not-found' || 
+      (err.message && (err.message.includes('invalid-credential') || err.message.includes('user-not-found')))
+    ) {
+      try {
+        const newCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const firebaseUser = newCredential.user;
+        const newProfile: UserProfile = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email || email,
+          displayName: email.split('@')[0],
+          role: 'Student',
+          profileCompleted: true,
+          xp: 100,
+          badges: ['New Member']
+        };
+        await saveProfile(newProfile);
+        setLocalStorage(LOCAL_STORAGE_KEYS.CURRENT_USER, newProfile);
+        return newProfile;
+      } catch (createErr: any) {
+        // If creation failed due to existing email or weak password, throw clear error
+        if (createErr.code === 'auth/email-already-in-use' || createErr.message?.includes('email-already-in-use')) {
+          const authErr = new Error('The email or password you entered is incorrect. Please check your credentials or click Sign Up.');
+          (authErr as any).code = 'auth/invalid-credential';
+          throw authErr;
+        }
+      }
+    }
+
     throw err;
   }
 };
@@ -753,10 +1456,11 @@ export const signInWithGoogleSimulated = async (role: UserRole = 'Student'): Pro
     'Mentor': 'Dr. Alabi',
     'Sponsor': 'Alhaji Salami',
     'Client': 'Abiodun Salami',
+    'Talent': 'Tunde Bakare',
     'Admin': 'Pulzitive Admin'
   };
-  const name = roleNameMap[role] || 'Sandbox Explorer';
-  const email = `${role.toLowerCase().replace(' ', '')}@pulzitive-ecosystem-sim.com`;
+  const name = roleNameMap[role] || 'Platform Explorer';
+  const email = `${role.toLowerCase().replace(' ', '')}@pulzitive-platform-sim.com`;
   
   const newProfile: UserProfile = {
     uid: mockUid,
