@@ -434,12 +434,6 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
             >
               Get Free Audit & Strategy Session <ChevronRight className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => onNavigate('academy')}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold px-6 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 hover:scale-[1.01]"
-            >
-              Learn <ChevronRight className="w-4 h-4" />
-            </button>
           </motion.div>
         </div>
       </section>

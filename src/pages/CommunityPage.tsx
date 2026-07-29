@@ -203,6 +203,62 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
                   duration: 'Free Live Streaming',
                   points: '+110 XP',
                   schedule: 'Monthly Special • 3PM WAT'
+                },
+                {
+                  id: 'webinar-ai-marketing',
+                  title: 'Mastering AI Tools for Digital Marketing & Automation',
+                  desc: 'Learn how to leverage Gemini AI and automated workflows to write high-converting copy, generate campaign assets, and scale efficiency.',
+                  duration: 'Free Live Streaming',
+                  points: '+140 XP',
+                  schedule: 'Bi-Weekly Tuesday • 5PM WAT'
+                },
+                {
+                  id: 'webinar-pmax',
+                  title: 'Google Performance Max & Multi-Channel Scaling',
+                  desc: 'Deep dive into setting up Google PMax campaigns, asset groups, target ROAS bidding, and cross-channel tracking.',
+                  duration: 'Free Live Streaming',
+                  points: '+160 XP',
+                  schedule: 'Monthly Special • 4PM WAT'
+                },
+                {
+                  id: 'webinar-cro',
+                  title: 'E-Commerce Conversion Rate Optimization (CRO) Secrets',
+                  desc: 'Optimize online shop checkouts, reduce cart abandonment by 40%, and engineer frictionless customer buying journeys.',
+                  duration: 'Free Live Streaming',
+                  points: '+130 XP',
+                  schedule: 'Every Thursday • 6PM WAT'
+                },
+                {
+                  id: 'webinar-b2b',
+                  title: 'B2B Client Acquisition & High-Ticket Cold Email Strategy',
+                  desc: 'Craft irresistible B2B value propositions, build verified prospect lists, and book strategy sessions on autopilot.',
+                  duration: 'Free Live Streaming',
+                  points: '+150 XP',
+                  schedule: 'Bi-Weekly Friday • 5PM WAT'
+                },
+                {
+                  id: 'webinar-tiktok',
+                  title: 'TikTok & Short-Form Video Content for Viral Growth',
+                  desc: 'Master hook psychology, audio trends, and organic video storytelling to generate thousands of qualified leads.',
+                  duration: 'Free Live Streaming',
+                  points: '+120 XP',
+                  schedule: 'Every Sunday • 3PM WAT'
+                },
+                {
+                  id: 'webinar-gigs',
+                  title: 'Cross-Border Freelancing & Talent Marketplace Mastery',
+                  desc: 'Position your skills for global clients, craft winning proposals, and command premium rates on talent networks.',
+                  duration: 'Free Live Streaming',
+                  points: '+170 XP',
+                  schedule: 'Monthly Special • 2PM WAT'
+                },
+                {
+                  id: 'webinar-analytics',
+                  title: 'Building Scalable Lead Generation Pipelines with Analytics',
+                  desc: 'Connect Google Analytics 4, Tag Manager, and custom dashboards to track precise ROI across all marketing channels.',
+                  duration: 'Free Live Streaming',
+                  points: '+180 XP',
+                  schedule: 'Every Monday • 5PM WAT'
                 }
               ].map((rc) => (
                 <div 
@@ -226,8 +282,8 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
                   <div className="mt-5 pt-3.5 border-t border-slate-900/60 flex items-center justify-between gap-2">
                     <span className="text-[9px] font-mono text-slate-500">{rc.schedule}</span>
                     <button
-                      onClick={() => onTriggerNotification?.(`Success! You have registered for the free live webinar "${rc.title}". You will receive a secure Google Meet stream link on your dashboard 15 minutes before we go live.`)}
-                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[10px] transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                      onClick={() => onTriggerNotification?.(`Success! You have registered for the free live webinar "${rc.title}". Check your email for calendar invite & Google Meet streaming access link.`)}
+                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[10px] transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-md"
                     >
                       Register Free Webinar
                     </button>

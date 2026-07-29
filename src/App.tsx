@@ -34,8 +34,50 @@ import {
 } from './firebase';
 import { Bell, Sparkles, Check, CheckCircle2, ShieldAlert } from 'lucide-react';
 
+const VALID_PAGES = [
+  'home', 'courses', 'pricing', 'marketplace', 'community', 'dashboard',
+  'pr', 'academy', 'portfolio', 'talents', 'privacy', 'terms', 'sitemap'
+];
+
+const getInitialPage = (): string => {
+  if (typeof window !== 'undefined') {
+    const rawHash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
+    if (rawHash && VALID_PAGES.includes(rawHash)) {
+      return rawHash;
+    }
+  }
+  return 'home';
+};
+
 export default function App() {
-  const [activePage, setActivePage] = useState<string>('home');
+  const [activePage, setActiveState] = useState<string>(getInitialPage);
+
+  const setActivePage = (page: string) => {
+    setActiveState(page);
+    const targetHash = page === 'home' ? '#home' : `#${page}`;
+    if (window.location.hash !== targetHash) {
+      window.history.pushState(null, '', targetHash);
+    }
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const rawHash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
+      if (rawHash && VALID_PAGES.includes(rawHash)) {
+        setActiveState(rawHash);
+      } else if (!rawHash) {
+        setActiveState('home');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
+
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   
   // Database mock states synced from firebase

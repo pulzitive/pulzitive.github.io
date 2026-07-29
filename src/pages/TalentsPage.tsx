@@ -72,14 +72,18 @@ const ARTISAN_TRADES = [
 
 const LOCATIONS_LIST = [
   'All Locations',
+  'Global / Remote',
+  'North America (US & Canada)',
+  'United Kingdom & Europe',
+  'Asia Pacific & Middle East',
   'Lagos, NG',
   'Abuja, NG',
-  'Port Harcourt, NG',
-  'Ibadan, NG',
-  'Kano, NG',
-  'Enugu, NG',
-  'Benin City, NG',
-  'Asaba, NG'
+  'London, UK',
+  'New York, USA',
+  'Toronto, CA',
+  'Dubai, UAE',
+  'Nairobi, KE',
+  'Johannesburg, ZA'
 ];
 
 export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpenAuthModal }: TalentsPageProps) {
@@ -505,7 +509,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center space-y-5">
           <div className="inline-flex items-center gap-2 bg-emerald-100/80 border border-emerald-300 text-emerald-800 text-xs font-mono font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Pulzitive Local Artisan & Trade Network</span>
+            <span>Verified Artisans & Technicians Network</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight max-w-3xl">
@@ -563,23 +567,23 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
           </div>
 
           {/* MAIN PAGE TABS (BROWSE vs TALENTS DASHBOARD vs GIG FEED) */}
-          <div className="flex items-center justify-center gap-2 mt-8 border-b border-slate-200 pb-0 overflow-x-auto w-full">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-1.5 sm:gap-2 mt-6 border-b border-slate-200 pb-0 overflow-x-auto w-full max-w-full px-2">
             <button
               onClick={() => setActiveTab('browse')}
-              className={`px-5 py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-2 whitespace-nowrap ${
+              className={`px-3.5 sm:px-5 py-2.5 sm:py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'browse'
                   ? 'border-emerald-600 text-emerald-700 bg-emerald-50/80 rounded-t-xl font-black'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
               <User className="w-4 h-4" />
-              <span>Explore Artisans Directory</span>
+              <span>Artisans & Opportunities Feed</span>
               <span className="bg-slate-200 text-slate-800 text-[10px] px-2 py-0.5 rounded-full font-mono">{filteredTalents.length}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('gigs')}
-              className={`px-5 py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-2 whitespace-nowrap ${
+              className={`px-3.5 sm:px-5 py-2.5 sm:py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'gigs'
                   ? 'border-emerald-600 text-emerald-700 bg-emerald-50/80 rounded-t-xl font-black'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -599,7 +603,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   setActiveTab('dashboard');
                 }
               }}
-              className={`px-5 py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-2 whitespace-nowrap ${
+              className={`px-3.5 sm:px-5 py-2.5 sm:py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-1.5 whitespace-nowrap ${
                 activeTab === 'dashboard'
                   ? 'border-emerald-600 text-emerald-700 bg-emerald-50/80 rounded-t-xl font-black'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -709,7 +713,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 <User className="w-12 h-12 text-slate-600 mx-auto" />
                 <h3 className="text-base font-bold text-white">No talents matched your current location or skill filter</h3>
                 <p className="text-xs text-slate-400 max-w-md mx-auto">
-                  Try clearing search keywords or switching location to "All Locations" to view talents across Nigeria and worldwide.
+                  Try clearing search keywords or switching location filter to "All Locations" or "Global / Remote" to view talents worldwide.
                 </p>
                 <button
                   onClick={() => {
@@ -787,7 +791,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                         {talent.bio}
                       </p>
 
-                      {/* Rating & Rate Stats */}
+                      {/* Rating & Verified Status */}
                       <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between text-xs">
                         <div className="flex items-center gap-1">
                           <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
@@ -795,8 +799,9 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                           <span className="text-[10px] text-slate-500">({talent.reviewsCount} reviews)</span>
                         </div>
                         <div className="text-right">
-                          <span className="font-extrabold text-emerald-400 text-xs">${talent.hourlyRateUsd}/hr</span>
-                          <span className="text-[9px] text-slate-500 block">~₦{talent.hourlyRateNgn.toLocaleString()}/hr</span>
+                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 uppercase">
+                            Verified Talent
+                          </span>
                         </div>
                       </div>
 
@@ -858,7 +863,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   <span>Live Client Gig Feed in Your Location</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Clients in Lagos, Abuja, and globally looking for verified creators, developers, and consultants.
+                  Global employers & local clients looking for verified creators, software engineers, AI specialists, and master trade experts worldwide.
                 </p>
               </div>
 
@@ -1029,7 +1034,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     </div>
                     <div className="flex items-baseline gap-2">
                       <span className="text-2xl font-black text-white">{(myTalentProfile.viewsCount || 240).toLocaleString()}</span>
-                      <span className="text-[10px] text-indigo-400 font-bold">Lagos & Regional</span>
+                      <span className="text-[10px] text-indigo-400 font-bold">Global & Regional</span>
                     </div>
                     <p className="text-[10px] text-slate-500">Top keywords: {myTalentProfile.category}</p>
                   </div>
@@ -1179,7 +1184,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                             <span>Promotional Boost & Verified Badge</span>
                           </h3>
                           <p className="text-[11px] text-slate-400 mt-0.5">
-                            Amplify your visibility by up to +350% across local search radius in Lagos, Abuja & Regional areas.
+                            Amplify your visibility by up to +350% across global talent directory and regional hubs worldwide.
                           </p>
                         </div>
 
@@ -1906,7 +1911,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       type="text"
                       value={gigLocation}
                       onChange={(e) => setGigLocation(e.target.value)}
-                      placeholder="e.g. Ikeja, Lagos"
+                      placeholder="e.g. Remote / Global, London, UK, or Lagos, NG"
                       className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                       required
                     />
@@ -2044,7 +2049,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       type="text"
                       value={myTalentProfile.location || ''}
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, location: e.target.value })}
-                      placeholder="e.g. Ikeja, Lagos"
+                      placeholder="e.g. Remote / Global, New York, USA, or Lagos, NG"
                       className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                       required
                     />

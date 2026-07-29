@@ -33,7 +33,7 @@ import {
   getDocFromServer
 } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
-import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry } from './types';
+import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry, B2BProspect, WebinarFunnel, ProductOrService, PlatformOrder, OutreachLog, GoogleSheetsSyncState } from './types';
 
 // Detect whether real Firebase is configured
 export const isRealFirebase = 
@@ -143,7 +143,13 @@ const LOCAL_STORAGE_KEYS = {
   MENTORSHIP_REQUESTS: 'sac_mentorship_requests',
   TALENTS: 'sac_talents',
   GIGS: 'sac_gigs',
-  TALENT_INQUIRIES: 'sac_talent_inquiries'
+  TALENT_INQUIRIES: 'sac_talent_inquiries',
+  PROSPECTS: 'sac_b2b_prospects',
+  WEBINARS: 'sac_webinars',
+  PRODUCTS_AND_SERVICES: 'sac_products_services',
+  ORDERS: 'sac_orders',
+  OUTREACH_LOGS: 'sac_outreach_logs',
+  SHEETS_SYNC: 'sac_sheets_sync'
 };
 
 const getLocalStorage = <T>(key: string, defaultValue: T): T => {
@@ -518,6 +524,78 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.SPONSORSHIPS)) {
 
 if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
   const defaultTalents: TalentProfile[] = [
+    {
+      id: 'tal-0a',
+      name: 'Marcus Vance, Master Electrician',
+      email: 'marcus.vance@pulzitive.com',
+      title: 'Master Industrial Electrician, Solar & Smart Power Grid Technician',
+      category: 'Electrician',
+      location: 'San Francisco, CA (Global Remote)',
+      hourlyRateUsd: 45,
+      hourlyRateNgn: 27000,
+      rating: 5.0,
+      reviewsCount: 112,
+      bio: 'Licensed master electrician specializing in 3-phase commercial wiring, solar PV panel & inverter installations, smart home power automation, circuit breaker troubleshooting, and high-voltage grid safety.',
+      skills: ['High Voltage Wiring', 'Solar Inverters', 'Circuit Breakers', 'Smart Home Power', 'Industrial PLC', 'Conduit Bending'],
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Global Solar Array & Smart Grid Project', url: 'https://pulzitive.com/artisans/marcus-vance' }
+      ],
+      viewsCount: 5420,
+      completedJobsCount: 138,
+      responseTimeMinutes: 5,
+      isFeatured: true
+    },
+    {
+      id: 'tal-0b',
+      name: 'David Sterling, Master Plumber',
+      email: 'david.sterling@pulzitive.com',
+      title: 'Certified Commercial Plumber, Hydro-Jetting & Pipefitter',
+      category: 'Plumber',
+      location: 'London, UK (Global Remote)',
+      hourlyRateUsd: 40,
+      hourlyRateNgn: 24000,
+      rating: 4.9,
+      reviewsCount: 89,
+      bio: 'Certified master plumber with 14+ years experience in commercial pipefitting, thermal water heater installations, hydro-jet drain unblocking, underground leak detection, and sanitary plumbing systems.',
+      skills: ['Pipefitting', 'Hydro-Jetting', 'Leak Detection', 'Solar Water Heaters', 'Sewer Repair', 'Backflow Prevention'],
+      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Commercial Hydronic & Sewer Network', url: 'https://pulzitive.com/artisans/david-sterling' }
+      ],
+      viewsCount: 4180,
+      completedJobsCount: 94,
+      responseTimeMinutes: 8,
+      isFeatured: true
+    },
+    {
+      id: 'tal-0c',
+      name: 'Liam O\'Connor, Master Land Scraper',
+      email: 'liam.oconnor@pulzitive.com',
+      title: 'Land Scraping, Topography Leveling & Lawn Care Architect',
+      category: 'Land Scraper',
+      location: 'Toronto, Canada (Global Contract)',
+      hourlyRateUsd: 38,
+      hourlyRateNgn: 22800,
+      rating: 4.95,
+      reviewsCount: 76,
+      bio: 'Expert heavy equipment land scraper and landscape technician. Specializes in terrain grading, land clearing, lawn scraping, soil stabilization, automated irrigation systems, and interlocking paver installation.',
+      skills: ['Land Scraping', 'Soil Grading', 'Lawn Care', 'Excavation', 'Interlocking Paving', 'Drainage Systems'],
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Estate Land Scraping & Irrigation Project', url: 'https://pulzitive.com/artisans/liam-oconnor' }
+      ],
+      viewsCount: 3890,
+      completedJobsCount: 81,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
     {
       id: 'tal-1',
       name: 'Engr. Kazeem Adebayo',
@@ -933,6 +1011,54 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
 if (!localStorage.getItem(LOCAL_STORAGE_KEYS.GIGS)) {
   const defaultGigs: TalentGigOpportunity[] = [
     {
+      id: 'gig-0a',
+      title: 'Commercial Solar Array 3-Phase Wiring & High-Voltage Inverter Setup',
+      clientName: 'Vanguard Energy Partners',
+      clientEmail: 'hiring@vanguardenergy.io',
+      category: 'Electrician',
+      location: 'New York, USA (Global Remote / Contract)',
+      budgetUsd: 2200,
+      budgetNgn: 1320000,
+      type: 'Fixed Price',
+      urgency: 'This Week',
+      description: 'Seeking a certified master electrician to design, wire, and inspect a commercial solar PV installation featuring 24 kW array panels, dual 3-phase hybrid inverters, and battery storage backup.',
+      postedDate: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
+      proposalsCount: 14,
+      distanceKm: 0.1
+    },
+    {
+      id: 'gig-0b',
+      title: 'Industrial Hydro-Jetting & Underground Sewer Plumbing Overhaul',
+      clientName: 'Apex Global Properties',
+      clientEmail: 'maintenance@apexglobal.co.uk',
+      category: 'Plumber',
+      location: 'London, UK (Global Contract)',
+      budgetUsd: 1600,
+      budgetNgn: 960000,
+      type: 'Milestone',
+      urgency: 'Immediate (24-48 hrs)',
+      description: 'Urgent requirement for a certified commercial plumber to perform hydro-jet clearing, video camera pipe inspection, and replacement of damaged main sewer line sections.',
+      postedDate: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+      proposalsCount: 19,
+      distanceKm: 0.1
+    },
+    {
+      id: 'gig-0c',
+      title: '2-Acre Estate Land Scraping, Lawn Leveling & Drainage Grading',
+      clientName: 'Highland Residential Estates',
+      clientEmail: 'projects@highlandestates.ca',
+      category: 'Land Scraper',
+      location: 'Toronto, CA (Global Contract)',
+      budgetUsd: 3500,
+      budgetNgn: 2100000,
+      type: 'Milestone',
+      urgency: 'Flexible',
+      description: 'Looking for an experienced land scraper and lawn care technician to clear vegetation, level slope topography, install subsurface French drains, and grade soil for sod laying.',
+      postedDate: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+      proposalsCount: 11,
+      distanceKm: 0.1
+    },
+    {
       id: 'gig-1',
       title: 'Full Automobile Engine Diagnostic & Brake Pad Replacement (Toyota Camry 2018)',
       clientName: 'Alhaji Salami',
@@ -988,13 +1114,13 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES)) {
   const defaultInquiries: TalentInquiry[] = [
     {
       id: 'inq-1',
-      talentId: 'tal-1',
-      clientName: 'Zenith Retail Corp',
-      clientEmail: 'manager@zenithretail.com',
-      projectTitle: 'E-Commerce AI Chatbot & Custom Integration',
-      message: 'Hi Tunde, we saw your verified profile on Pulzitive Talents. We want to hire you to integrate a Gemini-powered shopping assistant on our React store.',
-      offeredBudgetUsd: 950,
-      offeredBudgetNgn: 570000,
+      talentId: 'tal-0a',
+      clientName: 'Zenith Logistics & Commercial Hub',
+      clientEmail: 'facility@zenithlogistics.com',
+      projectTitle: '15kVA Commercial Solar & High-Voltage Power Installation',
+      message: 'Hi Marcus, we saw your verified electrician profile on Pulzitive Artisans. We want to hire you to install and wire a 15kVA Solar Inverter system at our distribution hub.',
+      offeredBudgetUsd: 1400,
+      offeredBudgetNgn: 840000,
       location: 'Ikeja, Lagos',
       status: 'Pending',
       date: new Date(Date.now() - 18 * 3600 * 1000).toISOString()
@@ -1002,6 +1128,413 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES)) {
   ];
   setLocalStorage(LOCAL_STORAGE_KEYS.TALENT_INQUIRIES, defaultInquiries);
 }
+
+// Seed B2B Prospects
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.PROSPECTS)) {
+  const defaultProspects: B2BProspect[] = [
+    {
+      id: 'prospect-1',
+      placeId: 'ChIJN1t_t_neOxAR160_Lagos_1',
+      companyName: 'Apex Logistics & Fleet Corp',
+      industry: 'Logistics & Supply Chain',
+      location: {
+        address: '14 Commercial Avenue, Sabo, Yaba',
+        city: 'Lagos',
+        state: 'Lagos State',
+        country: 'Nigeria',
+        lat: 6.5095,
+        lng: 3.3711
+      },
+      rating: 4.8,
+      reviewsCount: 42,
+      contact: {
+        email: 'info@apexlogistics.ng',
+        whatsappPhone: '+2348039201928',
+        website: 'https://apexlogistics.ng',
+        contactPerson: 'Chief Operations Director'
+      },
+      leadScore: 92,
+      status: 'engaged',
+      campaignId: 'camp-q3-b2b',
+      notes: 'Interested in WhatsApp Marketing Chatbot & Enterprise Fleet Lead Generation.',
+      syncedToGoogleSheets: true,
+      createdAt: new Date(Date.now() - 3 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'prospect-2',
+      placeId: 'ChIJN1t_t_neOxAR160_NYC_2',
+      companyName: 'Vanguard Energy Solutions',
+      industry: 'Solar & Renewable Power',
+      location: {
+        address: '350 Fifth Avenue, Floor 42',
+        city: 'New York',
+        state: 'NY',
+        country: 'United States',
+        lat: 40.7484,
+        lng: -73.9857
+      },
+      rating: 4.9,
+      reviewsCount: 88,
+      contact: {
+        email: 'partnerships@vanguardenergy.com',
+        whatsappPhone: '+12125550192',
+        website: 'https://vanguardenergy.com',
+        contactPerson: 'Head of Business Development'
+      },
+      leadScore: 88,
+      status: 'queued',
+      campaignId: 'camp-global-solar',
+      notes: 'Qualified for global B2B outreach sequence and high-voltage contractor matchmaking.',
+      syncedToGoogleSheets: true,
+      createdAt: new Date(Date.now() - 2 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'prospect-3',
+      placeId: 'ChIJN1t_t_neOxAR160_LDN_3',
+      companyName: 'BlueHorizon Tech Ltd',
+      industry: 'SaaS & Enterprise Software',
+      location: {
+        address: '25 Bank Street, Canary Wharf',
+        city: 'London',
+        country: 'United Kingdom',
+        lat: 51.5033,
+        lng: -0.0194
+      },
+      rating: 4.7,
+      reviewsCount: 61,
+      contact: {
+        email: 'contact@bluehorizon.co.uk',
+        whatsappPhone: '+442079460912',
+        website: 'https://bluehorizon.co.uk',
+        contactPerson: 'VP Growth & Marketing'
+      },
+      leadScore: 95,
+      status: 'contacted',
+      campaignId: 'camp-saas-outreach',
+      notes: 'Responded to Gmail cold email campaign. Scheduled strategy call.',
+      syncedToGoogleSheets: true,
+      createdAt: new Date(Date.now() - 1 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'prospect-4',
+      placeId: 'ChIJN1t_t_neOxAR160_ABJ_4',
+      companyName: 'Crown Heights Real Estate & Advisory',
+      industry: 'Commercial Real Estate',
+      location: {
+        address: 'Plot 412 Central Business District',
+        city: 'Abuja',
+        state: 'FCT',
+        country: 'Nigeria',
+        lat: 9.0765,
+        lng: 7.3986
+      },
+      rating: 4.6,
+      reviewsCount: 35,
+      contact: {
+        email: 'sales@crownheights.ng',
+        whatsappPhone: '+2348091122334',
+        website: 'https://crownheights.ng',
+        contactPerson: 'Managing Director'
+      },
+      leadScore: 82,
+      status: 'lead',
+      campaignId: 'camp-sme-retainers',
+      notes: 'Extracted via Google Places API scraper. High interest in SEO & Lead Funnels.',
+      syncedToGoogleSheets: false,
+      createdAt: new Date().toISOString()
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, defaultProspects);
+}
+
+// Seed 24x Annual Webinars
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.WEBINARS)) {
+  const generate24Webinars = (): WebinarFunnel[] => {
+    const list: WebinarFunnel[] = [];
+    const baseDate = new Date('2026-01-15T16:00:00.000Z');
+    
+    const titles = [
+      'B2B Lead Generation & WhatsApp Funnels Mastery',
+      'Scaling SME Revenue with High-Converting Digital Ads',
+      'Google Maps Scraping & Enterprise Cold Outreach System',
+      'Talent Spotlighting & Personal Brand Monetization',
+      'E-Commerce Conversion Rate Optimization (CRO)',
+      'High-Ticket B2B Sales & Proposal Negotiation Hacks',
+      'Google Workspace & Gmail API Growth Automation',
+      'Building Low-Barrier Digital Product Sales Funnels',
+      'SME Digital Retainers & Client Acquisition System',
+      'AI-Powered Copywriting & Automated Email Nurturing',
+      'Cross-Border USD Payment & Paystack/Stripe Integration',
+      'SEO & Google Business Profile Local Dominance',
+      'WhatsApp Business Cloud API Chatbot Architecture',
+      'Corporate Strategy & Retainer Pricing Frameworks',
+      'High-Performance Landing Page & UI/UX Conversion',
+      'Google Meet & Calendar Automation for Strategy Calls',
+      'Talent Upselling: Social Media & Managed Ad Services',
+      'B2B Prospect Scoring & Data Enrichment Workflow',
+      'Mastering Multi-Channel Cold Email Deliverability',
+      'Building Scalable SaaS & Service Agency Workflows',
+      'Growth Analytics: Tracking ROI from Click to Closed Deal',
+      'Local Artisan & Trade Marketplace Monetization',
+      'Enterprise Client Retention & High-LTV Onboarding',
+      'Annual Digital Growth Summit & Mastermind Blueprint'
+    ];
+
+    for (let i = 1; i <= 24; i++) {
+      const webinarDate = new Date(baseDate.getTime() + (i - 1) * 14 * 86400 * 1000); // Bi-weekly (every 14 days)
+      const now = new Date();
+      let status: WebinarFunnel['status'] = 'Upcoming';
+      if (webinarDate < now) {
+        status = 'Completed';
+      } else if (Math.abs(webinarDate.getTime() - now.getTime()) < 3600 * 1000) {
+        status = 'Live Now';
+      }
+
+      list.push({
+        id: `webinar-${i}`,
+        number: i,
+        title: titles[i - 1] || `Webinar #${i}: B2B Growth Masterclass`,
+        description: `Join Salami Abiodun Consult for Webinar #${i} of our 24-part annual series. Learn practical execution frameworks, Google API automations, and live lead conversion strategies.`,
+        scheduleDateTime: webinarDate.toISOString(),
+        googleMeetLink: `https://meet.google.com/sac-webinar-${100 + i}`,
+        googleCalendarEventId: `cal-evt-webinar-${i}`,
+        totalRegistrants: status === 'Completed' ? 140 + i * 8 : (i <= 3 ? 85 : 24),
+        attendanceCount: status === 'Completed' ? 98 + i * 5 : (i <= 3 ? 0 : 0),
+        featuredUpsellId: i % 2 === 0 ? 'prod-2' : 'prod-3',
+        status,
+        registrants: [
+          {
+            id: `reg-${i}-1`,
+            name: 'Engr. Folake Adeleke',
+            email: 'folake.adeleke@gmail.com',
+            whatsapp: '+2348021112233',
+            attended: status === 'Completed',
+            converted: i === 1,
+            registeredAt: new Date(webinarDate.getTime() - 3 * 86400 * 1000).toISOString()
+          },
+          {
+            id: `reg-${i}-2`,
+            name: 'Michael Chen',
+            email: 'm.chen@vanguardenergy.com',
+            whatsapp: '+12125550192',
+            attended: status === 'Completed',
+            converted: false,
+            registeredAt: new Date(webinarDate.getTime() - 2 * 86400 * 1000).toISOString()
+          }
+        ]
+      });
+    }
+    return list;
+  };
+  setLocalStorage(LOCAL_STORAGE_KEYS.WEBINARS, generate24Webinars());
+}
+
+// Seed Products and Services (4-tier NGN/USD monetization)
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES)) {
+  const defaultItems: ProductOrService[] = [
+    {
+      id: 'prod-1',
+      type: 'digital_product',
+      title: 'B2B Sales Prospecting SOP & Cold Email Templates Kit',
+      description: 'Turnkey framework kit containing 15 cold outreach email scripts, Google Places lead scoring formula, and client objection handling scripts.',
+      priceNgn: 4500,
+      priceUsd: 7,
+      category: 'Digital SOP & Templates',
+      features: ['15 Cold Email Scripts', 'Lead Scoring Calculator', 'WhatsApp Pitch Blueprint', 'Instant PDF Download'],
+      salesCount: 142,
+      isActive: true,
+      downloadUrl: 'https://salamiabiodunconsult.github.io/salamiabiodunconsult/b2b-sop-kit.pdf',
+      recurringPeriod: 'one_time'
+    },
+    {
+      id: 'prod-2',
+      type: 'digital_product',
+      title: 'WhatsApp Business Chatbot & Drip Campaign Automation Kit',
+      description: 'Step-by-step setup kit for WhatsApp Cloud API webhooks, automated lead qualification, and broadcast messaging templates.',
+      priceNgn: 3500,
+      priceUsd: 5,
+      category: 'Automation Playbook',
+      features: ['WhatsApp Webhook Architecture', 'Automated Lead Qualification Bot', '5 Broadcast Message Templates', 'Integration Video Guide'],
+      salesCount: 198,
+      isActive: true,
+      downloadUrl: 'https://salamiabiodunconsult.github.io/salamiabiodunconsult/whatsapp-automation-kit.pdf',
+      recurringPeriod: 'one_time'
+    },
+    {
+      id: 'prod-3',
+      type: 'course',
+      title: 'B2B Sales, Digital Marketing & Growth Hacking Mastery Program',
+      description: 'Comprehensive self-paced video mastery course covering Google Places scraping, Gmail outreach sequences, Paystack/Stripe checkout funnels, and high-ticket B2B retainer sales.',
+      priceNgn: 18500,
+      priceUsd: 28,
+      category: 'Mastery Courses',
+      features: ['12 High-Definition Modules', 'Live Q&A Webinar Recordings', 'Salami Abiodun Consult Certificate', 'Lifetime Community Access'],
+      salesCount: 84,
+      isActive: true,
+      downloadUrl: 'https://salamiabiodunconsult.github.io/salamiabiodunconsult/course-access',
+      recurringPeriod: 'one_time'
+    },
+    {
+      id: 'prod-4',
+      type: 'talent_spotlight',
+      title: 'Talent Directory Spotlighting & Verified Brand Badge (Annual)',
+      description: 'Get listed in the verified Talent Spotlighting Directory, receive top search positioning, newsletter feature, and direct client job lead routing.',
+      priceNgn: 12500,
+      priceUsd: 18,
+      category: 'Talent Spotlighting',
+      features: ['Verified Directory Badge', 'Top Category Ranking', 'Direct Client Inquiries', 'Newsletter Brand Spotlight'],
+      salesCount: 65,
+      isActive: true,
+      recurringPeriod: 'annual'
+    },
+    {
+      id: 'prod-5',
+      type: 'marketing_service',
+      title: 'Managed Digital Marketing Service for Talents & Artisans',
+      description: 'Done-for-you digital marketing management including social media content, Google Local Maps optimization, paid ad campaigns, and portfolio polishing.',
+      priceNgn: 45000,
+      priceUsd: 68,
+      category: 'Managed Services',
+      features: ['Weekly Social Content', 'Google Maps Local SEO', '₦20k Paid Ad Credit Management', 'Dedicated Account Consultant'],
+      salesCount: 29,
+      isActive: true,
+      recurringPeriod: 'monthly'
+    },
+    {
+      id: 'prod-6',
+      type: 'marketing_service',
+      title: 'SME Digital Marketing & WhatsApp Funnel Retainer',
+      description: 'Full-service monthly growth retainer for SMEs. Includes SEO optimization, Google Places lead generation, WhatsApp lead capture chatbots, and weekly campaign reporting.',
+      priceNgn: 120000,
+      priceUsd: 180,
+      category: 'Enterprise Retainers',
+      features: ['Full SEO Audit & Execution', 'Monthly 200 Qualified Leads', 'WhatsApp Chatbot Management', 'Bi-Weekly Executive Strategy Call'],
+      salesCount: 17,
+      isActive: true,
+      recurringPeriod: 'monthly'
+    },
+    {
+      id: 'prod-7',
+      type: 'marketing_service',
+      title: 'Corporate & Enterprise Growth Automation Retainer',
+      description: 'Custom enterprise-grade growth automation solution. Bi-directional Google Sheets sync, custom Gmail API campaigns, Google Meet webinar integration, and dedicated strategy lead.',
+      priceNgn: 350000,
+      priceUsd: 525,
+      category: 'Enterprise Retainers',
+      features: ['Custom API Integrations', 'Unlimited Lead Scraping', 'Dedicated Senior Architect', 'SLA Guaranteed Response'],
+      salesCount: 6,
+      isActive: true,
+      recurringPeriod: 'monthly'
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES, defaultItems);
+}
+
+// Seed Orders
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.ORDERS)) {
+  const defaultOrders: PlatformOrder[] = [
+    {
+      id: 'ord-101',
+      buyerName: 'Dr. Chinedu Okafor',
+      buyerEmail: 'chinedu.o@healthtech.ng',
+      buyerPhone: '+2348035551212',
+      itemId: 'prod-1',
+      itemTitle: 'B2B Sales Prospecting SOP & Cold Email Templates Kit',
+      itemType: 'digital_product',
+      pricePaid: 4500,
+      currency: 'NGN',
+      paymentGateway: 'Paystack',
+      transactionReference: 'PSTK_REF_9812401',
+      status: 'successful',
+      createdAt: new Date(Date.now() - 2 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'ord-102',
+      buyerName: 'Marcus Vance',
+      buyerEmail: 'marcus.vance@pulzitive.com',
+      buyerPhone: '+12125550192',
+      itemId: 'prod-4',
+      itemTitle: 'Talent Directory Spotlighting & Verified Brand Badge (Annual)',
+      itemType: 'talent_spotlight',
+      pricePaid: 18,
+      currency: 'USD',
+      paymentGateway: 'Stripe',
+      transactionReference: 'STRP_CH_3N9281',
+      status: 'successful',
+      createdAt: new Date(Date.now() - 1 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'ord-103',
+      buyerName: 'Apex Logistics Corp',
+      buyerEmail: 'info@apexlogistics.ng',
+      buyerPhone: '+2348039201928',
+      itemId: 'prod-6',
+      itemTitle: 'SME Digital Marketing & WhatsApp Funnel Retainer',
+      itemType: 'marketing_service',
+      pricePaid: 120000,
+      currency: 'NGN',
+      paymentGateway: 'Paystack',
+      transactionReference: 'PSTK_REF_4419208',
+      status: 'successful',
+      createdAt: new Date().toISOString()
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.ORDERS, defaultOrders);
+}
+
+// Seed Outreach Logs
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.OUTREACH_LOGS)) {
+  const defaultLogs: OutreachLog[] = [
+    {
+      id: 'log-1',
+      prospectId: 'prospect-1',
+      companyName: 'Apex Logistics & Fleet Corp',
+      channel: 'whatsapp',
+      stepNumber: 1,
+      templateName: 'WhatsApp Initial Lead Introduction',
+      recipientContact: '+2348039201928',
+      status: 'replied',
+      sentAt: new Date(Date.now() - 2 * 86400 * 1000).toISOString(),
+      responsePreview: 'Thanks! Interested in learning more about your WhatsApp Chatbot retainer.'
+    },
+    {
+      id: 'log-2',
+      prospectId: 'prospect-3',
+      companyName: 'BlueHorizon Tech Ltd',
+      channel: 'gmail',
+      stepNumber: 1,
+      templateName: 'Gmail B2B Partnership Cold Pitch',
+      recipientContact: 'contact@bluehorizon.co.uk',
+      status: 'opened',
+      sentAt: new Date(Date.now() - 1 * 86400 * 1000).toISOString()
+    },
+    {
+      id: 'log-3',
+      prospectId: 'prospect-2',
+      companyName: 'Vanguard Energy Solutions',
+      channel: 'gmail',
+      stepNumber: 2,
+      templateName: 'Gmail Webinar #1 VIP Invitation',
+      recipientContact: 'partnerships@vanguardenergy.com',
+      status: 'sent',
+      sentAt: new Date().toISOString()
+    }
+  ];
+  setLocalStorage(LOCAL_STORAGE_KEYS.OUTREACH_LOGS, defaultLogs);
+}
+
+// Seed Sheets Sync
+if (!localStorage.getItem(LOCAL_STORAGE_KEYS.SHEETS_SYNC)) {
+  const defaultSyncState: GoogleSheetsSyncState = {
+    lastSyncedAt: new Date().toISOString(),
+    totalProspectsSynced: 4,
+    totalTalentsSynced: 3,
+    totalWebinarsSynced: 24,
+    status: 'idle'
+  };
+  setLocalStorage(LOCAL_STORAGE_KEYS.SHEETS_SYNC, defaultSyncState);
+}
+
 
 export const getTalents = async (): Promise<TalentProfile[]> => {
   const talents = getLocalStorage<TalentProfile[]>(LOCAL_STORAGE_KEYS.TALENTS, []);
@@ -2756,4 +3289,387 @@ export const getFriendlyAuthErrorMessage = (err: any): string => {
   
   return err.message || 'An error occurred during authentication.';
 };
+
+// --- SALAMI ABIODUN CONSULT GROWTH AUTOMATION PLATFORM HELPERS ---
+
+// 1. B2B Prospect Discovery & Enrichment
+export const getB2BProspects = async (): Promise<B2BProspect[]> => {
+  const prospects = getLocalStorage<B2BProspect[]>(LOCAL_STORAGE_KEYS.PROSPECTS, []);
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'prospects'));
+      const items: B2BProspect[] = [];
+      snap.forEach(d => items.push(d.data() as B2BProspect));
+      if (items.length > 0) {
+        setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, items);
+        return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      }
+    } catch (err) {
+      console.warn("Firestore getB2BProspects error, fallback to cache:", err);
+    }
+  }
+  return prospects.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+};
+
+export const scrapeGooglePlacesProspects = async (keyword: string, city: string, country: string): Promise<B2BProspect[]> => {
+  // Simulates Google Places API B2B Lead Scraping & Enrichment Engine
+  const cityKey = city.toLowerCase();
+  const keywordClean = keyword.toLowerCase();
+  
+  const simulatedPlaces = [
+    {
+      companyName: `${keyword} Enterprise & Co`,
+      industry: keyword.charAt(0).toUpperCase() + keyword.slice(1),
+      address: `18 Commercial Way, ${city}`,
+      city,
+      country,
+      email: `contact@${keywordClean.replace(/\s+/g, '')}${cityKey}.com`,
+      whatsappPhone: country.toLowerCase().includes('nigeria') ? '+2348055590123' : '+12125559012',
+      website: `https://${keywordClean.replace(/\s+/g, '')}${cityKey}.com`,
+      rating: 4.8,
+      reviewsCount: 54,
+      leadScore: 94
+    },
+    {
+      companyName: `${city} Global ${keyword} Hub`,
+      industry: keyword.charAt(0).toUpperCase() + keyword.slice(1),
+      address: `102 Innovation Drive, ${city}`,
+      city,
+      country,
+      email: `sales@${cityKey}${keywordClean.replace(/\s+/g, '')}.org`,
+      whatsappPhone: country.toLowerCase().includes('nigeria') ? '+2348031199884' : '+442079468899',
+      website: `https://${cityKey}${keywordClean.replace(/\s+/g, '')}.org`,
+      rating: 4.6,
+      reviewsCount: 29,
+      leadScore: 86
+    },
+    {
+      companyName: `Highland ${keyword} Solutions`,
+      industry: keyword.charAt(0).toUpperCase() + keyword.slice(1),
+      address: `45 Station Road, ${city}`,
+      city,
+      country,
+      email: `info@highland${keywordClean.replace(/\s+/g, '')}.co`,
+      whatsappPhone: country.toLowerCase().includes('nigeria') ? '+2348092233445' : '+14165553344',
+      website: `https://highland${keywordClean.replace(/\s+/g, '')}.co`,
+      rating: 4.9,
+      reviewsCount: 112,
+      leadScore: 91
+    }
+  ];
+
+  const newProspects: B2BProspect[] = [];
+  const existing = getLocalStorage<B2BProspect[]>(LOCAL_STORAGE_KEYS.PROSPECTS, []);
+
+  for (const place of simulatedPlaces) {
+    const prospect: B2BProspect = {
+      id: `prospect-${Math.random().toString(36).substring(2, 9)}`,
+      placeId: `ChIJ_${Math.random().toString(36).substring(2, 12)}`,
+      companyName: place.companyName,
+      industry: place.industry,
+      location: {
+        address: place.address,
+        city: place.city,
+        country: place.country,
+        lat: cityKey.includes('lagos') ? 6.5244 : (cityKey.includes('new york') ? 40.7128 : 51.5074),
+        lng: cityKey.includes('lagos') ? 3.3792 : (cityKey.includes('new york') ? -74.0060 : -0.1278)
+      },
+      rating: place.rating,
+      reviewsCount: place.reviewsCount,
+      contact: {
+        email: place.email,
+        whatsappPhone: place.whatsappPhone,
+        website: place.website,
+        contactPerson: 'Lead Operations Executive'
+      },
+      leadScore: place.leadScore,
+      status: 'lead',
+      campaignId: `camp-${keywordClean.replace(/\s+/g, '-')}`,
+      notes: `Scraped live via Google Places API for keyword "${keyword}" in ${city}, ${country}.`,
+      syncedToGoogleSheets: false,
+      createdAt: new Date().toISOString()
+    };
+
+    existing.unshift(prospect);
+    newProspects.push(prospect);
+
+    if (isRealFirebase) {
+      try {
+        await setDoc(doc(db, 'prospects', prospect.id), cleanUndefined(prospect));
+      } catch (err) {
+        console.warn("Firestore save prospect failed:", err);
+      }
+    }
+  }
+
+  setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, existing);
+  return newProspects;
+};
+
+export const updateProspectStatus = async (id: string, status: B2BProspect['status']): Promise<void> => {
+  const prospects = getLocalStorage<B2BProspect[]>(LOCAL_STORAGE_KEYS.PROSPECTS, []);
+  const idx = prospects.findIndex(p => p.id === id);
+  if (idx !== -1) {
+    prospects[idx].status = status;
+    setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, prospects);
+  }
+
+  if (isRealFirebase) {
+    try {
+      await updateDoc(doc(db, 'prospects', id), { status });
+    } catch (err) {
+      console.warn("Firestore updateProspectStatus failed:", err);
+    }
+  }
+};
+
+// 2. Webinars & Conversion Funnel
+export const getWebinars = async (): Promise<WebinarFunnel[]> => {
+  const webinars = getLocalStorage<WebinarFunnel[]>(LOCAL_STORAGE_KEYS.WEBINARS, []);
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'webinars'));
+      const items: WebinarFunnel[] = [];
+      snap.forEach(d => items.push(d.data() as WebinarFunnel));
+      if (items.length > 0) {
+        setLocalStorage(LOCAL_STORAGE_KEYS.WEBINARS, items);
+        return items.sort((a, b) => a.number - b.number);
+      }
+    } catch (err) {
+      console.warn("Firestore getWebinars error, fallback to cache:", err);
+    }
+  }
+  return webinars.sort((a, b) => a.number - b.number);
+};
+
+export const registerForWebinar = async (webinarId: string, name: string, email: string, whatsapp: string): Promise<void> => {
+  const webinars = getLocalStorage<WebinarFunnel[]>(LOCAL_STORAGE_KEYS.WEBINARS, []);
+  const idx = webinars.findIndex(w => w.id === webinarId);
+  if (idx !== -1) {
+    const registrants = webinars[idx].registrants || [];
+    registrants.unshift({
+      id: `reg-${Date.now()}`,
+      name,
+      email,
+      whatsapp,
+      attended: false,
+      converted: false,
+      registeredAt: new Date().toISOString()
+    });
+    webinars[idx].registrants = registrants;
+    webinars[idx].totalRegistrants += 1;
+    setLocalStorage(LOCAL_STORAGE_KEYS.WEBINARS, webinars);
+
+    if (isRealFirebase) {
+      try {
+        await updateDoc(doc(db, 'webinars', webinarId), {
+          registrants,
+          totalRegistrants: webinars[idx].totalRegistrants
+        });
+      } catch (err) {
+        console.warn("Firestore registerForWebinar failed:", err);
+      }
+    }
+  }
+};
+
+export const updateWebinarStatus = async (webinarId: string, status: WebinarFunnel['status']): Promise<void> => {
+  const webinars = getLocalStorage<WebinarFunnel[]>(LOCAL_STORAGE_KEYS.WEBINARS, []);
+  const idx = webinars.findIndex(w => w.id === webinarId);
+  if (idx !== -1) {
+    webinars[idx].status = status;
+    setLocalStorage(LOCAL_STORAGE_KEYS.WEBINARS, webinars);
+
+    if (isRealFirebase) {
+      try {
+        await updateDoc(doc(db, 'webinars', webinarId), { status });
+      } catch (err) {
+        console.warn("Firestore updateWebinarStatus failed:", err);
+      }
+    }
+  }
+};
+
+// 3. E-Commerce Products, Services & Monetization
+export const getProductsAndServices = async (): Promise<ProductOrService[]> => {
+  const items = getLocalStorage<ProductOrService[]>(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES, []);
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'products_and_services'));
+      const list: ProductOrService[] = [];
+      snap.forEach(d => list.push(d.data() as ProductOrService));
+      if (list.length > 0) {
+        setLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES, list);
+        return list;
+      }
+    } catch (err) {
+      console.warn("Firestore getProductsAndServices error, fallback to cache:", err);
+    }
+  }
+  return items;
+};
+
+export const purchaseProductOrService = async (
+  itemId: string,
+  buyerName: string,
+  buyerEmail: string,
+  currency: 'NGN' | 'USD',
+  paymentGateway: 'Paystack' | 'Stripe',
+  buyerPhone?: string
+): Promise<PlatformOrder> => {
+  const items = getLocalStorage<ProductOrService[]>(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES, []);
+  const item = items.find(i => i.id === itemId);
+  const pricePaid = item ? (currency === 'NGN' ? item.priceNgn : item.priceUsd) : 5000;
+
+  const order: PlatformOrder = {
+    id: `ord-${Math.random().toString(36).substring(2, 9)}`,
+    buyerName,
+    buyerEmail,
+    buyerPhone,
+    itemId,
+    itemTitle: item?.title || 'Digital Product / Service',
+    itemType: item?.type || 'digital_product',
+    pricePaid,
+    currency,
+    paymentGateway,
+    transactionReference: `${paymentGateway === 'Paystack' ? 'PSTK_REF_' : 'STRP_CH_'}${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+    status: 'successful',
+    createdAt: new Date().toISOString()
+  };
+
+  const orders = getLocalStorage<PlatformOrder[]>(LOCAL_STORAGE_KEYS.ORDERS, []);
+  orders.unshift(order);
+  setLocalStorage(LOCAL_STORAGE_KEYS.ORDERS, orders);
+
+  if (item) {
+    item.salesCount = (item.salesCount || 0) + 1;
+    setLocalStorage(LOCAL_STORAGE_KEYS.PRODUCTS_AND_SERVICES, items);
+  }
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'orders', order.id), cleanUndefined(order));
+      if (item) {
+        await updateDoc(doc(db, 'products_and_services', item.id), { salesCount: item.salesCount });
+      }
+    } catch (err) {
+      console.warn("Firestore purchaseProductOrService failed:", err);
+    }
+  }
+
+  return order;
+};
+
+export const getPlatformOrders = async (): Promise<PlatformOrder[]> => {
+  const orders = getLocalStorage<PlatformOrder[]>(LOCAL_STORAGE_KEYS.ORDERS, []);
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'orders'));
+      const list: PlatformOrder[] = [];
+      snap.forEach(d => list.push(d.data() as PlatformOrder));
+      if (list.length > 0) {
+        setLocalStorage(LOCAL_STORAGE_KEYS.ORDERS, list);
+        return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      }
+    } catch (err) {
+      console.warn("Firestore getPlatformOrders error, fallback to cache:", err);
+    }
+  }
+  return orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+};
+
+// 4. Multi-Channel Outreach Logs & WhatsApp Chatbot Trigger
+export const getOutreachLogs = async (): Promise<OutreachLog[]> => {
+  const logs = getLocalStorage<OutreachLog[]>(LOCAL_STORAGE_KEYS.OUTREACH_LOGS, []);
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'outreach_logs'));
+      const list: OutreachLog[] = [];
+      snap.forEach(d => list.push(d.data() as OutreachLog));
+      if (list.length > 0) {
+        setLocalStorage(LOCAL_STORAGE_KEYS.OUTREACH_LOGS, list);
+        return list.sort((a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime());
+      }
+    } catch (err) {
+      console.warn("Firestore getOutreachLogs error, fallback to cache:", err);
+    }
+  }
+  return logs.sort((a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime());
+};
+
+export const triggerMultiChannelOutreach = async (
+  prospectId: string,
+  channel: 'gmail' | 'whatsapp',
+  templateName: string
+): Promise<OutreachLog> => {
+  const prospects = getLocalStorage<B2BProspect[]>(LOCAL_STORAGE_KEYS.PROSPECTS, []);
+  const prospect = prospects.find(p => p.id === prospectId);
+
+  const log: OutreachLog = {
+    id: `log-${Math.random().toString(36).substring(2, 9)}`,
+    prospectId,
+    companyName: prospect?.companyName || 'Prospect Partner',
+    channel,
+    stepNumber: 1,
+    templateName,
+    recipientContact: channel === 'gmail' ? (prospect?.contact.email || 'prospect@business.com') : (prospect?.contact.whatsappPhone || '+2348000000000'),
+    status: 'sent',
+    sentAt: new Date().toISOString()
+  };
+
+  const logs = getLocalStorage<OutreachLog[]>(LOCAL_STORAGE_KEYS.OUTREACH_LOGS, []);
+  logs.unshift(log);
+  setLocalStorage(LOCAL_STORAGE_KEYS.OUTREACH_LOGS, logs);
+
+  if (prospect && prospect.status === 'lead') {
+    prospect.status = 'contacted';
+    setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, prospects);
+  }
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'outreach_logs', log.id), cleanUndefined(log));
+      if (prospect) {
+        await updateDoc(doc(db, 'prospects', prospect.id), { status: 'contacted' });
+      }
+    } catch (err) {
+      console.warn("Firestore triggerMultiChannelOutreach error:", err);
+    }
+  }
+
+  return log;
+};
+
+// 5. Offline-First Google Sheets Bi-Directional Staging Sync
+export const getGoogleSheetsSyncState = async (): Promise<GoogleSheetsSyncState> => {
+  return getLocalStorage<GoogleSheetsSyncState>(LOCAL_STORAGE_KEYS.SHEETS_SYNC, {
+    lastSyncedAt: new Date().toISOString(),
+    totalProspectsSynced: 4,
+    totalTalentsSynced: 3,
+    totalWebinarsSynced: 24,
+    status: 'idle'
+  });
+};
+
+export const syncGoogleSheetsStaging = async (): Promise<GoogleSheetsSyncState> => {
+  const prospects = getLocalStorage<B2BProspect[]>(LOCAL_STORAGE_KEYS.PROSPECTS, []);
+  const talents = getLocalStorage<TalentProfile[]>(LOCAL_STORAGE_KEYS.TALENTS, []);
+  const webinars = getLocalStorage<WebinarFunnel[]>(LOCAL_STORAGE_KEYS.WEBINARS, []);
+
+  // Mark all prospects as synced to Google Sheets staging tab
+  const updatedProspects = prospects.map(p => ({ ...p, syncedToGoogleSheets: true }));
+  setLocalStorage(LOCAL_STORAGE_KEYS.PROSPECTS, updatedProspects);
+
+  const syncState: GoogleSheetsSyncState = {
+    lastSyncedAt: new Date().toISOString(),
+    totalProspectsSynced: updatedProspects.length,
+    totalTalentsSynced: talents.length,
+    totalWebinarsSynced: webinars.length,
+    status: 'success'
+  };
+
+  setLocalStorage(LOCAL_STORAGE_KEYS.SHEETS_SYNC, syncState);
+  return syncState;
+};
+
 

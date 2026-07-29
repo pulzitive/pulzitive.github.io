@@ -26,9 +26,9 @@ export default function TermsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center text-center space-y-2">
             <Scale className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-xs font-bold text-white">Governing Law</h3>
+            <h3 className="text-xs font-bold text-white">Global Governing Framework</h3>
             <p className="text-[10px] text-slate-400 leading-normal">
-              Services are governed and structured under the laws of the Federal Republic of Nigeria.
+              Services are structured for international compliance under applicable commercial trade laws and regional frameworks.
             </p>
           </div>
           <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center text-center space-y-2">
@@ -93,7 +93,7 @@ export default function TermsPage() {
               Payments, Refunds & Access Fees
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Course fees and consulting session bookings are indicated in Nigerian Naira (NGN) or USD equivalence. All transactions processed via Paystack are final. Pulzitive maintains a 7-day conditional refund policy on standard digital course materials, provided less than 15% of the syllabus content has been consumed.
+              Course fees, talent contracts, and consulting session bookings are processed in USD ($), EUR (€), GBP (£), or NGN (₦) equivalence. All transactions processed via verified international payment gateways are encrypted and secure. Pulzitive maintains a 7-day conditional refund policy on digital materials, provided less than 15% of syllabus content has been consumed.
             </p>
           </section>
 

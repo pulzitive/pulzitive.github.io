@@ -65,7 +65,7 @@ const techAdsList = [
       'Custom & Lookalike Audiences'
     ],
     stats: {
-      duration: '8 Weeks',
+      duration: '4 Hours',
       xp: '+1500 XP',
       level: 'Advanced'
     }
@@ -84,7 +84,7 @@ const techAdsList = [
       'Performance Max & Display Ads'
     ],
     stats: {
-      duration: '8 Weeks',
+      duration: '4 Hours',
       xp: '+1600 XP',
       level: 'Advanced'
     }
@@ -1146,13 +1146,6 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
           </div>
 
           <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm"
-            >
-              <Zap className="w-3.5 h-3.5 text-emerald-500" /> High-Performance Digital Marketing & Growth Training
-            </motion.div>
             
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -1182,10 +1175,10 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               className="flex flex-wrap items-center justify-center gap-4 pt-4"
             >
               <button 
-                onClick={() => onOpenFreeTrialModal?.()}
+                onClick={() => onNavigate('community')}
                 className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-6 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 shadow-md hover:scale-[1.01]"
               >
-                Start Free Trial <ChevronRight className="w-4 h-4" />
+                Join Webinar <ChevronRight className="w-4 h-4" />
               </button>
               <a 
                 href="#courses" 
@@ -1761,121 +1754,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
 
 
-        {/* MINIMALIST DIGITAL MARKETING COURSE ADVERTISEMENT */}
-        <section id="academy-projects" className="py-20 bg-slate-50 border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
-            {/* Heading Block */}
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              <div className="inline-flex items-center gap-1 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
-                <span>Flagship Learning Experience</span>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Accelerate Your Digital Marketing Skills
-              </h2>
-              <p className="text-xs text-slate-500 leading-relaxed max-w-2xl mx-auto">
-                No filler. No fluff. Our courses are fully condensed into high-impact 4-hour live sessions focused completely on execution, led by industry specialists.
-              </p>
-            </div>
 
-            {/* Main Advert Card */}
-            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-md relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
-                {/* Left Side: Detail & Value Proposition */}
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full">
-                      Highly Practical Format
-                    </span>
-                    <h3 className="text-xl font-black text-slate-900 leading-tight">
-                      Hands-On Campaign Simulators & Expert Guidance
-                    </h3>
-                  </div>
-
-                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                    Our digital marketing academy has re-engineered tuition to match today’s rapid industry speeds. In just a single 4-hour session, you will design conversion-optimized campaign architectures, configure live SEO search clusters, and build fully automated email nurtures.
-                  </p>
-
-                  <div className="space-y-3">
-                    {[
-                      'Highly-focused 4-hour practical sessions',
-                      'Access real campaign simulator toolkits',
-                      'Secure digital checkouts via PayPal API (pulzitive@gmail.com)',
-                      'Free unlimited access to incentive webinars'
-                    ].map((bullet, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                        <span>{bullet}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <a
-                    href="#courses"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black transition-all shadow-md active:scale-98"
-                  >
-                    <span>Browse Interactive Courses</span>
-                    <ArrowRight className="w-4 h-4 text-indigo-400" />
-                  </a>
-                </div>
-
-                {/* Right Side: Flexible Pricing Matrix */}
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-5">
-                  <p className="text-[10px] font-mono font-black uppercase tracking-wider text-slate-400">
-                    Transparent Session Tuition
-                  </p>
-
-                  <div className="space-y-4">
-                    {/* Online Row */}
-                    <div className="bg-white border border-slate-150 p-4 rounded-xl space-y-2.5 shadow-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-slate-800 text-xs">Online Live Session</span>
-                        <span className="text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">Best Value</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-left pt-1 border-t border-slate-100">
-                        <div>
-                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Individual</span>
-                          <span className="text-slate-900 font-black text-xs font-mono">₦9,000</span>
-                        </div>
-                        <div>
-                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Group/Brand</span>
-                          <span className="text-slate-900 font-black text-xs font-mono">₦30,000</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Physical Row */}
-                    <div className="bg-white border border-slate-150 p-4 rounded-xl space-y-2.5 shadow-sm">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-slate-800 text-xs">Physical On-Site (Lagos)</span>
-                        <span className="text-[9px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">Fully Immersive</span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-left pt-1 border-t border-slate-100">
-                        <div>
-                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Individual</span>
-                          <span className="text-slate-900 font-black text-xs font-mono">₦30,000</span>
-                        </div>
-                        <div>
-                          <span className="block text-[9px] text-slate-400 font-bold uppercase">Group/Brand</span>
-                          <span className="text-slate-900 font-black text-xs font-mono">₦60,000</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-[9.5px] text-slate-400 leading-normal text-center">
-                    All prices are secure in Nigerian Naira (NGN). Payments are processed through safe verified merchant pop-ups.
-                  </p>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </section>
 
         {/* REMOVED_PROJECTS_HOLDER_SECTION */}
         <div className="hidden">
@@ -2553,10 +2432,10 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             <div className="text-center max-w-3xl mx-auto space-y-3">
               <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
                 <Star className="w-3.5 h-3.5 text-indigo-500 fill-indigo-500 animate-pulse" />
-                <span>Learners Voice</span>
+                <span>Happy Students</span>
               </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Loved by Students, Parents, Teachers, Schools & Sponsors
+                Happy Students & Student Stories
               </h2>
               <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
                 Read how our 4-hour live practical digital marketing sessions have accelerated the career journeys of our students.

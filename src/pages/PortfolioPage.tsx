@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Briefcase, ExternalLink, ShieldCheck, TrendingUp, Sparkles, 
-  Search, Filter, ArrowRight, Award, Zap, Building, LayoutGrid
+  Search, Filter, ArrowRight, Award, Zap, Building, LayoutGrid, Download
 } from 'lucide-react';
 import { clientsList, ClientPortfolio } from '../data/clients';
 
@@ -69,6 +69,15 @@ export default function PortfolioPage({
               <span>Get Free Audit & Strategy Session</span>
               <ArrowRight className="w-4 h-4" />
             </button>
+            <a
+              href="https://drive.google.com/file/d/1_Pulzitive_Resume_Executive_Summary/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-6 py-3 rounded-xl text-xs cursor-pointer shadow-lg transition-all flex items-center gap-2 active:scale-95"
+            >
+              <Download className="w-4 h-4 text-white" />
+              <span>Download Resume (Google Drive)</span>
+            </a>
           </div>
         </div>
       </section>

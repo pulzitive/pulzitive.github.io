@@ -19,21 +19,6 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
 
   const academyPlans = [
     {
-      name: "Free Portal Verification",
-      price: 50,
-      period: "once",
-      desc: "Refundable card test authorization for immediate student portal profile completion.",
-      features: [
-        "Instant Student Role validation",
-        "100 XP Welcome Points",
-        "Access to AI Marketing Tutor Widget",
-        "Public PR & News logs"
-      ],
-      popular: false,
-      btnLabel: "Verify Test Card",
-      badge: "Verification"
-    },
-    {
       name: "Student / Parent Plan",
       price: 15000,
       physicalPrice: 30000,
@@ -258,10 +243,10 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
             <div className="mt-8 space-y-2">
               <button
                 onClick={() => onSelectPlan(plan.price || plan.actualPrice, `${plan.name} (Online / ${plan.period})`)}
-                className={`w-full font-bold py-2.5 rounded-xl cursor-pointer text-xs transition-all ${
+                className={`w-full font-black py-3 rounded-xl cursor-pointer text-xs transition-all shadow-md active:scale-98 ${
                   plan.popular 
-                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950' 
-                    : 'bg-slate-950 border border-slate-800 hover:text-white'
+                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black' 
+                    : 'bg-blue-600 hover:bg-blue-500 text-white font-extrabold'
                 }`}
               >
                 {plan.btnLabel}
@@ -270,7 +255,7 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
               {plan.physicalBtnLabel && plan.physicalPrice && (
                 <button
                   onClick={() => onSelectPlan(plan.physicalPrice!, `${plan.name} (Physical)`)}
-                  className="w-full bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 font-semibold py-2 rounded-xl cursor-pointer text-xs transition-all"
+                  className="w-full bg-white hover:bg-slate-100 text-slate-900 font-extrabold py-2.5 rounded-xl cursor-pointer text-xs transition-all shadow-sm active:scale-98"
                 >
                   {plan.physicalBtnLabel}
                 </button>

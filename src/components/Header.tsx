@@ -315,13 +315,20 @@ export default function Header({
   };
 
   const handleSignOut = async () => {
-    const isAcademyRole = currentUser && ['Student', 'Parent', 'Teacher', 'School Admin', 'Mentor', 'Sponsor'].includes(currentUser.role);
+    const userRole = currentUser?.role;
     await triggerSignOut();
     onUserChanged(null);
-    if (isAcademyRole || activePage === 'academy') {
-      onNavigate('academy');
+    if (activePage === 'dashboard') {
+      const isAcademyRole = userRole && ['Student', 'Parent', 'Teacher', 'School Admin', 'Mentor', 'Sponsor'].includes(userRole);
+      if (isAcademyRole) {
+        onNavigate('academy');
+      } else if (userRole === 'Talent') {
+        onNavigate('talents');
+      } else {
+        onNavigate('home');
+      }
     } else {
-      onNavigate('home');
+      onNavigate(activePage);
     }
   };
 
@@ -355,86 +362,96 @@ export default function Header({
         <div className="flex items-center justify-between h-16">
           
           {/* Logo */}
-          <div 
-            onClick={() => onNavigate('home')} 
+          <a 
+            href="#home"
+            onClick={(e) => { e.preventDefault(); onNavigate('home'); }} 
             className="flex items-center gap-2 cursor-pointer select-none"
           >
             <Logo size="md" />
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
-            <button
-              onClick={() => onNavigate('home')}
+            <a
+              href="#home"
+              onClick={(e) => { e.preventDefault(); onNavigate('home'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'home' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Home
-            </button>
-            <button
-              onClick={() => onNavigate('portfolio')}
+            </a>
+            <a
+              href="#portfolio"
+              onClick={(e) => { e.preventDefault(); onNavigate('portfolio'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'portfolio' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Portfolio
-            </button>
-            <button
-              onClick={() => onNavigate('talents')}
+            </a>
+            <a
+              href="#talents"
+              onClick={(e) => { e.preventDefault(); onNavigate('talents'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'talents' ? 'bg-slate-900 text-emerald-400 font-bold' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Talents
-            </button>
-            <button
-              onClick={() => onNavigate('academy')}
+            </a>
+            <a
+              href="#academy"
+              onClick={(e) => { e.preventDefault(); onNavigate('academy'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'academy' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Academy
-            </button>
-            <button
-              onClick={() => onNavigate('marketplace')}
+            </a>
+            <a
+              href="#marketplace"
+              onClick={(e) => { e.preventDefault(); onNavigate('marketplace'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'marketplace' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Resource Vault
-            </button>
-            <button
-              onClick={() => onNavigate('community')}
+            </a>
+            <a
+              href="#community"
+              onClick={(e) => { e.preventDefault(); onNavigate('community'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'community' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Community
-            </button>
-            <button
-              onClick={() => onNavigate('pricing')}
+            </a>
+            <a
+              href="#pricing"
+              onClick={(e) => { e.preventDefault(); onNavigate('pricing'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'pricing' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Pricing Plans
-            </button>
-            <button
-              onClick={() => onNavigate('pr')}
+            </a>
+            <a
+              href="#pr"
+              onClick={(e) => { e.preventDefault(); onNavigate('pr'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                 activePage === 'pr' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
               }`}
             >
               Press
-            </button>
+            </a>
           </nav>
 
           {/* Action Area */}
           <div className="flex items-center gap-3">
             {currentUser && (
-              <button
-                onClick={() => onNavigate('dashboard')}
+              <a
+                href="#dashboard"
+                onClick={(e) => { e.preventDefault(); onNavigate('dashboard'); }}
                 className={`hidden md:block px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-all ${
                   activePage === 'dashboard' 
                     ? 'bg-emerald-500 text-slate-950 border-emerald-500' 
@@ -442,7 +459,7 @@ export default function Header({
                 }`}
               >
                 Access Dashboard
-              </button>
+              </a>
             )}
 
             {/* Notifications */}
@@ -555,54 +572,62 @@ export default function Header({
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2">
-          <button
-            onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}
+          <a
+            href="#home"
+            onClick={(e) => { e.preventDefault(); onNavigate('home'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Home
-          </button>
-          <button
-            onClick={() => { onNavigate('portfolio'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#portfolio"
+            onClick={(e) => { e.preventDefault(); onNavigate('portfolio'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Portfolio
-          </button>
-          <button
-            onClick={() => { onNavigate('talents'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#talents"
+            onClick={(e) => { e.preventDefault(); onNavigate('talents'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Talents
-          </button>
-          <button
-            onClick={() => { onNavigate('academy'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#academy"
+            onClick={(e) => { e.preventDefault(); onNavigate('academy'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Academy
-          </button>
-          <button
-            onClick={() => { onNavigate('marketplace'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#marketplace"
+            onClick={(e) => { e.preventDefault(); onNavigate('marketplace'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Resource Vault
-          </button>
-          <button
-            onClick={() => { onNavigate('community'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#community"
+            onClick={(e) => { e.preventDefault(); onNavigate('community'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Community
-          </button>
-          <button
-            onClick={() => { onNavigate('pricing'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#pricing"
+            onClick={(e) => { e.preventDefault(); onNavigate('pricing'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Pricing Plans
-          </button>
-          <button
-            onClick={() => { onNavigate('pr'); setIsMobileMenuOpen(false); }}
+          </a>
+          <a
+            href="#pr"
+            onClick={(e) => { e.preventDefault(); onNavigate('pr'); setIsMobileMenuOpen(false); }}
             className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
           >
             Press
-          </button>
+          </a>
           {!currentUser ? (
             <div className="pt-2 border-t border-slate-800">
               <button

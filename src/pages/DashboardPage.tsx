@@ -23,6 +23,7 @@ import {
 } from '../firebase';
 import { motion } from 'motion/react';
 import { MiniTools } from '../components/MiniTools';
+import { AdminGrowthAutomationHub } from '../components/AdminGrowthAutomationHub';
 
 interface DashboardPageProps {
   currentUser: UserProfile;
@@ -2268,7 +2269,7 @@ Pulse on Data. Impact on Brand.
 
   // 8. ADMIN
   const renderAdminWorkspace = () => (
-    <div className="space-y-6">
+    <div className="space-y-8">
       
       {/* Platform Global statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
@@ -2289,6 +2290,9 @@ Pulse on Data. Impact on Brand.
           <p className="text-2xl font-black text-emerald-400 mt-1">{audits.length} Sites</p>
         </div>
       </div>
+
+      {/* Salami Abiodun Consult B2B Growth Automation Platform Hub */}
+      <AdminGrowthAutomationHub onTriggerNotification={onTriggerNotification} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
@@ -2379,7 +2383,7 @@ Pulse on Data. Impact on Brand.
             currentUser.role === 'School Admin' || 
             currentUser.role === 'Mentor' || 
             currentUser.role === 'Sponsor') && renderStudentWorkspace()}
-          {(currentUser.role === 'Talent' || currentUser.role === 'Artisan') && renderTalentWorkspace()}
+          {currentUser.role === 'Talent' && renderTalentWorkspace()}
           {currentUser.role === 'Client' && renderClientWorkspace()}
           {currentUser.role === 'Admin' && renderAdminWorkspace()}
           {/* Fallback for unlisted roles */}
@@ -2390,7 +2394,6 @@ Pulse on Data. Impact on Brand.
            currentUser.role !== 'Mentor' &&
            currentUser.role !== 'Sponsor' &&
            currentUser.role !== 'Talent' &&
-           currentUser.role !== 'Artisan' &&
            currentUser.role !== 'Client' &&
            currentUser.role !== 'Admin' &&
            renderTalentWorkspace()}
