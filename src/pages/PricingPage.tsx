@@ -140,7 +140,7 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
       {/* Header */}
       <div className="max-w-4xl mx-auto text-center space-y-4 mb-10 relative z-10">
         <div className="inline-flex items-center gap-1.5 bg-slate-900 border border-slate-800 text-emerald-400 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-mono shadow-inner">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Secure Paystack Gateway
+          <ShieldCheck className="w-4 h-4 text-emerald-400" /> Secure Payment Gateway
         </div>
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
           Flexible Pricing built for <br />

@@ -141,7 +141,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono tracking-wider bg-slate-950 text-indigo-400 border border-indigo-500/10 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[10px] font-mono tracking-wider bg-white text-slate-900 border border-slate-300 px-2.5 py-0.5 rounded font-bold shadow-xs uppercase">
                       {prod.category}
                     </span>
                     <span className="text-[10px] text-gray-500 font-mono">⭐ {prod.rating} Rating</span>
@@ -263,9 +263,7 @@ export default function MarketplacePage({ onCheckout, onTriggerNotification, onO
 
                         <div className="space-y-4">
                           <div>
-                            <span className={`text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase ${
-                              isActive ? 'text-emerald-400 bg-emerald-500/10' : 'text-slate-400 bg-slate-800'
-                            }`}>
+                            <span className="text-[9px] font-mono font-bold tracking-wider px-2.5 py-0.5 rounded uppercase bg-white text-slate-900 border border-slate-300 shadow-xs">
                               {plan.badge}
                             </span>
                             <h3 className="text-sm font-black text-white mt-2.5 tracking-tight">{plan.name}</h3>

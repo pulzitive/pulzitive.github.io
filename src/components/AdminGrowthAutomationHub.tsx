@@ -16,6 +16,7 @@ import {
   getOutreachLogs, triggerMultiChannelOutreach,
   getGoogleSheetsSyncState, syncGoogleSheetsStaging, getTalents
 } from '../firebase';
+import { UserAvatarIcon } from './UserAvatarIcon';
 
 interface AdminGrowthAutomationHubProps {
   onTriggerNotification: (msg: string) => void;
@@ -872,7 +873,7 @@ export const AdminGrowthAutomationHub: React.FC<AdminGrowthAutomationHubProps> =
               {talents.map(t => (
                 <div key={t.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
                   <div className="flex items-center gap-3">
-                    <img src={t.avatarUrl} alt={t.name} className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500 shrink-0" />
+                    <UserAvatarIcon name={t.name} category={t.category} size="sm" verified={t.verifiedBadge} className="rounded-full border-2 border-emerald-500" />
                     <div>
                       <h4 className="text-sm font-black text-white">{t.name}</h4>
                       <span className="text-[10px] bg-slate-950 text-indigo-400 font-bold px-2 py-0.5 rounded">
@@ -948,7 +949,7 @@ export const AdminGrowthAutomationHub: React.FC<AdminGrowthAutomationHubProps> =
                       className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-2.5 rounded-xl text-xs cursor-pointer transition-all flex items-center justify-center gap-1 shadow-sm"
                     >
                       <DollarSign className="w-4 h-4" />
-                      <span>Simulate Checkout (Paystack / Stripe)</span>
+                      <span>Test Checkout (Paystack / Stripe)</span>
                     </button>
                   </div>
                 </div>

@@ -359,7 +359,7 @@ export default function App() {
         onUserChanged={(user) => {
           setCurrentUser(user);
           if (user) {
-            triggerToast(`Logged into simulated ${user.role} workspace.`);
+            triggerToast(`Logged into ${user.role} workspace.`);
           } else {
             triggerToast('Signed out of Pulzitive Portal.');
           }
@@ -512,7 +512,7 @@ export default function App() {
             onUserChanged={(user) => {
               setCurrentUser(user);
               if (user) {
-                triggerToast(`Logged into simulated ${user.role} workspace.`);
+                triggerToast(`Logged into ${user.role} workspace.`);
               } else {
                 triggerToast('Signed out of Pulzitive Portal.');
               }
@@ -650,7 +650,7 @@ export default function App() {
         onUserChanged={(user) => {
           setCurrentUser(user);
           if (user) {
-            triggerToast(`Logged into simulated ${user.role} workspace.`);
+            triggerToast(`Logged into ${user.role} workspace.`);
           } else {
             triggerToast('Signed out of Pulzitive Portal.');
           }

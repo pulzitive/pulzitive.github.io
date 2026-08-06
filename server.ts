@@ -26,7 +26,7 @@ if (aiApiKey && !aiApiKey.includes('MY_GEMINI_API_KEY')) {
     }
   });
 } else {
-  console.warn('GEMINI_API_KEY is not defined or is a placeholder. Gemini features will run in mock/simulation mode.');
+  console.warn('GEMINI_API_KEY is not defined or is a placeholder. Gemini features will run in offline sandbox mode.');
 }
 
 async function startServer() {
@@ -399,7 +399,7 @@ CRITICAL CONSTRAINT: If any of the user answers are empty, extremely vague, or u
         if (queryLower.includes('enroll') || queryLower.includes('eligible') || queryLower.includes('age') || queryLower.includes('who can')) {
           reply = "**Enrollment & Age Groups**:\n- Children from ages 5 to 16, as well as young adults and professionals, are eligible!\n- We have tailored learning pathways: visual Scratch block coding for ages 5-11, and intermediate-to-advanced courses (Frontend Web Design, Python, Roblox 3D Game Design, Robotics & IoT) for teens aged 12-16.";
         } else if (queryLower.includes('robot') || queryLower.includes('hardware') || queryLower.includes('kit') || queryLower.includes('iot')) {
-          reply = "**Robotics & IoT Hardware Requirements**:\n- No physical kits are required for our online interactive modules! We utilize advanced 3D virtual simulators (like Tinkercad and virtual Micro:bit) so kids can design and program smart circuits completely software-side.\n- For physical training sessions, all hardware microcontrollers are supplied by SAC.";
+          reply = "**Robotics & IoT Hardware Requirements**:\n- No physical kits are required for our online interactive modules! We utilize advanced 3D virtual environments (like Tinkercad and virtual Micro:bit) so kids can design and program smart circuits completely software-side.\n- For physical training sessions, all hardware microcontrollers are supplied by SAC.";
         } else if (queryLower.includes('cert') || queryLower.includes('diploma') || queryLower.includes('accred')) {
           reply = "**Certifications & Diplomas**:\n- Yes! Every student who successfully completes 100% of their course modules, capstone projects, and milestones receives an accredited SAC Digital Literacy & Tech Competency Certificate or Diploma.";
         } else if (queryLower.includes('whatsapp') || queryLower.includes('human') || queryLower.includes('speak to') || queryLower.includes('chat') || queryLower.includes('contact')) {

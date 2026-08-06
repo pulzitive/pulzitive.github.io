@@ -8,9 +8,11 @@ import {
   Search, MapPin, Sparkles, Star, ShieldCheck, CheckCircle2, Briefcase, Clock, 
   DollarSign, Filter, Plus, Send, Eye, Award, TrendingUp, ChevronRight, User, 
   ExternalLink, SlidersHorizontal, Zap, X, MessageSquare, Globe, 
-  RefreshCw, FileText, Check, AlertCircle, ThumbsUp, Lock, Share2, Layers
+  RefreshCw, FileText, Check, AlertCircle, ThumbsUp, Lock, Share2, Layers,
+  Wrench, Laptop, ArrowLeft, Download, CheckCircle, GraduationCap, BookOpen, ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { UserAvatarIcon } from '../components/UserAvatarIcon';
 import { UserProfile, TalentProfile, TalentGigOpportunity, TalentInquiry, GigProposal } from '../types';
 import { 
   getTalents, saveTalentProfile, getGigOpportunities, postGigOpportunity, 
@@ -25,8 +27,7 @@ interface TalentsPageProps {
   onOpenAuthModal?: () => void;
 }
 
-const TALENT_CATEGORIES = [
-  'All Categories',
+export const ARTISAN_CATEGORIES = [
   'Mechanic',
   'Panel Beater',
   'Car Rewire',
@@ -48,26 +49,185 @@ const TALENT_CATEGORIES = [
   'Land Scraper'
 ];
 
-const ARTISAN_TRADES = [
-  'Mechanic',
-  'Panel Beater',
-  'Car Rewire',
-  'AC Technician',
-  'Freezer/Fridge technician',
-  'Electrician',
-  'Car Wash',
-  'Dry Cleaner',
-  'Tailor',
-  'Shoe Maker',
-  'Plumber',
-  'Painter',
-  'Welder',
-  'Printers',
-  'Furniture',
-  'Carpenter',
-  'Vulcanizer',
-  'Photographer',
-  'Land Scraper'
+export const DIGITAL_SERVICE_CATEGORIES = [
+  'Software Engineer & Full-Stack Developer',
+  'UI/UX & Product Designer',
+  'SEO & Technical Search Specialist',
+  'Digital Marketing & PPC Strategist',
+  'Graphic Designer & Brand Specialist',
+  'Content Writer & Copywriter',
+  'Social Media Manager & Growth Lead',
+  'Video Editor & Motion Specialist',
+  'Data Analyst & BI Specialist',
+  'AI & Automation Engineer'
+];
+
+export const ALL_TALENT_TRADES = [
+  ...ARTISAN_CATEGORIES,
+  ...DIGITAL_SERVICE_CATEGORIES
+];
+
+export function getTalentSector(category: string): 'Artisans / Technicians' | 'Digital Services Providers' {
+  if (
+    DIGITAL_SERVICE_CATEGORIES.includes(category) || 
+    category.toLowerCase().includes('software') || 
+    category.toLowerCase().includes('digital') || 
+    category.toLowerCase().includes('designer') || 
+    category.toLowerCase().includes('seo') || 
+    category.toLowerCase().includes('writer') || 
+    category.toLowerCase().includes('data') || 
+    category.toLowerCase().includes('ai') ||
+    (category.toLowerCase().includes('engineer') && !category.toLowerCase().includes('pipelining'))
+  ) {
+    return 'Digital Services Providers';
+  }
+  return 'Artisans / Technicians';
+}
+
+export function getTalentShowcaseContent(talent: TalentProfile) {
+  const isDigital = getTalentSector(talent.category) === 'Digital Services Providers';
+  
+  // Custom case studies tailored to their category and skills
+  let caseStudies = [
+    {
+      id: 'cs-1',
+      title: isDigital 
+        ? `Enterprise ${talent.category} Architecture & Implementation`
+        : `High-Precision Commercial ${talent.category} & Safety Overhaul`,
+      clientType: 'Commercial Corporate Client',
+      location: talent.location,
+      duration: '4 Days Completed',
+      scope: 'Full Scope Service Delivery',
+      challenge: isDigital
+        ? 'Legacy digital system with high latency, poor conversion paths, unoptimized mobile performance, and outdated design components.'
+        : 'Severe equipment downtime, safety compliance issues, aging infrastructure, and non-compliance with regional standards.',
+      solution: isDigital
+        ? `Built scalable modern solution using ${talent.skills.slice(0, 3).join(', ')}, integrated automated workflows, and optimized latency.`
+        : `Deployed specialized tools, replaced worn components with OEM parts, executed certified PPR/conduit wiring, and calibrated safety controls.`,
+      result: isDigital
+        ? '3.8x ROAS increase, +280% user engagement growth, and 100% cloud reliability.'
+        : 'Zero downtime recorded, 100% safety compliance certification issued, and 40% reduction in maintenance costs.',
+      image: talent.avatarUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop',
+      verified: true,
+      url: undefined as string | undefined
+    },
+    {
+      id: 'cs-2',
+      title: isDigital
+        ? `Direct-Response Growth & ${talent.skills[1] || 'Optimization'}`
+        : `Emergency Rapid-Response ${talent.skills[1] || 'Repair & Tune-Up'} Project`,
+      clientType: 'High-Growth Business',
+      location: 'Victoria Island, Lagos',
+      duration: '48 Hours Turnaround',
+      scope: 'Urgent On-Site / Remote Delivery',
+      challenge: 'High-urgency request requiring zero downtime, rapid execution, and rigorous quality assurance.',
+      solution: `Mobilized expert team and specialized tools, executed multi-stage testing, and applied ${talent.skills.slice(0, 2).join(' & ')} best practices.`,
+      result: 'Delivered 12 hours ahead of schedule with 5-Star customer rating and zero defect logs.',
+      image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop',
+      verified: true,
+      url: undefined as string | undefined
+    },
+    {
+      id: 'cs-3',
+      title: `Custom ${talent.title} Bespoke Execution`,
+      clientType: 'Private VIP Client',
+      location: 'Ikeja, Lagos',
+      duration: '1 Week Execution',
+      scope: 'Turnkey Contract Delivery',
+      challenge: 'Complex custom specifications with strict tolerance limits and premium finishing requirements.',
+      solution: `Custom designed and hand-crafted execution utilizing premium materials and calibrated diagnostic testing.`,
+      result: 'Passed all client inspection milestones with distinction and long-term service agreement.',
+      image: 'https://images.unsplash.com/photo-1542744094-3a31f103e35f?q=80&w=600&auto=format&fit=crop',
+      verified: true,
+      url: undefined as string | undefined
+    }
+  ];
+
+  // Also include talent's custom portfolioLinks if available
+  if (talent.portfolioLinks && talent.portfolioLinks.length > 0) {
+    const extraLinks = talent.portfolioLinks.map((p, idx) => ({
+      id: `cs-link-${idx}`,
+      title: p.title,
+      clientType: 'Verified Live Portfolio Project',
+      location: talent.location,
+      duration: 'Live Project Link',
+      scope: 'Live Showcase Case Study',
+      challenge: `Specialized ${talent.category} deliverable showcasing ${talent.skills.join(', ')}.`,
+      solution: `Executed end-to-end with verified standards and customer satisfaction.`,
+      result: 'Verified live link on platform.',
+      image: idx % 2 === 0 
+        ? 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=600&auto=format&fit=crop'
+        : 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop',
+      verified: true,
+      url: p.url
+    }));
+    caseStudies = [...extraLinks, ...caseStudies];
+  }
+
+  const serviceOfferings = [
+    {
+      name: `Full ${talent.category} Diagnostic & Audit`,
+      time: 'Same Day Delivery',
+      guarantee: '100% Quality Inspected',
+      description: `Comprehensive inspection, fault identification, and initial technical report for ${talent.category} scope.`
+    },
+    {
+      name: `Turnkey ${talent.skills[0] || 'Implementation'} Service`,
+      time: '1 - 3 Business Days',
+      guarantee: 'Verified Pulzitive Warranty',
+      description: `End-to-end service execution with high-grade components/tools and post-installation support.`
+    },
+    {
+      name: `Emergency On-Demand ${talent.skills[1] || 'Maintenance'}`,
+      time: '2 Hour Response Guarantee',
+      guarantee: '24/7 Availability',
+      description: `Rapid dispatch and immediate technical intervention for high-priority service requests.`
+    }
+  ];
+
+  const reviews = [
+    {
+      id: 'rev-1',
+      clientName: 'Adebayo O.',
+      company: 'Lagos Enterprise Group',
+      rating: 5.0,
+      date: '2 weeks ago',
+      comment: `${talent.name} is an absolute master at ${talent.category}! The work was executed cleanly, on time, and exceeded our expectations. Highly recommended!`
+    },
+    {
+      id: 'rev-2',
+      clientName: 'Dr. Chinedu E.',
+      company: 'Private Facility',
+      rating: 5.0,
+      date: '1 month ago',
+      comment: `Extremely professional and knowledgeable. Solved our ${talent.skills[0] || 'technical'} issue in record time with clear communication throughout.`
+    },
+    {
+      id: 'rev-3',
+      clientName: 'Fatima B.',
+      company: 'Abuja Residential Hub',
+      rating: 5.0,
+      date: '2 months ago',
+      comment: `Punctual, polite, and top-tier quality. The Pulzitive verification gives complete peace of mind.`
+    }
+  ];
+
+  return { isDigital, caseStudies, serviceOfferings, reviews };
+}
+
+const FEATURED_TITLES = [
+  'Software Engineers & Full-Stack Developers',
+  'Master Auto Mechanics & Diagnostic Experts',
+  'UI/UX & Product Designers',
+  'SEO & Technical Search Specialists',
+  'Certified Electricians & Solar Installers',
+  'Digital Marketing & PPC Strategists',
+  'Master Plumbers & Pipelining Engineers',
+  'Graphic Designers & Brand Specialists',
+  'Bespoke Tailors & Fashion Designers',
+  'Content Writers & Conversion Copywriters',
+  'Event Photographers & Drone Pilots',
+  'AI & Automation Engineers'
 ];
 
 const LOCATIONS_LIST = [
@@ -96,7 +256,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const currentTrade = ARTISAN_TRADES[tradeIndex];
+    const currentTrade = FEATURED_TITLES[tradeIndex];
     const typingSpeed = isDeleting ? 40 : 90;
 
     const timer = setTimeout(() => {
@@ -109,7 +269,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
         setTypewriterText(currentTrade.substring(0, typewriterText.length - 1));
         if (typewriterText.length - 1 === 0) {
           setIsDeleting(false);
-          setTradeIndex((prev) => (prev + 1) % ARTISAN_TRADES.length);
+          setTradeIndex((prev) => (prev + 1) % FEATURED_TITLES.length);
         }
       }
     }, typingSpeed);
@@ -127,7 +287,9 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
   const [pitchPriceUsd, setPitchPriceUsd] = useState(150);
   const [pitchMessage, setPitchMessage] = useState('');
   const [isSubmittingPitch, setIsSubmittingPitch] = useState(false);
+  // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSector, setSelectedSector] = useState<'All Sectors' | 'Artisans / Technicians' | 'Digital Services Providers'>('All Sectors');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
@@ -141,6 +303,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
   // Modal controls
   const [selectedTalentModal, setSelectedTalentModal] = useState<TalentProfile | null>(null);
+  const [showcaseTalent, setShowcaseTalent] = useState<TalentProfile | null>(null);
   const [hireModalTalent, setHireModalTalent] = useState<TalentProfile | null>(null);
   const [isPostGigModalOpen, setIsPostGigModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
@@ -225,7 +388,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               reviewsCount: 1,
               bio: currentUser.bio || 'Passionate digital specialist bridging local opportunities with verified expertise.',
               skills: ['Digital Strategy', 'Brand Governance', 'UI/UX'],
-              avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+              avatarUrl: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop',
               verifiedBadge: true,
               availability: 'Available Now',
               portfolioLinks: [{ title: 'Pulzitive Profile', url: 'https://pulzitive.com' }],
@@ -254,12 +417,14 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       talent.bio.toLowerCase().includes(searchQuery.toLowerCase()) ||
       talent.skills.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
 
+    const talentSector = getTalentSector(talent.category);
+    const matchesSector = selectedSector === 'All Sectors' || talentSector === selectedSector;
     const matchesCategory = selectedCategory === 'All Categories' || talent.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || talent.location.toLowerCase().includes(selectedLocation.toLowerCase());
     const matchesVerified = !verifiedOnly || talent.verifiedBadge;
     const matchesAvailability = availabilityFilter === 'All' || talent.availability === availabilityFilter;
 
-    return matchesSearch && matchesCategory && matchesLocation && matchesVerified && matchesAvailability;
+    return matchesSearch && matchesSector && matchesCategory && matchesLocation && matchesVerified && matchesAvailability;
   });
 
   // Handle Send Direct Inquiry / Hire Offer
@@ -363,7 +528,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       reviewsCount: myTalentProfile.reviewsCount || 1,
       bio: myTalentProfile.bio || '',
       skills: myTalentProfile.skills || ['Digital Specialist'],
-      avatarUrl: myTalentProfile.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: myTalentProfile.avatarUrl || 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: (myTalentProfile.availability as any) || 'Available Now',
       portfolioLinks: myTalentProfile.portfolioLinks || [{ title: 'Main Portfolio', url: 'https://pulzitive.com' }],
@@ -507,11 +672,6 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,_var(--tw-gradient-stops))] from-emerald-50/80 via-transparent to-transparent pointer-events-none" />
         
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center space-y-5">
-          <div className="inline-flex items-center gap-2 bg-emerald-100/80 border border-emerald-300 text-emerald-800 text-xs font-mono font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Verified Artisans & Technicians Network</span>
-          </div>
-
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight max-w-3xl">
             Hire & Connect with Verified
             <div className="mt-2 text-emerald-600 font-black min-h-[3.2rem] flex items-center justify-center gap-1.5 text-2xl sm:text-4xl lg:text-5xl">
@@ -521,7 +681,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
           </h1>
 
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl">
-            Empowering verified local mechanics, panel beaters, electricians, plumbers, tailors, photographers, and artisans with digital visibility and location-matched opportunities.
+            Empowering verified local artisans, skilled technicians, and digital service providers with location-matched opportunities and global visibility.
           </p>
 
           {/* Quick Action Controls - Pulzitive Brand Blue Buttons */}
@@ -537,7 +697,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-5 py-3.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer shadow-md active:scale-95"
             >
               <Plus className="w-4 h-4 text-white" />
-              <span>Post a Service Request / Opportunity</span>
+              <span>Post Service</span>
             </button>
             
             {!currentUser ? (
@@ -546,7 +706,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-5 py-3.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer shadow-md active:scale-95"
               >
                 <User className="w-4 h-4 text-white" />
-                <span>List Your Artisan Profile</span>
+                <span>List Your Expertise</span>
               </button>
             ) : (
               <button
@@ -561,7 +721,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-5 py-3.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer shadow-md active:scale-95"
               >
                 <Sparkles className="w-4 h-4 text-white" />
-                <span>Edit My Artisan Profile</span>
+                <span>Edit My Talent Profile</span>
               </button>
             )}
           </div>
@@ -577,7 +737,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               }`}
             >
               <User className="w-4 h-4" />
-              <span>Artisans & Opportunities Feed</span>
+              <span>Talents & Opportunities Feed</span>
               <span className="bg-slate-200 text-slate-800 text-[10px] px-2 py-0.5 rounded-full font-mono">{filteredTalents.length}</span>
             </button>
 
@@ -628,6 +788,60 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             
             {/* Filter Bar */}
             <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-md space-y-4">
+              
+              {/* Primary Sector Tabs */}
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-100 overflow-x-auto">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider shrink-0 flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-slate-400" /> Sector:
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedSector('All Sectors');
+                      setSelectedCategory('All Categories');
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
+                      selectedSector === 'All Sectors'
+                        ? 'bg-slate-900 text-white font-black shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    All Sectors
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedSector('Artisans / Technicians');
+                      setSelectedCategory('All Categories');
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-1.5 ${
+                      selectedSector === 'Artisans / Technicians'
+                        ? 'bg-amber-600 text-white font-black shadow-sm'
+                        : 'bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100'
+                    }`}
+                  >
+                    <Wrench className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Artisans & Technicians</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedSector('Digital Services Providers');
+                      setSelectedCategory('All Categories');
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all flex items-center gap-1.5 ${
+                      selectedSector === 'Digital Services Providers'
+                        ? 'bg-blue-600 text-white font-black shadow-sm'
+                        : 'bg-blue-50 text-blue-900 border border-blue-200 hover:bg-blue-100'
+                    }`}
+                  >
+                    <Laptop className="w-3.5 h-3.5 text-blue-500" />
+                    <span>Digital Services Providers</span>
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Search Input */}
                 <div className="relative">
@@ -648,9 +862,21 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     onChange={(e) => setSelectedCategory(e.target.value)}
                     className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all cursor-pointer shadow-sm"
                   >
-                    {TALENT_CATEGORIES.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
+                    <option value="All Categories">All Sub-Categories</option>
+                    {(selectedSector === 'All Sectors' || selectedSector === 'Artisans / Technicians') && (
+                      <optgroup label="Artisans & Technicians">
+                        {ARTISAN_CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {(selectedSector === 'All Sectors' || selectedSector === 'Digital Services Providers') && (
+                      <optgroup label="Digital Services Providers">
+                        {DIGITAL_SERVICE_CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </optgroup>
+                    )}
                   </select>
                 </div>
 
@@ -746,20 +972,30 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     )}
 
                     <div className="space-y-4">
+                      {/* Sector Badge */}
+                      <div>
+                        {getTalentSector(talent.category) === 'Digital Services Providers' ? (
+                          <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+                            <Laptop className="w-3 h-3 text-blue-400 shrink-0" />
+                            <span>Digital Services Provider</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+                            <Wrench className="w-3 h-3 text-amber-400 shrink-0" />
+                            <span>Artisan & Technician</span>
+                          </span>
+                        )}
+                      </div>
+
                       {/* Avatar & Header */}
                       <div className="flex items-start gap-3.5">
-                        <div className="relative shrink-0">
-                          <img
-                            src={talent.avatarUrl}
-                            alt={talent.name}
-                            className="w-14 h-14 rounded-2xl object-cover border-2 border-slate-800 group-hover:border-emerald-500/50 transition-colors"
-                          />
-                          {talent.verifiedBadge && (
-                            <span className="absolute -bottom-1 -right-1 bg-emerald-500 text-slate-950 rounded-full p-0.5" title="Verified Pulzitive Talent">
-                              <ShieldCheck className="w-3.5 h-3.5" />
-                            </span>
-                          )}
-                        </div>
+                        <UserAvatarIcon
+                          name={talent.name}
+                          category={talent.category}
+                          size="md"
+                          verified={talent.verifiedBadge}
+                          className="border-2 border-slate-800 group-hover:border-emerald-500/50 transition-colors"
+                        />
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
@@ -821,13 +1057,23 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     </div>
 
                     {/* Card Footer Actions */}
-                    <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center gap-2">
+                    <div className="pt-4 mt-4 border-t border-slate-200 flex items-center gap-1.5">
                       <button
                         onClick={() => setSelectedTalentModal(talent)}
-                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                        className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] py-2 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                        title="View Digital Kit"
                       >
-                        <Eye className="w-3.5 h-3.5 text-white" />
+                        <Eye className="w-3.5 h-3.5 text-blue-400" />
                         <span>Digital Kit</span>
+                      </button>
+
+                      <button
+                        onClick={() => setShowcaseTalent(talent)}
+                        className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-[11px] py-2 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                        title="View Showcase & Portfolio Single Page"
+                      >
+                        <Briefcase className="w-3.5 h-3.5 text-blue-600" />
+                        <span>Portfolio</span>
                       </button>
 
                       <button
@@ -838,10 +1084,11 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                             setHireModalTalent(talent);
                           }
                         }}
-                        className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] py-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95"
+                        title="Send Hire/Quote Request"
                       >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Hire / Offer</span>
+                        <Send className="w-3.5 h-3.5 text-white" />
+                        <span>Hire/Quote</span>
                       </button>
                     </div>
                   </motion.div>
@@ -1644,7 +1891,464 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
           </div>
         )}
 
+        {/* PULZITIVE ACADEMY & SKILL LABS FEATURED CARD ABOVE FOOTER (CLEAN WHITE BACKGROUND WITH BRAND GREEN & BLUE) */}
+        <div className="bg-white border-2 border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden text-slate-900 my-10">
+          {/* Subtle ambient radial light */}
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 space-y-6">
+            {/* Banner Header */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-slate-200">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono font-extrabold px-3 py-1 rounded-full">
+                  <GraduationCap className="w-4 h-4 text-emerald-600" />
+                  <span>PULZITIVE ACADEMY & SKILL LABS</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-tight">
+                  Master High-Demand Skills. Get Certified & Listed as a Verified Talent!
+                </h2>
+                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                  Elevate your income and professional standing on Pulzitive. Learn future-proof <strong className="text-blue-600 font-bold">Digital & AI Skills</strong> or hands-on <strong className="text-emerald-700 font-bold">Artisan & Technical Trades</strong> with industry accreditation, expert mentorship, and direct client placement upon completion.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center gap-2.5 w-full lg:w-auto shrink-0">
+                <button
+                  onClick={() => onNavigate('academy')}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm px-6 py-3.5 rounded-2xl transition-all cursor-pointer shadow-lg active:scale-95 flex items-center justify-center gap-2 group"
+                >
+                  <BookOpen className="w-4 h-4 text-white" />
+                  <span>Explore Academy Page</span>
+                  <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
+                </button>
+                <span className="text-[11px] text-center text-slate-500 font-semibold">
+                  ✓ Over 12,000+ Active Graduates Listed
+                </span>
+              </div>
+            </div>
+
+            {/* Two Distinct Skill Pathway Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Digital & Tech Pathway */}
+              <div className="bg-slate-50 border border-blue-200 hover:border-blue-400 p-5 rounded-2xl space-y-3 relative transition-all shadow-xs group">
+                <div className="flex items-center justify-between">
+                  <span className="bg-blue-100 text-blue-800 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border border-blue-200 flex items-center gap-1">
+                    <Laptop className="w-3.5 h-3.5 text-blue-600" /> Digital & Tech Track
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-500">Online & Self-Paced</span>
+                </div>
+
+                <h3 className="text-base font-black text-slate-900">
+                  Learn Digital & AI Services
+                </h3>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Software Development, AI Prompting & Engineering, UI/UX Product Design, Growth Marketing, and Conversion Copywriting.
+                </p>
+
+                <ul className="text-xs text-slate-700 space-y-1.5 pt-1 font-medium">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" /> Real-world project portfolio building
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" /> Verified badge on Pulzitive Directory
+                  </li>
+                </ul>
+
+                <button
+                  onClick={() => onNavigate('academy')}
+                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-95"
+                >
+                  <Laptop className="w-3.5 h-3.5" />
+                  <span>Learn Digital Skills</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Artisan & Technical Trade Pathway */}
+              <div className="bg-slate-50 border border-emerald-200 hover:border-emerald-400 p-5 rounded-2xl space-y-3 relative transition-all shadow-xs group">
+                <div className="flex items-center justify-between">
+                  <span className="bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                    <Wrench className="w-3.5 h-3.5 text-emerald-600" /> Technical & Trade Track
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-500">Practical & On-Site Labs</span>
+                </div>
+
+                <h3 className="text-base font-black text-slate-900">
+                  Learn Artisan & Technical Trades
+                </h3>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Advanced Auto OBD Diagnostics, Solar & Inverter Installation, Certified Electrical Wiring, PPR Piping, and CCTV Security.
+                </p>
+
+                <ul className="text-xs text-slate-700 space-y-1.5 pt-1 font-medium">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> Practical workshop & equipment training
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> Immediate client job dispatch & escrow protection
+                  </li>
+                </ul>
+
+                <button
+                  onClick={() => onNavigate('academy')}
+                  className="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-95"
+                >
+                  <Wrench className="w-3.5 h-3.5" />
+                  <span>Learn Artisan & Technical Trades</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </main>
+
+      {/* ========================================================================= */}
+      {/* SINGLE-PAGE PORTFOLIO & CASE STUDIES SHOWCASE TEMPLATE */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {showcaseTalent && (() => {
+          const { isDigital, caseStudies, serviceOfferings, reviews } = getTalentShowcaseContent(showcaseTalent);
+          const sectorLabel = getTalentSector(showcaseTalent.category) === 'Digital Services Providers' 
+            ? 'Digital Service Provider' 
+            : 'Skilled Artisan / Master Technician';
+
+          return (
+            <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/90 backdrop-blur-xl flex flex-col justify-start">
+              {/* Sticky Header Nav Bar */}
+              <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
+                <button
+                  onClick={() => setShowcaseTalent(null)}
+                  className="flex items-center gap-2 text-xs font-black text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Directory</span>
+                </button>
+
+                <div className="hidden sm:flex items-center gap-2">
+                  <span className="text-xs font-mono uppercase font-bold text-slate-500">Talent Portfolio Showcase</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Pulzitive Verified
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      triggerToast(`Copied ${showcaseTalent.name}'s portfolio link!`);
+                    }}
+                    className="p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+                    title="Share Portfolio"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setHireModalTalent(showcaseTalent);
+                      setShowcaseTalent(null);
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-md active:scale-95 flex items-center gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5 text-white" />
+                    <span>Hire/Quote</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Main Single Page Content Canvas */}
+              <div className="max-w-5xl w-full mx-auto p-4 sm:p-8 space-y-8 my-6">
+                {/* Hero Banner Header Card */}
+                <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl relative">
+                  <div className={`h-40 sm:h-52 w-full ${isDigital ? 'bg-gradient-to-r from-blue-900 via-indigo-800 to-slate-900' : 'bg-gradient-to-r from-emerald-900 via-slate-900 to-teal-950'} relative p-6 flex items-end justify-between`}>
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      <span className="bg-white/90 backdrop-blur-md text-slate-900 text-[11px] font-black px-3 py-1 rounded-full border border-white/50 shadow-sm uppercase font-mono tracking-wider">
+                        {sectorLabel}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="px-6 sm:px-8 pb-8 pt-0 relative -mt-16 sm:-mt-20">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 border-b border-slate-100 pb-6">
+                      <div className="flex items-end gap-4">
+                        <div className="relative">
+                          <UserAvatarIcon
+                            name={showcaseTalent.name}
+                            category={showcaseTalent.category}
+                            size="xl"
+                            verified={showcaseTalent.verifiedBadge}
+                            className="border-4 border-white shadow-2xl"
+                          />
+                          <div className="absolute bottom-2 right-2 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full z-30" title="Available Now" />
+                        </div>
+                        <div className="space-y-1 pb-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">{showcaseTalent.name}</h1>
+                            {showcaseTalent.verifiedBadge && (
+                              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+                                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified Pro
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm font-extrabold text-blue-600">{showcaseTalent.title}</p>
+                          <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold pt-0.5">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {showcaseTalent.location}
+                            </span>
+                            <span>•</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5 text-blue-600" /> Responds in {showcaseTalent.responseTimeMinutes || 15}m
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button
+                          onClick={() => {
+                            triggerToast(`Downloading verified credential PDF for ${showcaseTalent.name}...`);
+                          }}
+                          className="flex-1 sm:flex-initial bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs px-4 py-3 rounded-2xl transition-colors flex items-center justify-center gap-2 border border-slate-200 cursor-pointer"
+                        >
+                          <Download className="w-4 h-4 text-slate-600" />
+                          <span>Credentials PDF</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setHireModalTalent(showcaseTalent);
+                            setShowcaseTalent(null);
+                          }}
+                          className="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-6 py-3 rounded-2xl cursor-pointer shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          <Send className="w-4 h-4" />
+                          <span>Hire/Quote</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Key Metrics Strip */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6">
+                      <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl space-y-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">Verified Rating</span>
+                        <div className="flex items-center gap-1.5">
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                          <span className="text-base font-black text-slate-900">{showcaseTalent.rating.toFixed(1)}</span>
+                          <span className="text-xs text-slate-500 font-semibold">({showcaseTalent.reviewsCount} reviews)</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl space-y-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">Jobs Completed</span>
+                        <div className="flex items-center gap-1.5">
+                          <Award className="w-4 h-4 text-emerald-600" />
+                          <span className="text-base font-black text-slate-900">{showcaseTalent.completedJobsCount || 12}+ Jobs</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl space-y-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">Availability</span>
+                        <div className="flex items-center gap-1.5">
+                          <CheckCircle className="w-4 h-4 text-emerald-600" />
+                          <span className="text-xs font-black text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">{showcaseTalent.availability}</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl space-y-1">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">Pulzitive Shield</span>
+                        <div className="flex items-center gap-1.5">
+                          <ShieldCheck className="w-4 h-4 text-blue-600" />
+                          <span className="text-xs font-black text-blue-700">100% Guaranteed</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section: Overview & Bio */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+                  <h3 className="text-base font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
+                    <User className="w-4 h-4 text-emerald-600" /> Professional Overview & Credentials
+                  </h3>
+                  <p className="text-sm text-slate-700 leading-relaxed font-medium bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    {showcaseTalent.bio}
+                  </p>
+                  <div>
+                    <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider mb-2.5">Verified Skill Stack</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {showcaseTalent.skills.map((skill, i) => (
+                        <span key={i} className="bg-slate-100 text-slate-800 text-xs font-bold px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section: Project Case Studies Showcase */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
+                        <Briefcase className="w-5 h-5 text-emerald-600" /> Portfolio & Case Studies Showcase
+                      </h3>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">Verified project history, client specifications, and technical outcomes.</p>
+                    </div>
+                    <span className="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1 rounded-full">
+                      {caseStudies.length} Case Studies
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {caseStudies.map((cs) => (
+                      <div key={cs.id} className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:border-emerald-400 transition-all shadow-xs flex flex-col">
+                        <div className="h-44 w-full relative overflow-hidden bg-slate-200">
+                          <img src={cs.image} alt={cs.title} className="w-full h-full object-cover" />
+                          <div className="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3 text-white" /> Verified Project
+                          </div>
+                        </div>
+                        <div className="p-5 space-y-3.5 flex-1 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-semibold">
+                              <span>{cs.clientType}</span>
+                              <span>{cs.duration}</span>
+                            </div>
+                            <h4 className="text-base font-black text-slate-900 leading-snug">{cs.title}</h4>
+                            
+                            <div className="space-y-2 pt-2 text-xs">
+                              <div className="bg-white p-3 rounded-xl border border-slate-200/80">
+                                <span className="font-bold text-slate-900 block mb-0.5">Challenge & Requirement:</span>
+                                <p className="text-slate-600">{cs.challenge}</p>
+                              </div>
+                              <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200/60">
+                                <span className="font-bold text-emerald-900 block mb-0.5">Executed Solution & Result:</span>
+                                <p className="text-emerald-800 font-semibold">{cs.solution}</p>
+                                <span className="text-[11px] font-bold text-emerald-700 block mt-1.5 pt-1 border-t border-emerald-200/50">
+                                  ✓ Outcome: {cs.result}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 flex items-center justify-between border-t border-slate-200/60">
+                            <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                              <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {cs.location}
+                            </span>
+                            {cs.url ? (
+                              <a
+                                href={cs.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                              >
+                                <span>Live Link</span>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setHireModalTalent(showcaseTalent);
+                                  setShowcaseTalent(null);
+                                }}
+                                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                              >
+                                <span>Request Similar Project</span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section: Service Deliverables & Guarantees */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                  <h3 className="text-lg font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-500" /> Standard Service Scope & Guarantees
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {serviceOfferings.map((serv, idx) => (
+                      <div key={idx} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-2 flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full inline-block">
+                            {serv.time}
+                          </span>
+                          <h4 className="text-sm font-black text-slate-900">{serv.name}</h4>
+                          <p className="text-xs text-slate-600 leading-relaxed">{serv.description}</p>
+                        </div>
+                        <div className="pt-3 border-t border-slate-200/80 flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                          <span>{serv.guarantee}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section: Verified Customer Testimonials */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                  <h3 className="text-lg font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Star className="w-5 h-5 text-amber-500 fill-amber-500" /> Verified Customer Reviews ({reviews.length})
+                  </h3>
+
+                  <div className="space-y-4">
+                    {reviews.map((rev) => (
+                      <div key={rev.id} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">
+                              {rev.clientName.charAt(0)}
+                            </div>
+                            <div>
+                              <span className="text-xs font-black text-slate-900 block">{rev.clientName}</span>
+                              <span className="text-[10px] text-slate-500">{rev.company}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-full">
+                            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                            <span className="text-xs font-black text-slate-900">{rev.rating.toFixed(1)}</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-700 italic">"{rev.comment}"</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Section: Bottom Hire Banner */}
+                <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
+                  <div className="space-y-2 text-center sm:text-left">
+                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                      Ready to Hire {showcaseTalent.name}?
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-black">Get a Direct Quote & Schedule Delivery</h3>
+                    <p className="text-xs text-slate-300 max-w-xl">
+                      Send your service scope or project requirements directly. Pulzitive escrow protection guarantees payment safety.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setHireModalTalent(showcaseTalent);
+                      setShowcaseTalent(null);
+                    }}
+                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm px-8 py-4 rounded-2xl cursor-pointer transition-all shadow-xl active:scale-95 shrink-0 flex items-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Hire/Quote</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+      </AnimatePresence>
 
       {/* ========================================================================= */}
       {/* MODAL 1: TALENT DIGITAL KIT VIEW */}
@@ -1656,49 +2360,51 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative"
+              className="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative text-slate-900"
             >
               <button
                 onClick={() => setSelectedTalentModal(null)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-950 cursor-pointer"
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="flex items-start gap-4 border-b border-slate-800 pb-6">
-                <img
-                  src={selectedTalentModal.avatarUrl}
-                  alt={selectedTalentModal.name}
-                  className="w-20 h-20 rounded-2xl object-cover border-2 border-emerald-500/50 shrink-0"
+              <div className="flex items-start gap-4 border-b border-slate-200 pb-6">
+                <UserAvatarIcon
+                  name={selectedTalentModal.name}
+                  category={selectedTalentModal.category}
+                  size="lg"
+                  verified={selectedTalentModal.verifiedBadge}
+                  className="border-2 border-emerald-500 shrink-0 shadow-sm"
                 />
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-black text-white">{selectedTalentModal.name}</h2>
+                    <h2 className="text-xl font-black text-slate-900">{selectedTalentModal.name}</h2>
                     {selectedTalentModal.verifiedBadge && (
-                      <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3" /> Pulzitive Verified
+                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                        <ShieldCheck className="w-3 h-3 text-emerald-600" /> Pulzitive Verified
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-300 font-semibold">{selectedTalentModal.title}</p>
-                  <p className="text-xs font-bold text-slate-800 bg-white border border-slate-300 px-3 py-1 rounded-xl inline-flex items-center gap-1.5 shadow-xs">
+                  <p className="text-sm text-slate-600 font-semibold">{selectedTalentModal.title}</p>
+                  <p className="text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1 rounded-xl inline-flex items-center gap-1.5 shadow-xs">
                     <MapPin className="w-3.5 h-3.5 text-emerald-600" /> {selectedTalentModal.location}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">Professional Overview</h4>
-                <p className="text-xs text-slate-300 leading-relaxed bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Professional Overview</h4>
+                <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   {selectedTalentModal.bio}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">Verified Skill Stack</h4>
+                <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Verified Skill Stack</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedTalentModal.skills.map((s, i) => (
-                    <span key={i} className="bg-white text-slate-900 text-xs px-3 py-1.5 rounded-xl font-bold border border-slate-300 shadow-xs">
+                    <span key={i} className="bg-slate-100 text-slate-900 text-xs px-3 py-1.5 rounded-xl font-bold border border-slate-200 shadow-xs">
                       {s}
                     </span>
                   ))}
@@ -1706,27 +2412,58 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">Portfolio & Case Studies</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Portfolio & Case Studies</h4>
+                  <button
+                    onClick={() => {
+                      setShowcaseTalent(selectedTalentModal);
+                      setSelectedTalentModal(null);
+                    }}
+                    className="text-xs font-bold text-emerald-600 hover:text-emerald-700 underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Full Showcase Page</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
                 <div className="space-y-2">
+                  <button
+                    onClick={() => {
+                      setShowcaseTalent(selectedTalentModal);
+                      setSelectedTalentModal(null);
+                    }}
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs p-3.5 rounded-xl flex items-center justify-between transition-all cursor-pointer shadow-sm group"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-emerald-400" />
+                      <span>View Full Single-Page Portfolio Showcase</span>
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                  </button>
+
                   {selectedTalentModal.portfolioLinks.map((link, i) => (
-                    <a
+                    <button
                       key={i}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between text-xs text-emerald-400 hover:border-emerald-500/50"
+                      onClick={() => {
+                        setShowcaseTalent(selectedTalentModal);
+                        setSelectedTalentModal(null);
+                      }}
+                      className="w-full bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex items-center justify-between text-xs text-emerald-700 font-bold hover:bg-slate-100 hover:border-emerald-400 transition-colors shadow-2xs text-left cursor-pointer group"
                     >
-                      <span className="font-bold">{link.title}</span>
-                      <ExternalLink className="w-4 h-4 text-slate-500" />
-                    </a>
+                      <span className="font-bold flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-emerald-600" />
+                        <span>{link.title} Showcase</span>
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="text-xl font-black text-emerald-400">${selectedTalentModal.hourlyRateUsd}/hr</span>
-                  <span className="text-xs text-slate-400 block">~₦{selectedTalentModal.hourlyRateNgn.toLocaleString()} NGN</span>
+              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl shadow-2xs">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>Verified Pulzitive Member</span>
                 </div>
 
                 <button
@@ -1734,9 +2471,10 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     setHireModalTalent(selectedTalentModal);
                     setSelectedTalentModal(null);
                   }}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-6 py-3 rounded-2xl cursor-pointer"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-6 py-3 rounded-2xl cursor-pointer shadow-md transition-all active:scale-95 flex items-center gap-1.5"
                 >
-                  Send Hire Offer / Request Quote
+                  <Send className="w-3.5 h-3.5 text-white" />
+                  <span>Hire/Quote</span>
                 </button>
               </div>
             </motion.div>
@@ -1765,7 +2503,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
               <div className="space-y-1">
                 <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold">Direct Talent Connection</span>
-                <h3 className="text-lg font-black text-white">Hire Offer for {hireModalTalent.name}</h3>
+                <h3 className="text-lg font-black text-white">Hire/Quote for {hireModalTalent.name}</h3>
                 <p className="text-xs text-slate-400">{hireModalTalent.title} • {hireModalTalent.location}</p>
               </div>
 
@@ -1843,7 +2581,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Submit Direct Hire Offer</span>
+                      <span>Submit Hire/Quote Request</span>
                     </>
                   )}
                 </button>
@@ -1899,9 +2637,16 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       onChange={(e) => setGigCategory(e.target.value)}
                       className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                     >
-                      {TALENT_CATEGORIES.filter(c => c !== 'All Categories').map(c => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
+                      <optgroup label="Artisans & Technicians">
+                        {ARTISAN_CATEGORIES.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Digital Services Providers">
+                        {DIGITAL_SERVICE_CATEGORIES.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </optgroup>
                     </select>
                   </div>
 
@@ -2037,9 +2782,16 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, category: e.target.value })}
                       className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
                     >
-                      {TALENT_CATEGORIES.filter(c => c !== 'All Categories').map(c => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
+                      <optgroup label="Artisans & Technicians">
+                        {ARTISAN_CATEGORIES.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Digital Services Providers">
+                        {DIGITAL_SERVICE_CATEGORIES.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </optgroup>
                     </select>
                   </div>
 

@@ -149,16 +149,16 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
           </div>
 
           {/* Upcoming Free Webinars to Incentivize Premium Upsell */}
-          <div className="bg-gradient-to-br from-indigo-950/25 via-slate-900/40 to-emerald-950/15 border border-slate-900 rounded-3xl p-6 space-y-6">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-md">
             <div className="space-y-1.5 text-left">
-              <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] px-3 py-1 rounded-full uppercase tracking-wider font-mono font-bold">
+              <div className="inline-flex items-center gap-1.5 bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] px-3 py-1 rounded-full uppercase tracking-wider font-mono font-bold shadow-sm">
                 🔥 Free Webinars
               </div>
-              <h3 className="text-sm sm:text-base font-black text-white">
+              <h3 className="text-base sm:text-lg font-black text-slate-900">
                 Upcoming Free Webinars
               </h3>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Join our free live masterclasses completely free! Gain essential digital marketing insights, interact with live mentors, and start your journey. All webinars are free to incentivize enrollment in our <span className="text-indigo-400 font-bold">Premium Live 4-Hour Compact Sessions</span> for advanced, high-density practical learning and career-ready certifications.
+              <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed max-w-3xl">
+                Join our free live masterclasses completely free! Gain essential digital marketing insights, interact with live mentors, and start your journey. All webinars are free to incentivize enrollment in our <span className="text-indigo-600 font-bold">Premium Live 4-Hour Compact Sessions</span> for advanced, high-density practical learning and career-ready certifications.
               </p>
             </div>
 
@@ -263,27 +263,27 @@ export default function CommunityPage({ onTriggerNotification }: CommunityPagePr
               ].map((rc) => (
                 <div 
                   key={rc.id}
-                  className="bg-slate-950/60 border border-slate-900 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-850 transition-all text-left shadow-sm"
+                  className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:border-slate-300 transition-all text-left shadow-sm"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase">
+                      <span className="text-[9px] font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 uppercase">
                         WEBINAR • FREE
                       </span>
-                      <span className="text-[10px] text-indigo-400 font-mono font-bold">{rc.points}</span>
+                      <span className="text-[10px] text-indigo-700 font-mono font-bold">{rc.points}</span>
                     </div>
 
                     <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">{rc.title}</h4>
-                      <p className="text-[10.5px] text-slate-400 leading-relaxed mt-1">{rc.desc}</p>
+                      <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">{rc.title}</h4>
+                      <p className="text-[10.5px] text-slate-600 leading-relaxed mt-1">{rc.desc}</p>
                     </div>
                   </div>
 
-                  <div className="mt-5 pt-3.5 border-t border-slate-900/60 flex items-center justify-between gap-2">
-                    <span className="text-[9px] font-mono text-slate-500">{rc.schedule}</span>
+                  <div className="mt-5 pt-3.5 border-t border-slate-200 flex items-center justify-between gap-2">
+                    <span className="text-[9px] font-mono font-bold text-slate-500">{rc.schedule}</span>
                     <button
                       onClick={() => onTriggerNotification?.(`Success! You have registered for the free live webinar "${rc.title}". Check your email for calendar invite & Google Meet streaming access link.`)}
-                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[10px] transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-md"
+                      className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-lg text-[10px] transition-all cursor-pointer whitespace-nowrap active:scale-95 shadow-md"
                     >
                       Register Free Webinar
                     </button>

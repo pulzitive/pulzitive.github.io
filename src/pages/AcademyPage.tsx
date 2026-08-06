@@ -34,7 +34,7 @@ const workspacesList = [
 const techAdsList = [
   {
     courseId: 'dm-seo-mastery',
-    badge: 'ORGANIC POWER',
+    badge: 'SEO & ORGANIC',
     title: 'SEO Mastery & Technical Auditing',
     desc: 'Master keyword strategy, content clusters, local SEO, technical crawling indexation fixes, page architecture setups, and schema configurations to command Page 1 organic visibility.',
     icon: Search,
@@ -53,7 +53,7 @@ const techAdsList = [
   },
   {
     courseId: 'dm-social-ads',
-    badge: 'ACQUISITION SCALER',
+    badge: 'PAID SOCIAL ADS',
     title: 'Paid Social Ads & Conversion Funnels',
     desc: 'Build high-converting Meta and TikTok campaigns. Setup custom pixels, implement Conversions API triggers, write direct response ad copy, and scale creative testing architectures.',
     icon: Zap,
@@ -72,7 +72,7 @@ const techAdsList = [
   },
   {
     courseId: 'dm-google-ppc',
-    badge: 'COMMERCIAL INTENT',
+    badge: 'GOOGLE SEARCH PPC',
     title: 'Google Search Ads & Performance Max',
     desc: 'Design high-yield Google Search PPC and Performance Max campaigns. Master keyword bidding, negative keyword siloing, Smart Bidding optimization, and retargeting systems.',
     icon: TrendingUp,
@@ -112,7 +112,7 @@ const onboardingSteps = [
   },
   {
     number: '03',
-    title: 'Launch Active Simulators',
+    title: 'Launch Practice Hubs',
     desc: 'Test real campaign tactics using integrated ROI calculators, budget analyzers, and mock ad designer playgrounds on your dashboard.',
     icon: TrendingUp,
     color: 'from-purple-500/10 to-pink-500/5',
@@ -909,7 +909,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
     const newProfile: UserProfile = {
       uid: mockUid,
       email: customEmail || `${pendingRole.toLowerCase()}@sac.com`,
-      displayName: customName || `Simulated ${pendingRole}`,
+      displayName: customName || `${pendingRole} Member`,
       role: pendingRole,
       profileCompleted: true
     };
@@ -1194,10 +1194,6 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
         <section id="onboarding-journey" className="py-20 bg-slate-50 border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-3 mb-12">
-              <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <Compass className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Onboarding Path</span>
-              </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
                 Launch Your Career Journey in 4 Simple Steps
               </h2>
@@ -1209,31 +1205,6 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             {/* Controllable Auto-Slide Onboarding Carousel with Small Cards */}
             <div className="relative max-w-2xl mx-auto">
               
-              {/* Carousel Tab bar (quick select) */}
-              <div className="flex flex-wrap justify-center gap-2 mb-6 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
-                {onboardingSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  const isActive = currentStepIndex === index;
-                  return (
-                    <button
-                      key={step.number}
-                      onClick={() => {
-                        setCurrentStepIndex(index);
-                        setIsOnboardingAutoPlaying(false); // Pause auto-play when user manually overrides
-                      }}
-                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isActive 
-                          ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/50 font-black' 
-                          : 'text-slate-500 hover:text-slate-800'
-                      }`}
-                    >
-                      <Icon className={`w-3.5 h-3.5 ${isActive ? step.textColor : ''}`} />
-                      <span>Step {step.number}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
               {/* Main Sliding Component */}
               <div 
                 className="relative bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-md group overflow-hidden"
@@ -1284,8 +1255,9 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                   {/* Right part: Title, description, and visual progress indicators */}
                   <div className="space-y-2 flex-grow">
                     <div className="flex items-center justify-between">
-                      <span className={`text-[9px] font-mono font-bold uppercase tracking-wider bg-slate-50 ${onboardingSteps[currentStepIndex].textColor} px-2.5 py-0.5 rounded border ${onboardingSteps[currentStepIndex].borderColor}`}>
-                        Step {onboardingSteps[currentStepIndex].number}
+                      <span className={`inline-flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider bg-white ${onboardingSteps[currentStepIndex].textColor} px-2.5 py-1 rounded-full border border-slate-200 shadow-sm`}>
+                        {React.createElement(onboardingSteps[currentStepIndex].icon, { className: "w-3.5 h-3.5" })}
+                        <span>{onboardingSteps[currentStepIndex].title}</span>
                       </span>
                     </div>
                     <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
@@ -1363,10 +1335,6 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             
             <div className="text-center space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Specialized Growth Showcases</span>
-              </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
                 Flagship Digital Marketing Spotlights
               </h2>
@@ -1592,10 +1560,6 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
         <section id="courses" className="py-20 bg-white border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div className="text-center space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <BookOpen className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Academy Directory</span>
-              </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
                 Explore Our Dynamic Course Catalog
               </h2>
@@ -1865,7 +1829,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                           Weather Data Visualizer Dashboard
                         </h3>
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          This student-built dashboard simulates real-time data fetching from custom weather APIs, parsing live telemetry coordinates, and rendering precise metric trackers.
+                          This student-built dashboard models real-time data fetching from custom weather APIs, parsing live telemetry coordinates, and rendering precise metric trackers.
                         </p>
                       </div>
 
@@ -1995,7 +1959,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                           AI Task Prioritizer & Estimator
                         </h3>
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          Interact with our dynamic prompt pipeline simulation. Type any development initiative to compute optimal hours, assigned priority ranks, and gamified XP rewards.
+                          Interact with our dynamic prompt pipeline engine. Type any development initiative to compute optimal hours, assigned priority ranks, and gamified XP rewards.
                         </p>
                       </div>
 
@@ -2075,7 +2039,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                               Gemini Agent Real-Time Run Log
                             </p>
                             {taskAnalysisLog.length === 0 ? (
-                              <p className="text-slate-600 italic">Waiting for simulation triggers...</p>
+                              <p className="text-slate-600 italic">Waiting for live pipeline triggers...</p>
                             ) : (
                               <div className="space-y-1">
                                 {taskAnalysisLog.map((logLine, logIdx) => (
@@ -2136,7 +2100,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                           </h3>
                         </div>
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          We merge technical skills with cultural heritage. Explore translation cards and challenge your understanding with instant feedback loops that earn you simulated XP!
+                          We merge technical skills with cultural heritage. Explore translation cards and challenge your understanding with instant feedback loops that earn you practice XP!
                         </p>
                       </div>
 
@@ -2195,7 +2159,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-left flex items-center justify-between text-[10px] text-emerald-800 font-bold animate-pulse">
                           <span className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                            Simulated Pronunciation: <span className="font-mono text-emerald-950 bg-emerald-100 px-2 py-0.5 rounded">"{pronounceWord}"</span>
+                            Audio Pronunciation: <span className="font-mono text-emerald-950 bg-emerald-100 px-2 py-0.5 rounded">"{pronounceWord}"</span>
                           </span>
                           <span className="text-[8px] font-mono text-emerald-600">AUDIO SIGNAL: STREAMING</span>
                         </div>
@@ -2274,7 +2238,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                           Digital Ad ROI & Funnel Calculator
                         </h3>
                         <p className="text-xs text-slate-600 leading-relaxed">
-                          Drag sliders to simulate budget, ad bidding values, and target metrics. This shows real dynamic pipeline modeling designed to optimize client-facing returns.
+                          Drag sliders to model budget, ad bidding values, and target metrics. This shows real dynamic pipeline modeling designed to optimize client-facing returns.
                         </p>
                       </div>
 
@@ -2430,12 +2394,8 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             
             {/* Header Block */}
             <div className="text-center max-w-3xl mx-auto space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-[10px] px-3.5 py-1.5 rounded-full uppercase tracking-wider font-semibold shadow-sm">
-                <Star className="w-3.5 h-3.5 text-indigo-500 fill-indigo-500 animate-pulse" />
-                <span>Happy Students</span>
-              </div>
               <h2 className="text-3xl font-black text-slate-900 tracking-tight sm:text-4xl">
-                Happy Students & Student Stories
+                Student Stories
               </h2>
               <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
                 Read how our 4-hour live practical digital marketing sessions have accelerated the career journeys of our students.
@@ -2571,7 +2531,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                       title={isTestimonialsAutoPlaying ? "Click to Pause" : "Click to Auto-Slide"}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full ${isTestimonialsAutoPlaying ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`} />
-                      <span>{isTestimonialsAutoPlaying ? 'AUTO-SLIDING' : 'PAUSED'}</span>
+                      <span>{isTestimonialsAutoPlaying ? 'AUTO-PLAY' : 'PAUSED'}</span>
                     </button>
 
                     {slideCount > 1 && (
@@ -2701,7 +2661,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             </div>
 
             <p className="text-xs text-slate-500 leading-relaxed">
-              Before accessing the <strong>{pendingRole} Workspace Dashboard</strong>, enter simulated registration details or sign in with Google to proceed.
+              Before accessing the <strong>{pendingRole} Workspace Dashboard</strong>, enter your registration details or sign in with Google to proceed.
             </p>
 
             <form onSubmit={handleCustomSubmit} className="space-y-4">

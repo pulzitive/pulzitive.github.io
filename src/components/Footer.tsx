@@ -79,10 +79,10 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
-            <span className="font-extrabold text-slate-950 text-sm tracking-tight">Pulzitive Platform</span>
+            <span className="font-extrabold text-slate-950 text-sm tracking-tight">Pulzitive</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-500">
-            A premier brand communication, Digital Marketing Intelligence, and Advertising Agency with integrated learning paths.
+            A premier brand communication, Digital Marketing Intelligence, Advertising Agency with integrated learning paths and talents pool.
           </p>
           <div className="flex flex-wrap gap-3 text-slate-400 text-xs">
             <a href="https://instagram.com/pulzitive" target="_blank" rel="noopener noreferrer" title="Instagram" className="hover:text-emerald-600 transition-colors">

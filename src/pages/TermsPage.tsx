@@ -73,7 +73,7 @@ export default function TermsPage() {
             <ul className="space-y-1.5 text-xs text-slate-400 list-none pl-1">
               <li className="flex items-start gap-1.5">
                 <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                <span>You must secure your simulated or authenticated login credentials.</span>
+                <span>You must secure your workspace or authenticated login credentials.</span>
               </li>
               <li className="flex items-start gap-1.5">
                 <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />

@@ -1467,7 +1467,7 @@ Pulse on Data. Impact on Brand.
     <div className="space-y-6 pt-6 border-t border-slate-800">
       <div className="space-y-1 text-left">
         <h3 className="text-base font-black text-white flex items-center gap-2">
-          <Megaphone className="w-5 h-5 text-emerald-400" /> Digital Marketing Live Simulators
+          <Megaphone className="w-5 h-5 text-emerald-400" /> Digital Marketing Interactive Practice Hub
         </h3>
         <p className="text-xs text-slate-400">
           Interactive performance tools and playground dashboards. Test live funnels, content schemas, SEO title tags, and UTM tracking setups.
@@ -1480,7 +1480,7 @@ Pulse on Data. Impact on Brand.
         <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-              <DollarSign className="w-4 h-4 text-emerald-400" /> Funnel & ROAS Simulator
+              <DollarSign className="w-4 h-4 text-emerald-400" /> Funnel & ROAS Calculator
             </h4>
             <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
               Live Calculator
@@ -1554,7 +1554,7 @@ Pulse on Data. Impact on Brand.
             {/* CALCULATED RESULTS DASHBOARD */}
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 grid grid-cols-2 gap-3.5 mt-2">
               <div>
-                <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated Clicks</span>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">Projected Clicks</span>
                 <span className="text-white font-black text-sm">
                   {Math.round(adSpend / 150).toLocaleString()} <span className="text-[9px] text-slate-400 font-normal">(@ ₦150 CPC)</span>
                 </span>
@@ -1572,7 +1572,7 @@ Pulse on Data. Impact on Brand.
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block uppercase font-mono text-[8px]">Simulated ROAS</span>
+                <span className="text-slate-500 block uppercase font-mono text-[8px]">Projected ROAS</span>
                 <span className={`font-black text-sm ${((((adSpend / 150) * (convRate / 100)) * aov) / adSpend) >= 1 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {((((adSpend / 150) * (convRate / 100)) * aov) / adSpend).toFixed(2)}x
                 </span>
@@ -1677,7 +1677,7 @@ Pulse on Data. Impact on Brand.
 
           {/* GENERATED PREVIEW CONTAINER */}
           <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-3 text-left">
-            <span className="text-[8px] font-mono text-slate-500 uppercase block">Meta Ads Manager Mock Simulator</span>
+            <span className="text-[8px] font-mono text-slate-500 uppercase block">Meta Ads Manager Preview Studio</span>
             <div className="space-y-1">
               <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
                 <span>Generated Headlines</span>

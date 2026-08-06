@@ -237,7 +237,7 @@ export default function Header({
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPhone, setSignUpPhone] = useState('');
   const [selectedPhoneCode, setSelectedPhoneCode] = useState('+234');
-  const [signUpRole, setSignUpRole] = useState<UserRole>('Student');
+  const [signUpRole, setSignUpRole] = useState<UserRole>('Client');
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
@@ -253,6 +253,7 @@ export default function Header({
   const [authLoading, setAuthLoading] = useState(false);
 
   const availableRoles: { role: UserRole; label: string; desc: string; icon: any }[] = [
+    { role: 'Client', label: 'Customer / Client', desc: 'Hire Local Artisans & Services', icon: Calendar },
     { role: 'Student', label: 'Student', desc: 'Track XP, Badges & Learn', icon: Award },
     { role: 'Parent', label: 'Parent', desc: 'Monitor Progress & Advise', icon: User },
     { role: 'Teacher', label: 'Teacher', desc: 'Manage Students & Commissions', icon: BookOpen },
@@ -260,7 +261,6 @@ export default function Header({
     { role: 'Mentor', label: 'Mentor Hub', desc: 'Guided Mentees & Real-time chat', icon: Globe },
     { role: 'Sponsor', label: 'Sponsorship Desk', desc: 'Fund Technical Talents', icon: DollarSign },
     { role: 'Talent', label: 'Talent Dashboard', desc: 'List Services & Get Hired', icon: Briefcase },
-    { role: 'Client', label: 'Customer / Client', desc: 'Hire Local Artisans & Services', icon: Calendar },
     { role: 'Admin', label: 'Global Administration', desc: 'Revenue, Leads & platform controls', icon: Sparkles }
   ];
 
@@ -679,8 +679,7 @@ export default function Header({
             <div className="flex items-center gap-3">
               <Logo size="sm" showText={false} />
               <div>
-                <h3 className="text-lg font-black text-white leading-none">Access Pulzitive Portal</h3>
-                <p className="text-[10px] text-gray-400 mt-1">Live Firestore portal</p>
+                <h3 className="text-lg font-black text-white leading-none">Access Portal</h3>
               </div>
             </div>
 

@@ -35,7 +35,7 @@ export default function AITutorWidget() {
     },
     {
       q: "Are hardware kits needed for Robotics?",
-      a: "No! For our interactive online courses, we use advanced 3D virtual microcontroller simulation environments (such as Tinkercad and virtual Micro:bit) so students can program smart circuits completely software-side. For physical training sessions, all hardware microcontrollers are supplied by Pulzitive."
+      a: "No! For our interactive online courses, we use advanced 3D virtual microcontroller modeling environments (such as Tinkercad and virtual Micro:bit) so students can program smart circuits completely software-side. For physical training sessions, all hardware microcontrollers are supplied by Pulzitive."
     },
     {
       q: "Are certificates/diplomas awarded?",

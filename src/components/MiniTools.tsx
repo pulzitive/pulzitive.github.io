@@ -46,8 +46,8 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
   const toolsList = [
     {
       id: 'roas',
-      name: 'Funnel & ROAS Simulator',
-      desc: 'Simulate ad spend, CTR, conversion rate, and average order value to project campaign ROAS and CPA.',
+      name: 'Funnel & ROAS Calculator',
+      desc: 'Analyze ad spend, CTR, conversion rate, and average order value to project campaign ROAS and CPA.',
       icon: DollarSign,
       isBest: true,
       category: 'Paid Ads'
@@ -354,10 +354,10 @@ function RoasSimulatorTool({ onBook }: { onBook?: () => void }) {
     <div className="space-y-6">
       <div className="border-b border-slate-100 pb-4">
         <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-emerald-600" /> Funnel & ROAS Simulator
+          <Calculator className="w-5 h-5 text-emerald-600" /> Funnel & ROAS Calculator
         </h3>
         <p className="text-xs text-slate-500 mt-1">
-          Adjust ad spend, CTR, conversion rate, and average order value to simulate real-time campaign performance and return on ad spend.
+          Adjust ad spend, CTR, conversion rate, and average order value to model real-time campaign performance and return on ad spend.
         </p>
       </div>
 
@@ -431,7 +431,7 @@ function RoasSimulatorTool({ onBook }: { onBook?: () => void }) {
         <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-4 flex flex-col justify-between shadow-lg">
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block mb-3">
-              Simulated Performance Output
+              Projected Performance Output
             </span>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -448,7 +448,7 @@ function RoasSimulatorTool({ onBook }: { onBook?: () => void }) {
                 <span className="text-xl font-black text-indigo-300">₦{cpa.toLocaleString()}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[9px] uppercase font-mono">Simulated ROAS</span>
+                <span className="text-slate-400 block text-[9px] uppercase font-mono">Projected ROAS</span>
                 <span className={`text-xl font-black ${Number(roas) >= 1 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {roas}x
                 </span>
@@ -584,7 +584,7 @@ function AdCopyArchitectTool() {
         <div className="bg-slate-900 text-white p-5 rounded-2xl space-y-3.5 shadow-lg flex flex-col justify-between">
           <div className="space-y-3">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400 block">
-              Meta Ads Manager Simulator
+              Meta Ads Manager Preview Studio
             </span>
 
             <div className="space-y-1.5">

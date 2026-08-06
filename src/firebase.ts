@@ -29,8 +29,7 @@ import {
   query, 
   where, 
   getDocs, 
-  onSnapshot,
-  getDocFromServer
+  onSnapshot
 } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
 import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry, B2BProspect, WebinarFunnel, ProductOrService, PlatformOrder, OutreachLog, GoogleSheetsSyncState } from './types';
@@ -49,21 +48,10 @@ export let auth: any = null;
 if (isRealFirebase) {
   try {
     firebaseApp = initializeApp(firebaseConfig);
-    // Use default database to ensure security rules are correctly applied and to prevent named database deployment mismatch
-    db = getFirestore(firebaseApp);
+    db = firebaseConfig.firestoreDatabaseId
+      ? getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId)
+      : getFirestore(firebaseApp);
     auth = getAuth(firebaseApp);
-    
-    // Validate connection to Firestore as per Firebase Skill guidelines
-    const testConnection = async () => {
-      try {
-        await getDocFromServer(doc(db, 'test', 'connection'));
-      } catch (error) {
-        if (error instanceof Error && error.message.includes('the client is offline')) {
-          console.warn("Please check your Firebase configuration.");
-        }
-      }
-    };
-    testConnection();
   } catch (err) {
     console.error('Firebase initialization failed:', err);
   }
@@ -213,7 +201,7 @@ const INITIAL_COURSES: Course[] = [
   {
     id: 'dm-google-ppc',
     title: 'Google Search Ads & Performance Max',
-    description: 'Dominate Google search results for commercial intent queries with advanced PPC bidding architectures.',
+    description: 'Dominate Google search results for high-value customer search queries with advanced PPC bidding architectures.',
     longDescription: 'An elite Google Ads service and learning guide. Learn to target high-intent search terms, configure negative keyword sheets, build responsive search ads, master Smart Bidding algorithms, and build complete Performance Max campaigns.',
     duration: '4 Hours Session',
     price: 9000,
@@ -537,7 +525,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 112,
       bio: 'Licensed master electrician specializing in 3-phase commercial wiring, solar PV panel & inverter installations, smart home power automation, circuit breaker troubleshooting, and high-voltage grid safety.',
       skills: ['High Voltage Wiring', 'Solar Inverters', 'Circuit Breakers', 'Smart Home Power', 'Industrial PLC', 'Conduit Bending'],
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -561,7 +549,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 89,
       bio: 'Certified master plumber with 14+ years experience in commercial pipefitting, thermal water heater installations, hydro-jet drain unblocking, underground leak detection, and sanitary plumbing systems.',
       skills: ['Pipefitting', 'Hydro-Jetting', 'Leak Detection', 'Solar Water Heaters', 'Sewer Repair', 'Backflow Prevention'],
-      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -585,7 +573,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 76,
       bio: 'Expert heavy equipment land scraper and landscape technician. Specializes in terrain grading, land clearing, lawn scraping, soil stabilization, automated irrigation systems, and interlocking paver installation.',
       skills: ['Land Scraping', 'Soil Grading', 'Lawn Care', 'Excavation', 'Interlocking Paving', 'Drainage Systems'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -609,7 +597,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 48,
       bio: 'Certified master automobile engineer with 12+ years experience servicing Japanese, European, and American vehicles. Computer OBD diagnostics, full engine overhaul, transmission repair, and routine maintenance.',
       skills: ['OBD Diagnostics', 'Engine Overhaul', 'Brake Systems', 'Suspension Tuning', 'Transmission Service'],
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -633,7 +621,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 39,
       bio: 'Specialist in accident restoration, dent pulling, oven-baked spray painting, chassis alignment, and custom body modifications.',
       skills: ['Dent Pulling', 'Oven Spray Painting', 'Chassis Realignment', 'Fiberglass Restoration', 'Scratch Removal'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -657,7 +645,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 62,
       bio: 'Expert car rewiring specialist fixing alternator failures, starter motors, battery drain issues, ECU wiring, and custom LED installations.',
       skills: ['Complete Rewiring', 'ECU Harness Repair', 'Alternator Overhaul', 'Keyless Entry & Alarms', 'Battery Testing'],
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -681,7 +669,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 44,
       bio: 'Automotive and residential cooling expert. Gas refilling, compressor repairs, leak detection, and split unit installations.',
       skills: ['R134a Gas Refill', 'Compressor Repair', 'Leak Pressure Test', 'HVAC Installation', 'Condenser Replacement'],
-      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -705,7 +693,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 31,
       bio: 'Residential and commercial electrician. Conduit wiring, changeover switch setup, solar inverter installation, and surge protection.',
       skills: ['Conduit Wiring', 'Inverter Setup', 'Breaker Box Panel', 'Fault Finding', 'Industrial Lighting'],
-      avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1507152832244-10d45c7eda57?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -729,7 +717,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 57,
       bio: 'Specializing in Senator suits, Agbada embroidery, female native wear, corporate apparel, and custom wedding outfits.',
       skills: ['Senator Wear', 'Agbada Embroidery', 'Corporate Suits', 'Native Dresses', 'Pattern Drafting'],
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -753,7 +741,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 41,
       bio: 'Crafting premium genuine leather loafers, Oxford shoes, palm slippers, and custom boots built for durability and elegance.',
       skills: ['Italian Leather Craft', 'Sole Goodyear Welt', 'Custom Sizing', 'Leather Dyeing', 'Shoe Restoration'],
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -777,7 +765,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 50,
       bio: 'Expert in PPR hot & cold water pipes, borehole water treatment system setup, pressure pumps, drain unblocking, and modern bathroom fittings.',
       skills: ['PPR Pipe Welding', 'Water Pump Repair', 'Borehole Filtration', 'Drain Unblocking', 'Sanitary Ware'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -801,7 +789,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 29,
       bio: 'Fabricating automated security gates, burglary proofing, structural iron beams, stainless steel handrails, and industrial water tank stands.',
       skills: ['Arc & TIG Welding', 'Automated Gates', 'Stainless Handrails', 'Burglary Proofing', 'Iron Roof Trusses'],
-      avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -825,7 +813,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 46,
       bio: 'Handcrafted mahogany, teak, and HDF kitchen cabinets, wardrobes, executive office desks, and luxury sofa frames.',
       skills: ['HDF Kitchen Cabinets', 'Wardrobe Fitting', 'Teak & Mahogany Wood', 'Wood Spraying', 'Upholstery'],
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -849,7 +837,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 35,
       bio: 'High precision roof framing, Gerard stone-coated roofing tile installation, wooden door hanging, and formwork construction.',
       skills: ['Roof Truss Construction', 'Gerard Roof Tiles', 'Wooden Doors', 'Concrete Formwork', 'Ceiling Framing'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -873,7 +861,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 82,
       bio: '24/7 Mobile emergency vulcanizing service. Tubeless tyre patch, computerized wheel balancing, tyre alignment, and rim repair.',
       skills: ['Tubeless Patching', 'Mobile Emergency Service', 'Computer Balancing', 'Tyre Pressure Check', 'Alloy Rim Alignment'],
-      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -897,7 +885,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 51,
       bio: 'Capturing weddings, corporate summits, fashion lookbooks, and high resolution studio portraits with drone aerial coverage.',
       skills: ['Studio Lighting', 'Wedding Photography', '4K Drone Aerials', 'Photo Retouching', 'Event Coverage'],
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -921,7 +909,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 27,
       bio: 'Professional land scraping, site leveling, interlocking paving stone installation, lawn turfing, and ornamental garden design.',
       skills: ['Land Scraping & Leveling', 'Lawn Turf Installation', 'Interlocking Paving', 'Garden Irrigation', 'Hedge Trimming'],
-      avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1507152832244-10d45c7eda57?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -945,7 +933,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 64,
       bio: 'Direct-to-garment shirt printing, flex banners, corporate souvenirs, brochure printing, and embossed business cards.',
       skills: ['Flex & SAV Printing', 'Screen Printing', 'DTF Shirt Printing', 'Monogramming', 'Corporate Souvenirs'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -969,7 +957,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 48,
       bio: 'Expert in industrial cold room setup, inverter refrigerator gas refilling (R134a & R600a), compressor replacement, defrost system troubleshooting, and chest freezer leak repairs.',
       skills: ['Fridge Gas Refilling', 'Cold Room Maintenance', 'Compressor Replacement', 'Inverter Fridge Board Repair', 'Thermostat & Defrost Repair'],
-      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -993,7 +981,7 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       reviewsCount: 52,
       bio: 'Specializing in Italian POP screeding, 3D wall panel painting, Venetian plastering, exterior damp-proof paint application, and spray painting for residential & commercial properties.',
       skills: ['POP Screeding', 'Satin & Silk Paint', 'Venetian Stucco Plaster', 'Damp-Proof Waterproofing', 'Spray Painting'],
-      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?q=80&w=400&auto=format&fit=crop',
       verifiedBadge: true,
       availability: 'Available Now',
       portfolioLinks: [
@@ -1002,6 +990,151 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.TALENTS)) {
       viewsCount: 2840,
       completedJobsCount: 63,
       responseTimeMinutes: 12,
+      isFeatured: true
+    },
+    /* --- DIGITAL SERVICES PROVIDERS --- */
+    {
+      id: 'tal-dig-1',
+      name: 'Samantha Chen',
+      email: 'samantha.chen@pulzitive.com',
+      title: 'Senior Full-Stack Engineer & Cloud Architect',
+      category: 'Software Engineer & Full-Stack Developer',
+      location: 'Lagos, NG (Global Remote)',
+      hourlyRateUsd: 45,
+      hourlyRateNgn: 27000,
+      rating: 5.0,
+      reviewsCount: 94,
+      bio: 'Specializes in scalable React, Node.js, Cloud Run, PostgreSQL, and Gemini AI integrations. 8+ years experience building enterprise web apps and SaaS architectures.',
+      skills: ['React & Next.js', 'Node.js & Express', 'TypeScript', 'PostgreSQL & Cloud SQL', 'Gemini AI API', 'Docker & CI/CD'],
+      avatarUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Enterprise Full-Stack Application Portfolio', url: 'https://pulzitive.com/digital/samantha-chen' }
+      ],
+      viewsCount: 6120,
+      completedJobsCount: 118,
+      responseTimeMinutes: 5,
+      isFeatured: true
+    },
+    {
+      id: 'tal-dig-2',
+      name: 'Alex Rivera',
+      email: 'alex.rivera@pulzitive.com',
+      title: 'Principal UI/UX & Product Design Strategist',
+      category: 'UI/UX & Product Designer',
+      location: 'Lagos, NG (Global Remote)',
+      hourlyRateUsd: 40,
+      hourlyRateNgn: 24000,
+      rating: 4.95,
+      reviewsCount: 88,
+      bio: 'Crafting high-converting user interfaces, responsive design systems, Figma interactive prototypes, and user research flows for mobile and desktop applications.',
+      skills: ['Figma Design Systems', 'UI/UX Wireframing', 'User Research', 'Mobile App Design', 'Design Tokens', 'Interactive Prototypes'],
+      avatarUrl: 'https://images.unsplash.com/photo-1589156280159-27698a70f29e?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Figma Interactive UI/UX Case Studies', url: 'https://pulzitive.com/digital/alex-rivera' }
+      ],
+      viewsCount: 5410,
+      completedJobsCount: 92,
+      responseTimeMinutes: 8,
+      isFeatured: true
+    },
+    {
+      id: 'tal-dig-3',
+      name: 'Tunde Bakare',
+      email: 'tunde.seo@pulzitive.com',
+      title: 'Technical SEO Auditor & Search Engine Specialist',
+      category: 'SEO & Technical Search Specialist',
+      location: 'Abuja, NG (Global Remote)',
+      hourlyRateUsd: 35,
+      hourlyRateNgn: 21000,
+      rating: 5.0,
+      reviewsCount: 76,
+      bio: 'Dominating Page 1 Google rankings through technical crawl indexation fixes, keyword siloing, schema structured data, speed optimization, and high-authority link architecture.',
+      skills: ['Technical SEO Audits', 'Schema Structured Data', 'Core Web Vitals', 'Keyword Siloing', 'PageSpeed Optimization', 'Ahrefs & SEMrush'],
+      avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Page 1 Google Ranking Audit Case Studies', url: 'https://pulzitive.com/digital/tunde-bakare' }
+      ],
+      viewsCount: 4890,
+      completedJobsCount: 84,
+      responseTimeMinutes: 10,
+      isFeatured: true
+    },
+    {
+      id: 'tal-dig-4',
+      name: 'Sophia Martinez',
+      email: 'sophia.ppc@pulzitive.com',
+      title: 'Meta & Google Ads Growth Specialist',
+      category: 'Digital Marketing & PPC Strategist',
+      location: 'Lagos, NG (Global Remote)',
+      hourlyRateUsd: 38,
+      hourlyRateNgn: 22800,
+      rating: 4.9,
+      reviewsCount: 65,
+      bio: 'Direct-response performance marketing specialist. Scaled e-commerce brands and local B2B lead generation funnels with 4.5x+ verifiable ROAS on Meta & Google PMax.',
+      skills: ['Meta Ads Manager', 'Google Performance Max', 'ROAS Optimization', 'Conversion API', 'Ad Copywriting', 'Funnel Analytics'],
+      avatarUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Verifiable $500k+ Paid Ads Growth Campaigns', url: 'https://pulzitive.com/digital/sophia-martinez' }
+      ],
+      viewsCount: 4120,
+      completedJobsCount: 71,
+      responseTimeMinutes: 12,
+      isFeatured: true
+    },
+    {
+      id: 'tal-dig-5',
+      name: 'Ibrahim Musa',
+      email: 'ibrahim.design@pulzitive.com',
+      title: 'Brand Identity & Graphic Design Lead',
+      category: 'Graphic Designer & Brand Specialist',
+      location: 'Lagos, NG',
+      hourlyRateUsd: 30,
+      hourlyRateNgn: 18000,
+      rating: 4.9,
+      reviewsCount: 58,
+      bio: 'Creating memorable brand identities, custom vector logos, corporate style guides, social media graphics, and marketing collateral for high-growth startups.',
+      skills: ['Vector Logo Design', 'Brand Style Guides', 'Adobe Illustrator', 'Photoshop', 'Typography & Layout', 'Social Media Graphics'],
+      avatarUrl: 'https://images.unsplash.com/photo-1534308143481-c55f00be8bd7?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'Brand Identity & Visual Style Showcase', url: 'https://pulzitive.com/digital/ibrahim-musa' }
+      ],
+      viewsCount: 3650,
+      completedJobsCount: 64,
+      responseTimeMinutes: 15,
+      isFeatured: false
+    },
+    {
+      id: 'tal-dig-6',
+      name: 'Chloe Bennett',
+      email: 'chloe.copy@pulzitive.com',
+      title: 'Direct Response & Content Marketing Strategist',
+      category: 'Content Writer & Copywriter',
+      location: 'London, UK (Global Remote)',
+      hourlyRateUsd: 35,
+      hourlyRateNgn: 21000,
+      rating: 5.0,
+      reviewsCount: 72,
+      bio: 'Writing high-conversion landing page copy, email marketing sequences, authoritative tech blogs, and compelling brand storytelling that converts cold traffic into loyal clients.',
+      skills: ['Landing Page Copy', 'Email Sequences', 'SEO Blog Writing', 'Brand Storytelling', 'Direct Response', 'Product Messaging'],
+      avatarUrl: 'https://images.unsplash.com/photo-1523825036634-aab3cce05919?q=80&w=400&auto=format&fit=crop',
+      verifiedBadge: true,
+      availability: 'Available Now',
+      portfolioLinks: [
+        { title: 'High-Converting Copywriting Portfolio', url: 'https://pulzitive.com/digital/chloe-bennett' }
+      ],
+      viewsCount: 4300,
+      completedJobsCount: 79,
+      responseTimeMinutes: 10,
       isFeatured: true
     }
   ];
@@ -1536,17 +1669,36 @@ if (!localStorage.getItem(LOCAL_STORAGE_KEYS.SHEETS_SYNC)) {
 }
 
 
+export const ARTISAN_CATEGORIES = [
+  'Mechanic', 'Panel Beater', 'Car Rewire', 'AC Technician', 'Freezer/Fridge technician', 'Electrician',
+  'Car Wash', 'Dry Cleaner', 'Tailor', 'Shoe Maker', 'Plumber', 'Painter', 'Welder',
+  'Printers', 'Furniture', 'Carpenter', 'Vulcanizer', 'Photographer', 'Land Scraper'
+];
+
+export const DIGITAL_SERVICE_CATEGORIES = [
+  'Software Engineer & Full-Stack Developer',
+  'UI/UX & Product Designer',
+  'SEO & Technical Search Specialist',
+  'Digital Marketing & PPC Strategist',
+  'Graphic Designer & Brand Specialist',
+  'Content Writer & Copywriter',
+  'Social Media Manager & Growth Lead',
+  'Video Editor & Motion Specialist',
+  'Data Analyst & BI Specialist',
+  'AI & Automation Engineer'
+];
+
+export const ALL_TALENT_CATEGORIES = [
+  ...ARTISAN_CATEGORIES,
+  ...DIGITAL_SERVICE_CATEGORIES
+];
+
 export const getTalents = async (): Promise<TalentProfile[]> => {
   const talents = getLocalStorage<TalentProfile[]>(LOCAL_STORAGE_KEYS.TALENTS, []);
-  const validArtisanCategories = [
-    'Mechanic', 'Panel Beater', 'Car Rewire', 'AC Technician', 'Freezer/Fridge technician', 'Electrician',
-    'Car Wash', 'Dry Cleaner', 'Tailor', 'Shoe Maker', 'Plumber', 'Painter', 'Welder',
-    'Printers', 'Furniture', 'Carpenter', 'Vulcanizer', 'Photographer', 'Land Scraper'
-  ];
-  // Filter out non-artisan legacy data
-  const filtered = talents.filter(t => validArtisanCategories.includes(t.category));
-  if (filtered.length < 3) {
-    // Re-initialize local storage with artisan defaults
+  // Filter out any corrupted or legacy invalid data
+  const filtered = talents.filter(t => ALL_TALENT_CATEGORIES.includes(t.category) || t.category.includes('Software') || t.category.includes('Digital') || t.category.includes('Mechanic'));
+  if (filtered.length < 5) {
+    // Re-initialize local storage with full defaults (Artisans + Digital Services)
     localStorage.removeItem(LOCAL_STORAGE_KEYS.TALENTS);
     window.location.reload();
   }
@@ -1566,12 +1718,7 @@ export const saveTalentProfile = async (talent: TalentProfile): Promise<void> =>
 
 export const getGigOpportunities = async (): Promise<TalentGigOpportunity[]> => {
   const gigs = getLocalStorage<TalentGigOpportunity[]>(LOCAL_STORAGE_KEYS.GIGS, []);
-  const validArtisanCategories = [
-    'Mechanic', 'Panel Beater', 'Car Rewire', 'AC Technician', 'Freezer/Fridge technician', 'Electrician',
-    'Car Wash', 'Dry Cleaner', 'Tailor', 'Shoe Maker', 'Plumber', 'Painter', 'Welder',
-    'Printers', 'Furniture', 'Carpenter', 'Vulcanizer', 'Photographer', 'Land Scraper'
-  ];
-  const filtered = gigs.filter(g => validArtisanCategories.includes(g.category));
+  const filtered = gigs.filter(g => ALL_TALENT_CATEGORIES.includes(g.category) || g.category.includes('Electrician') || g.category.includes('Plumber') || g.category.includes('Software') || g.category.includes('Digital'));
   return filtered.length > 0 ? filtered : gigs;
 };
 

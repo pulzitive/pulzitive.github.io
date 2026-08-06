@@ -10,9 +10,9 @@ import {
   Search, Globe, TrendingUp, ChevronLeft, Calendar, Sparkles,
   Code, Share2, PenTool, Mail, Phone, Tv, Layers, FileText, 
   Inbox, Image, Clock, MessageSquare, Send, ShoppingBag, Store, 
-  Box, Gift, Headphones, Mic, Video, Heart, MessageCircle
+  Box, Gift, Headphones, Mic, Video, Heart, MessageCircle, ExternalLink, Pause
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { clientsList } from '../data/clients';
 import { MiniTools } from '../components/MiniTools';
 import { HeroTypewriter } from '../components/HeroTypewriter';
@@ -351,6 +351,61 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Zap,
 };
 
+const freelancePlatforms = [
+  {
+    id: 'fiverr',
+    name: 'Fiverr Pro',
+    badge: 'PRO VERIFIED',
+    badgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+    logoText: 'fi',
+    logoClass: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+    titleHover: 'group-hover:text-emerald-600',
+    desc: 'Order vetted digital marketing gigs, SEO audits, and custom campaign setups with fast 24-72h turnaround.',
+    url: 'https://www.fiverr.com',
+    btnClass: 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black',
+    btnText: 'Hire on Fiverr',
+  },
+  {
+    id: 'upwork',
+    name: 'Upwork Enterprise',
+    badge: 'TOP RATED AGENCY',
+    badgeClass: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+    logoText: 'Up',
+    logoClass: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+    titleHover: 'group-hover:text-emerald-600',
+    desc: 'Hire our dedicated marketing strategists and developers for hourly or fixed-price agency contracts.',
+    url: 'https://www.upwork.com',
+    btnClass: 'bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold',
+    btnText: 'Hire on Upwork',
+  },
+  {
+    id: 'pph',
+    name: 'PeoplePerHour',
+    badge: 'TOP CERT',
+    badgeClass: 'text-amber-700 bg-amber-50 border-amber-200',
+    logoText: 'PPH',
+    logoClass: 'bg-amber-50 border-amber-200 text-amber-700',
+    titleHover: 'group-hover:text-amber-600',
+    desc: 'Access tailored hourlies for copywriting, social ad design, lead funnels, and technical SEO optimizations.',
+    url: 'https://www.peopleperhour.com',
+    btnClass: 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black',
+    btnText: 'Hire on PeoplePerHour',
+  },
+  {
+    id: 'remotasks',
+    name: 'Remotask Work',
+    badge: 'VERIFIED EXPERTS',
+    badgeClass: 'text-sky-700 bg-sky-50 border-sky-200',
+    logoText: 'Rt',
+    logoClass: 'bg-sky-50 border-sky-200 text-sky-700',
+    titleHover: 'group-hover:text-sky-600',
+    desc: 'Connect with our specialized remote growth teams for data analytics, AI marketing operations, and remote tasking.',
+    url: 'https://www.remotasks.com',
+    btnClass: 'bg-sky-500 hover:bg-sky-400 text-slate-950 font-black',
+    btnText: 'Hire on Remotasks',
+  },
+];
+
 export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal, onOpenMergedModal, onOpenAuthModal }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [isPaused, setIsPaused] = React.useState(false);
@@ -358,6 +413,16 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
   const [currentTestimonial, setCurrentTestimonial] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   const [showMiniTools, setShowMiniTools] = React.useState(false);
+  const [freelanceIndex, setFreelanceIndex] = React.useState(0);
+  const [isFreelanceAutoPlaying, setIsFreelanceAutoPlaying] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!isFreelanceAutoPlaying) return;
+    const timer = setInterval(() => {
+      setFreelanceIndex((prev) => (prev + 1) % freelancePlatforms.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isFreelanceAutoPlaying]);
 
   const filteredServices = selectedCategory === 'All'
     ? marketingServices
@@ -419,7 +484,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
             transition={{ delay: 0.2 }}
             className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed"
           >
-            We merge high-impact programmatic digital marketing and advertising campaigns with marketing training, providing businesses and brands with robust leads, client conversion funnels and students with certified Marketing path.
+            We merge high-impact programmatic digital marketing and advertising campaigns with marketing training, providing businesses, brands and talents with robust leads, client conversion funnels, acquisition, visibility and students with certified Marketing path.
           </motion.p>
  
           <motion.div 
@@ -432,7 +497,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
               onClick={onOpenMergedModal || onOpenAuditModal}
               className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-6 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 shadow-md hover:scale-[1.01]"
             >
-              Get Free Audit & Strategy Session <ChevronRight className="w-4 h-4" />
+              Get Free Audits <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>
         </div>
@@ -453,7 +518,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
               Our Digital Marketing Services
             </h2>
             <p className="text-xs text-slate-500 max-w-lg mx-auto leading-relaxed">
-              Accelerate your business scale with precision-engineered organic and paid customer acquisition channels. Use the auto-sliding showcase below to explore.
+              Accelerate your business scale with precision-engineered organic and paid customer acquisition channels. Use the interactive showcase below to explore.
             </p>
           </div>
 
@@ -511,7 +576,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                   
                   <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>AUTO-SLIDING ACTIVE</span>
+                    <span>SHOWCASE ACTIVE</span>
                   </div>
                 </div>
 
@@ -565,7 +630,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                     className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-3 rounded-xl cursor-pointer text-xs transition-all flex items-center gap-2 shadow-md"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>Get Free Audit & Strategy Session</span>
+                    <span>Get Free Audits</span>
                   </button>
                 </div>
 
@@ -882,6 +947,142 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
         </motion.div>
       </section>
 
+      {/* 5. FREELANCE PLATFORMS AVAILABILITY SECTION - AUTO SLIDE CAROUSEL */}
+      <section 
+        className="py-16 bg-slate-900 text-white border-t border-slate-800 relative overflow-hidden"
+        onMouseEnter={() => setIsFreelanceAutoPlaying(false)}
+        onMouseLeave={() => setIsFreelanceAutoPlaying(true)}
+      >
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        >
+          {/* Header */}
+          <div className="text-center space-y-3 mb-8 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+              <Globe className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>Escrow & Freelance Hub</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+              Hire Us on Leading Freelance Platforms
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Prefer working through escrow-protected marketplace contracts? Pulzitive is active and available for direct projects, custom orders, and long-term agency contracts on top global freelance platforms.
+            </p>
+          </div>
+
+          {/* Single Row Auto-Slide Carousel Card View */}
+          <div className="relative max-w-4xl mx-auto my-6 px-2 sm:px-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={freelancePlatforms[freelanceIndex].id}
+                initial={{ opacity: 0, x: 40, scale: 0.98 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -40, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-slate-900"
+              >
+                {/* Animated Top Accent Bar */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 animate-pulse" />
+
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  {/* Left Column: Platform Badge, Logo, Title, Rating & Description */}
+                  <div className="space-y-4 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className={`w-12 h-12 rounded-2xl border font-black text-base flex items-center justify-center shadow-sm ${freelancePlatforms[freelanceIndex].logoClass}`}>
+                        {freelancePlatforms[freelanceIndex].logoText}
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                            {freelancePlatforms[freelanceIndex].name}
+                          </h3>
+                          <span className={`text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-full border uppercase ${freelancePlatforms[freelanceIndex].badgeClass}`}>
+                            {freelancePlatforms[freelanceIndex].badge}
+                          </span>
+                        </div>
+                        <p className="text-xs text-amber-500 font-mono font-bold mt-1 flex items-center gap-1.5">
+                          <span>★★★★★</span>
+                          <span className="text-slate-500 font-sans font-normal">(5.0 Rating • Verified Marketplace Partner)</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
+                      {freelancePlatforms[freelanceIndex].desc}
+                    </p>
+                  </div>
+
+                  {/* Right Column: CTA Action Button */}
+                  <div className="w-full md:w-auto flex items-center justify-center min-w-[200px] border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
+                    <a
+                      href={freelancePlatforms[freelanceIndex].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full py-3.5 px-6 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 ${freelancePlatforms[freelanceIndex].btnClass}`}
+                    >
+                      <span>{freelancePlatforms[freelanceIndex].btnText}</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Left & Right Chevron Navigation Buttons */}
+            <button
+              onClick={() => setFreelanceIndex((prev) => (prev - 1 + freelancePlatforms.length) % freelancePlatforms.length)}
+              className="absolute -left-2 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-90 z-20"
+              aria-label="Previous platform slide"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setFreelanceIndex((prev) => (prev + 1) % freelancePlatforms.length)}
+              className="absolute -right-2 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-90 z-20"
+              aria-label="Next platform slide"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Progress & Slide Dots Indicator */}
+          <div className="flex items-center justify-center gap-2.5 mt-6">
+            {freelancePlatforms.map((plat, idx) => (
+              <button
+                key={plat.id}
+                onClick={() => setFreelanceIndex(idx)}
+                className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                  freelanceIndex === idx
+                    ? 'w-9 bg-emerald-500 shadow-md shadow-emerald-500/30'
+                    : 'w-2.5 bg-slate-800 hover:bg-slate-700'
+                }`}
+                aria-label={`Go to slide ${plat.name}`}
+              />
+            ))}
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-slate-800/80 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-400">
+              Need a direct contract or custom project invoice through Pulzitive Platform instead?
+            </p>
+            <button
+              onClick={() => onNavigate('talents')}
+              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+            >
+              <Users className="w-4 h-4" />
+              <span>Explore Artisans & Gigs Feed</span>
+            </button>
+          </div>
+        </motion.div>
+      </section>
+
       {/* 6. PERSUASIVE AGENCY ADVERTISEMENT */}
       <section className="bg-slate-950 text-white py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         {/* Floating Background Icons */}
@@ -945,13 +1146,20 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
           <div className="pt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
             <button
               onClick={onOpenMergedModal || onOpenApptModal}
-              className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all shadow-lg shadow-emerald-500/20 active:scale-95 animate-pulse"
+              className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black px-6 py-3.5 rounded-xl cursor-pointer text-xs transition-all shadow-lg shadow-emerald-500/20 active:scale-95 animate-pulse"
             >
-              Get Free Audit & Strategy Session
+              Get Free Audits
+            </button>
+            <button
+              onClick={() => onNavigate('talents')}
+              className="w-full sm:w-auto bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 font-extrabold px-6 py-3.5 rounded-xl cursor-pointer text-xs transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
+            >
+              <Users className="w-4 h-4 text-emerald-700" />
+              <span>Find/Join Talent</span>
             </button>
             <button
               onClick={() => onNavigate('academy')}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl cursor-pointer text-xs transition-all active:scale-95 shadow-md"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3.5 rounded-xl cursor-pointer text-xs transition-all active:scale-95 shadow-md"
             >
               Learn
             </button>

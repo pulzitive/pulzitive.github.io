@@ -17,7 +17,7 @@ export default function SitemapPage({ onNavigate }: SitemapPageProps) {
       description: 'The main gateways to the Pulzitive consulting and agency network.',
       items: [
         { name: 'Pulzitive Marketing Agency', page: 'home', icon: Home, desc: 'Digital marketing consultations, custom SEO audits, and agency growth strategic services.' },
-        { name: 'Digital Academy Hub', page: 'academy', icon: Layers, desc: 'Simulated multi-role educational platform containing learning workspaces and tools.' },
+        { name: 'Digital Academy Hub', page: 'academy', icon: Layers, desc: 'Interactive multi-role educational platform containing learning workspaces and tools.' },
       ]
     },
     {
