@@ -20,6 +20,7 @@ import {
 } from 'firebase/auth';
 import { 
   getFirestore, 
+  initializeFirestore,
   doc, 
   getDoc, 
   setDoc, 
@@ -48,9 +49,13 @@ export let auth: any = null;
 if (isRealFirebase) {
   try {
     firebaseApp = initializeApp(firebaseConfig);
+    const firestoreSettings = {
+      experimentalAutoDetectLongPolling: true,
+      experimentalForceLongPolling: true
+    };
     db = firebaseConfig.firestoreDatabaseId
-      ? getFirestore(firebaseApp, firebaseConfig.firestoreDatabaseId)
-      : getFirestore(firebaseApp);
+      ? initializeFirestore(firebaseApp, firestoreSettings, firebaseConfig.firestoreDatabaseId)
+      : initializeFirestore(firebaseApp, firestoreSettings);
     auth = getAuth(firebaseApp);
   } catch (err) {
     console.error('Firebase initialization failed:', err);
