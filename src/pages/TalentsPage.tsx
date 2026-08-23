@@ -9,10 +9,11 @@ import {
   DollarSign, Filter, Plus, Send, Eye, Award, TrendingUp, ChevronRight, User, 
   ExternalLink, SlidersHorizontal, Zap, X, MessageSquare, Globe, 
   RefreshCw, FileText, Check, AlertCircle, ThumbsUp, Lock, Share2, Layers,
-  Wrench, Laptop, ArrowLeft, Download, CheckCircle, GraduationCap, BookOpen, ArrowRight
+  Wrench, Laptop, ArrowLeft, Download, CheckCircle, GraduationCap, BookOpen, ArrowRight, Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserAvatarIcon } from '../components/UserAvatarIcon';
+import { AIJobAutopilot } from '../components/AIJobAutopilot';
 import { UserProfile, TalentProfile, TalentGigOpportunity, TalentInquiry, GigProposal } from '../types';
 import { 
   getTalents, saveTalentProfile, getGigOpportunities, postGigOpportunity, 
@@ -212,7 +213,61 @@ export function getTalentShowcaseContent(talent: TalentProfile) {
     }
   ];
 
-  return { isDigital, caseStudies, serviceOfferings, reviews };
+  const digitalKitItems = isDigital
+    ? [
+        {
+          name: 'Architecture & Technical Blueprints',
+          type: 'Technical Specification',
+          tag: 'PDF & System Schematics',
+          description: `Complete system architecture, data flow schemas, and API contracts for scalable ${talent.category} deployments.`
+        },
+        {
+          name: 'Direct-Response Funnel & Marketing Assets',
+          type: 'Design & Code Kit',
+          tag: 'Figma / Live Snippets',
+          description: `Production-ready conversion funnels, brand typography tokens, and high-converting campaign landing page designs.`
+        },
+        {
+          name: 'Performance & Analytics Dashboard Kit',
+          type: 'BI & Reporting Kit',
+          tag: 'Looker / GA4 / SQL',
+          description: `Live KPI tracking dashboards with ROAS attribution, CAC calculations, and cohort retention models.`
+        },
+        {
+          name: 'Client Delivery & Milestone Playbook',
+          type: 'SOP & Deliverables Guide',
+          tag: 'Verified Workflow',
+          description: `Structured milestone roadmaps, sprint cadence templates, and quality assurance deployment checklists.`
+        }
+      ]
+    : [
+        {
+          name: 'Certified Diagnostic Equipment & Scanner Kit',
+          type: 'Field Equipment Kit',
+          tag: 'OBD-II / Calibrated Meters',
+          description: `Calibrated diagnostic scanners, sensor readers, and specialized electrical/hydraulic diagnostic instruments.`
+        },
+        {
+          name: 'Safety Compliance & Warranty Certificate',
+          type: 'Accreditation Kit',
+          tag: 'Pulzitive Inspected',
+          description: `100% verified safety standard compliance, workmanship warranty certificate, and liability guarantee.`
+        },
+        {
+          name: 'OEM Parts Sourcing & Genuine Inventory Matrix',
+          type: 'Supply Chain Kit',
+          tag: 'Verified Genuine',
+          description: `Direct access to factory-authorized OEM replacement parts with warranty protection and trace logs.`
+        },
+        {
+          name: 'Post-Service Maintenance & Inspection Checklist',
+          type: 'Client Handover Kit',
+          tag: 'Inspection Logbook',
+          description: `Comprehensive multi-point post-repair inspection log and preventative maintenance roadmap.`
+        }
+      ];
+
+  return { isDigital, caseStudies, serviceOfferings, reviews, digitalKitItems };
 }
 
 const FEATURED_TITLES = [
@@ -247,8 +302,9 @@ const LOCATIONS_LIST = [
 ];
 
 export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpenAuthModal }: TalentsPageProps) {
-  // Page mode: 'browse' (Public Directory) vs 'dashboard' (Talent Dashboard Workspace)
-  const [activeTab, setActiveTab] = useState<'browse' | 'dashboard' | 'gigs'>('browse');
+  // Page mode: 'browse' (Public Directory) vs 'dashboard' (Talent Dashboard Workspace) vs 'gigs' vs 'autopilot'
+  const [activeTab, setActiveTab] = useState<'browse' | 'dashboard' | 'gigs' | 'autopilot'>('browse');
+  const [dashboardSubTab, setDashboardSubTab] = useState<'overview' | 'autopilot' | 'inquiries'>('overview');
 
   // Typewriter effect state for hero section title
   const [tradeIndex, setTradeIndex] = useState(0);
@@ -276,11 +332,6 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
     return () => clearTimeout(timer);
   }, [typewriterText, isDeleting, tradeIndex]);
-
-  // Dashboard Workspace Sub-view: 'artisan' vs 'customer'
-  const [dashboardWorkspace, setDashboardWorkspace] = useState<'artisan' | 'customer'>(
-    currentUser?.role === 'Client' ? 'customer' : 'artisan'
-  );
 
   // Proposal Pitch Modal state for Gigs
   const [pitchModalGig, setPitchModalGig] = useState<TalentGigOpportunity | null>(null);
@@ -650,7 +701,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-20">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
       
       {/* Toast Notification Container */}
       <AnimatePresence>
@@ -771,7 +822,22 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             >
               <TrendingUp className="w-4 h-4" />
               <span>Talents Dashboard</span>
-              <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-mono">Workspace & Tools</span>
+              <span className="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-mono">Workspace</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('autopilot');
+              }}
+              className={`px-3.5 sm:px-5 py-2.5 sm:py-3 text-xs font-bold cursor-pointer transition-all border-b-2 flex items-center gap-1.5 whitespace-nowrap ${
+                activeTab === 'autopilot'
+                  ? 'border-blue-600 text-blue-700 bg-blue-50/80 rounded-t-xl font-black'
+                  : 'border-transparent text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Bot className="w-4 h-4 text-blue-600" />
+              <span>AI Job Autopilot & ATS</span>
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">LinkedIn & Indeed</span>
             </button>
           </div>
         </div>
@@ -962,11 +1028,11 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     layout
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex flex-col justify-between transition-all hover:shadow-2xl group relative overflow-hidden"
+                    className="bg-white border border-slate-200 hover:border-emerald-400 rounded-2xl p-5 flex flex-col justify-between transition-all hover:shadow-xl group relative overflow-hidden text-slate-900 shadow-xs"
                   >
                     {/* Top featured status */}
                     {talent.isFeatured && (
-                      <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-teal-500 text-slate-950 text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl shadow-md flex items-center gap-1">
+                      <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-bl-xl shadow-md flex items-center gap-1">
                         <Sparkles className="w-3 h-3" /> Spotlight Talent
                       </div>
                     )}
@@ -975,13 +1041,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       {/* Sector Badge */}
                       <div>
                         {getTalentSector(talent.category) === 'Digital Services Providers' ? (
-                          <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                            <Laptop className="w-3 h-3 text-blue-400 shrink-0" />
+                          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                            <Laptop className="w-3 h-3 text-blue-600 shrink-0" />
                             <span>Digital Services Provider</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                            <Wrench className="w-3 h-3 text-amber-400 shrink-0" />
+                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                            <Wrench className="w-3 h-3 text-amber-600 shrink-0" />
                             <span>Artisan & Technician</span>
                           </span>
                         )}
@@ -994,27 +1060,27 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                           category={talent.category}
                           size="md"
                           verified={talent.verifiedBadge}
-                          className="border-2 border-slate-800 group-hover:border-emerald-500/50 transition-colors"
+                          className="border-2 border-slate-200 group-hover:border-emerald-500 transition-colors shadow-2xs"
                         />
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <h3 className="text-sm font-black text-white truncate group-hover:text-emerald-400 transition-colors">
+                            <h3 className="text-sm font-black text-slate-900 truncate group-hover:text-emerald-700 transition-colors">
                               {talent.name}
                             </h3>
                           </div>
-                          <p className="text-xs text-slate-400 font-medium truncate">{talent.title}</p>
+                          <p className="text-xs text-slate-600 font-semibold truncate">{talent.title}</p>
                           
                           {/* Location & Availability Badge */}
                           <div className="flex items-center gap-2 mt-1.5 text-[10px]">
-                            <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-xs">
+                            <span className="bg-slate-100 border border-slate-200 text-slate-800 font-bold px-2.5 py-0.5 rounded-md flex items-center gap-1 shadow-2xs">
                               <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
                               <span className="truncate">{talent.location}</span>
                             </span>
                             <span className={`px-2 py-0.5 rounded-md font-bold uppercase ${
                               talent.availability === 'Available Now'
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : 'bg-amber-50 text-amber-800 border border-amber-200'
                             }`}>
                               {talent.availability}
                             </span>
@@ -1023,20 +1089,20 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       </div>
 
                       {/* Bio Teaser */}
-                      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                         {talent.bio}
                       </p>
 
                       {/* Rating & Verified Status */}
-                      <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between text-xs">
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                         <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                          <span className="font-bold text-white">{talent.rating.toFixed(1)}</span>
-                          <span className="text-[10px] text-slate-500">({talent.reviewsCount} reviews)</span>
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                          <span className="font-bold text-slate-900">{talent.rating.toFixed(1)}</span>
+                          <span className="text-[10px] text-slate-500 font-medium">({talent.reviewsCount} reviews)</span>
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 uppercase">
-                            Verified Talent
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-full border border-emerald-200 uppercase">
+                            Verified Pro
                           </span>
                         </div>
                       </div>
@@ -1044,36 +1110,27 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       {/* Skill Tags */}
                       <div className="flex flex-wrap gap-1.5">
                         {talent.skills.slice(0, 4).map((skill, idx) => (
-                          <span key={idx} className="bg-white text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-lg border border-slate-300 shadow-xs">
+                          <span key={idx} className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs">
                             {skill}
                           </span>
                         ))}
                         {talent.skills.length > 4 && (
-                          <span className="bg-white text-slate-700 text-[10px] font-black font-mono px-2 py-1 rounded-lg border border-slate-300 shadow-xs">
+                          <span className="bg-slate-100 text-slate-600 text-[10px] font-bold font-mono px-2 py-1 rounded-lg border border-slate-200 shadow-2xs">
                             +{talent.skills.length - 4}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Card Footer Actions */}
-                    <div className="pt-4 mt-4 border-t border-slate-200 flex items-center gap-1.5">
-                      <button
-                        onClick={() => setSelectedTalentModal(talent)}
-                        className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] py-2 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
-                        title="View Digital Kit"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-blue-400" />
-                        <span>Digital Kit</span>
-                      </button>
-
+                    {/* Card Footer Actions - Merged Portfolio & Digital Kit */}
+                    <div className="pt-4 mt-4 border-t border-slate-100 flex items-center gap-2">
                       <button
                         onClick={() => setShowcaseTalent(talent)}
-                        className="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 font-bold text-[11px] py-2 rounded-xl transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
-                        title="View Showcase & Portfolio Single Page"
+                        className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[11px] py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.98]"
+                        title="View Full Portfolio & Digital Kit Showcase"
                       >
-                        <Briefcase className="w-3.5 h-3.5 text-blue-600" />
-                        <span>Portfolio</span>
+                        <Briefcase className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>Portfolio & Digital Kit</span>
                       </button>
 
                       <button
@@ -1084,7 +1141,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                             setHireModalTalent(talent);
                           }
                         }}
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] py-2 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer shadow-md active:scale-95"
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[11px] py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95"
                         title="Send Hire/Quote Request"
                       >
                         <Send className="w-3.5 h-3.5 text-white" />
@@ -1192,71 +1249,111 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
         {activeTab === 'dashboard' && (
           <div className="space-y-8">
             
-            {/* Workspace Selector Segmented Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-2 sm:p-2.5 rounded-2xl">
-              <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl w-full sm:w-auto">
-                <button
-                  onClick={() => setDashboardWorkspace('artisan')}
-                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                    dashboardWorkspace === 'artisan'
-                      ? 'bg-emerald-500 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Briefcase className="w-4 h-4" />
-                  <span>🛠️ Artisan / Talent Workspace</span>
-                </button>
-                <button
-                  onClick={() => setDashboardWorkspace('customer')}
-                  className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                    dashboardWorkspace === 'customer'
-                      ? 'bg-emerald-500 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <User className="w-4 h-4" />
-                  <span>👤 Customer / Employer Workspace</span>
-                </button>
+            {/* Unitary Client Notice if logged in as Client */}
+            {currentUser?.role === 'Client' && (
+              <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 border border-blue-500/30 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div className="space-y-2 text-center sm:text-left">
+                  <div className="flex items-center gap-2 justify-center sm:justify-start">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Unitary Client & Customer Dashboard</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-black text-white">
+                    Client & Employer Workspace is Consolidated
+                  </h2>
+                  <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                    Manage all your digital marketing services, active artisan hires, escrow deposits, and job opportunities from your single unitary client dashboard.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={() => onNavigate('dashboard')}
+                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                  >
+                    <Briefcase className="w-4 h-4" />
+                    <span>Open Unitary Client Dashboard</span>
+                  </button>
+                  <button
+                    onClick={() => setIsPostGigModalOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Post Service Job</span>
+                  </button>
+                </div>
               </div>
+            )}
 
-              <div className="flex items-center gap-2 px-3 py-1 bg-slate-950 border border-slate-800 rounded-xl text-[10px] text-emerald-400 font-mono font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Firestore In-Sync</span>
-              </div>
-            </div>
-
-            {/* ========================================================================= */}
-            {/* SUB-WORKSPACE 1: ARTISAN / TALENT WORKSPACE */}
-            {/* ========================================================================= */}
-            {dashboardWorkspace === 'artisan' && (
-              <div className="space-y-8">
-                {/* Dashboard Header Banner */}
-                <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Artisan Talent Workspace</span>
-                      </div>
-                      <h2 className="text-2xl font-black text-white">
-                        {myTalentProfile.name || currentUser?.displayName || 'Master Artisan Profile'}
-                      </h2>
-                      <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
-                        Category: <span className="text-slate-200 font-semibold">{myTalentProfile.category || 'Mechanic'}</span> • Rate: <span className="text-emerald-400 font-bold">${myTalentProfile.hourlyRateUsd || 25}/hr (~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN)</span>
-                      </p>
+            {/* ARTISAN & TALENT PROFESSIONAL WORKSPACE */}
+            <div className="space-y-8">
+              {/* Dashboard Header Banner */}
+              <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Talent & Artisan Professional Workspace</span>
                     </div>
+                    <h2 className="text-2xl font-black text-white">
+                      {myTalentProfile.name || currentUser?.displayName || 'Master Artisan Profile'}
+                    </h2>
+                    <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
+                      Category: <span className="text-slate-200 font-semibold">{myTalentProfile.category || 'Mechanic'}</span> • Rate: <span className="text-emerald-400 font-bold">${myTalentProfile.hourlyRateUsd || 25}/hr (~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN)</span>
+                    </p>
+                  </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <button
-                        onClick={() => setIsEditProfileModalOpen(true)}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer"
-                      >
-                        <SlidersHorizontal className="w-4 h-4" />
-                        <span>Edit Digital Profile</span>
-                      </button>
-                    </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      onClick={() => setDashboardSubTab(dashboardSubTab === 'autopilot' ? 'overview' : 'autopilot')}
+                      className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                    >
+                      <Bot className="w-4 h-4 text-emerald-300" />
+                      <span>{dashboardSubTab === 'autopilot' ? 'Back to Overview' : 'Open AI Job Autopilot'}</span>
+                    </button>
+                    <button
+                      onClick={() => setIsEditProfileModalOpen(true)}
+                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                    >
+                      <SlidersHorizontal className="w-4 h-4" />
+                      <span>Edit Digital Profile</span>
+                    </button>
                   </div>
                 </div>
+              </div>
+
+              {/* Sub-Navigation Tabs */}
+              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+                <button
+                  onClick={() => setDashboardSubTab('overview')}
+                  className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
+                    dashboardSubTab === 'overview'
+                      ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
+                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span>Workspace & Direct Inquiries</span>
+                </button>
+                <button
+                  onClick={() => setDashboardSubTab('autopilot')}
+                  className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
+                    dashboardSubTab === 'autopilot'
+                      ? 'bg-blue-600 text-white shadow-md font-black'
+                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  <Bot className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>AI Job Autopilot (ATS Customizer)</span>
+                  <span className="bg-emerald-500/20 text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">Live AI</span>
+                </button>
+              </div>
+
+              {dashboardSubTab === 'autopilot' ? (
+                <div className="space-y-6">
+                  <AIJobAutopilot onTriggerNotification={triggerToast} />
+                </div>
+              ) : (
+                <div className="space-y-8">
 
                 {/* Performance Stats Metrics Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1307,6 +1404,34 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       <span className="text-2xl font-black text-white">${myTalentProfile.hourlyRateUsd || 25} <span className="text-xs font-normal text-slate-400">/hr</span></span>
                     </div>
                     <p className="text-[10px] text-emerald-400 font-semibold">~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN/hr</p>
+                  </div>
+                </div>
+
+                {/* AI Job Autopilot Spotlight Banner */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 relative overflow-hidden shadow-sm text-slate-900">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+                        <span className="text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">AI Career Automation Engine</span>
+                        <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">LinkedIn & Indeed Ready</span>
+                      </div>
+                      <h3 className="text-xl font-black text-slate-900">
+                        Source Verified Jobs & Auto-Tailor ATS Resumes
+                      </h3>
+                      <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+                        Turn on AI Autopilot to automatically fetch matching openings, score candidate qualifications, customize keyword-dense resumes, and submit tailored applications with 1 click.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setDashboardSubTab('autopilot')}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95 shrink-0"
+                    >
+                      <Bot className="w-4 h-4 text-emerald-200" />
+                      <span>Launch Autopilot Tool</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
 
@@ -1568,326 +1693,17 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   </div>
                 </div>
               </div>
-            )}
+              )}
+            </div>
+          </div>
+        )}
 
-            {/* ========================================================================= */}
-            {/* SUB-WORKSPACE 2: CUSTOMER / EMPLOYER WORKSPACE */}
-            {/* ========================================================================= */}
-            {dashboardWorkspace === 'customer' && (
-              <div className="space-y-8">
-                {/* Customer Banner Header */}
-                <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Customer / Employer Portal</span>
-                      </div>
-                      <h2 className="text-2xl font-black text-white">
-                        {currentUser?.displayName || 'Customer Service Hub'}
-                      </h2>
-                      <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
-                        Track your posted service opportunities, review incoming artisan proposal pitches, hire verified local professionals, and process payments with dual USD ($) & NGN (₦) pricing.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      <button
-                        onClick={() => {
-                          if (!currentUser && onOpenAuthModal) {
-                            onOpenAuthModal();
-                          } else {
-                            setIsPostGigModalOpen(true);
-                          }
-                        }}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer"
-                      >
-                        <Plus className="w-4 h-4" />
-                        <span>+ Post New Service Opportunity</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer Metrics Row */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Posted Opportunities</span>
-                      <Briefcase className="w-4 h-4 text-emerald-400" />
-                    </div>
-                    <span className="text-2xl font-black text-white">{gigs.length}</span>
-                    <p className="text-[10px] text-emerald-400 font-semibold">Active in local feed</p>
-                  </div>
-
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Artisan Bids Received</span>
-                      <Send className="w-4 h-4 text-indigo-400" />
-                    </div>
-                    <span className="text-2xl font-black text-white">
-                      {gigs.reduce((acc, g) => acc + (g.proposalsCount || (g.proposals ? g.proposals.length : 0)), 0)}
-                    </span>
-                    <p className="text-[10px] text-indigo-400 font-semibold">Ready for review & hiring</p>
-                  </div>
-
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Direct Orders Sent</span>
-                      <MessageSquare className="w-4 h-4 text-amber-400" />
-                    </div>
-                    <span className="text-2xl font-black text-white">{inquiries.length}</span>
-                    <p className="text-[10px] text-amber-400 font-semibold">Direct artisan hires</p>
-                  </div>
-
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Total Service Budget</span>
-                      <DollarSign className="w-4 h-4 text-emerald-400" />
-                    </div>
-                    <span className="text-2xl font-black text-white">
-                      ${inquiries.reduce((s, i) => s + i.offeredBudgetUsd, 0) || 350}
-                    </span>
-                    <p className="text-[10px] text-emerald-400 font-semibold">
-                      ~₦{((inquiries.reduce((s, i) => s + i.offeredBudgetNgn, 0) || 210000)).toLocaleString()} NGN
-                    </p>
-                  </div>
-                </div>
-
-                {/* Customer Main Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Left 2 Cols: Posted Opportunities & Bids Received */}
-                  <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <Briefcase className="w-4 h-4 text-emerald-400" />
-                          <span>My Posted Service Opportunities & Incoming Artisan Bids</span>
-                        </h3>
-                        <button
-                          onClick={() => {
-                            if (!currentUser && onOpenAuthModal) {
-                              onOpenAuthModal();
-                            } else {
-                              setIsPostGigModalOpen(true);
-                            }
-                          }}
-                          className="text-xs text-emerald-400 hover:underline font-bold"
-                        >
-                          + Post Opportunity
-                        </button>
-                      </div>
-
-                      {gigs.length === 0 ? (
-                        <div className="text-center py-10 space-y-2">
-                          <Briefcase className="w-8 h-8 text-slate-600 mx-auto" />
-                          <p className="text-xs text-slate-400">You have not posted any service opportunities yet.</p>
-                          <button
-                            onClick={() => {
-                              if (!currentUser && onOpenAuthModal) {
-                                onOpenAuthModal();
-                              } else {
-                                setIsPostGigModalOpen(true);
-                              }
-                            }}
-                            className="bg-emerald-500 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
-                          >
-                            Post Your First Service Request
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="space-y-6">
-                          {gigs.map(gig => (
-                            <div key={gig.id} className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4">
-                              <div className="flex items-start justify-between gap-3">
-                                <div>
-                                  <span className="text-[10px] font-mono text-emerald-400 uppercase font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-                                    {gig.category}
-                                  </span>
-                                  <h4 className="text-sm font-bold text-white mt-1">{gig.title}</h4>
-                                  <p className="text-[11px] text-slate-400 mt-0.5">{gig.location} • Urgency: {gig.urgency}</p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="text-sm font-black text-white">${gig.budgetUsd}</span>
-                                  <span className="text-[9px] text-emerald-400 block font-mono">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
-                                </div>
-                              </div>
-
-                              <p className="text-xs text-slate-300 leading-relaxed bg-slate-900 p-3 rounded-lg border border-slate-800/60">
-                                {gig.description}
-                              </p>
-
-                              {/* Proposal pitches received on this gig */}
-                              <div className="border-t border-slate-800/80 pt-3 space-y-3">
-                                <div className="flex items-center justify-between text-xs font-bold text-white">
-                                  <span>Artisan Proposal Pitches Received ({(gig.proposals || []).length})</span>
-                                  <span className="text-[10px] text-slate-400 font-normal">Review pitches and click Hire to initiate job contract</span>
-                                </div>
-
-                                {(!gig.proposals || gig.proposals.length === 0) ? (
-                                  <p className="text-xs text-slate-500 italic">No artisan pitches submitted on this request yet. Local artisans are reviewing the feed.</p>
-                                ) : (
-                                  <div className="space-y-2.5">
-                                    {gig.proposals.map(prop => (
-                                      <div key={prop.id} className="bg-slate-900 border border-slate-800 p-3 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                        <div className="space-y-1">
-                                          <div className="flex items-center gap-2">
-                                            <span className="font-bold text-white">{prop.artisanName}</span>
-                                            <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded uppercase">{prop.artisanCategory}</span>
-                                          </div>
-                                          <p className="text-slate-300 italic text-[11px]">"{prop.pitchMessage}"</p>
-                                        </div>
-
-                                        <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                                          <div className="text-right">
-                                            <span className="text-xs font-black text-emerald-400">${prop.proposedPriceUsd}</span>
-                                            <span className="text-[9px] text-slate-400 block">~₦{prop.proposedPriceNgn.toLocaleString()} NGN</span>
-                                          </div>
-
-                                          {prop.status === 'Hired' ? (
-                                            <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-lg border border-emerald-500/30">
-                                              ✓ Hired
-                                            </span>
-                                          ) : (
-                                            <button
-                                              onClick={() => handleHireArtisanFromProposal(gig.id, prop.id)}
-                                              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-3.5 py-1.5 rounded-lg cursor-pointer transition-all flex items-center gap-1 shadow-md"
-                                            >
-                                              <CheckCircle2 className="w-3.5 h-3.5" />
-                                              <span>Hire & Pay Deposit</span>
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Direct Hire Requests Sent */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4 text-indigo-400" />
-                          <span>Direct Hire Contracts & Active Artisan Orders</span>
-                        </h3>
-                        <span className="bg-slate-800 text-slate-300 text-[10px] font-mono px-2 py-0.5 rounded-full">
-                          {inquiries.length} Active
-                        </span>
-                      </div>
-
-                      {inquiries.length === 0 ? (
-                        <p className="text-xs text-slate-400 italic">No direct hire requests initiated yet. Browse the Talent Directory to message artisans directly!</p>
-                      ) : (
-                        <div className="space-y-3">
-                          {inquiries.map(inq => (
-                            <div key={inq.id} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
-                              <div className="flex items-center justify-between text-xs">
-                                <div>
-                                  <h4 className="font-bold text-white">{inq.projectTitle}</h4>
-                                  <p className="text-[10px] text-slate-400">Artisan Assigned: <span className="text-emerald-400 font-semibold">{inq.talentName}</span></p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="font-black text-emerald-400 text-xs">${inq.offeredBudgetUsd}</span>
-                                  <span className="text-[9px] text-slate-400 block">~₦{inq.offeredBudgetNgn.toLocaleString()} NGN</span>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-slate-800 pt-2 text-[10px]">
-                                <span className="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold">
-                                  Status: {inq.status}
-                                </span>
-
-                                <button
-                                  onClick={() => onCheckout(inq.offeredBudgetNgn, `Artisan Contract Deposit: ${inq.projectTitle}`)}
-                                  className="bg-emerald-500 text-slate-950 font-bold px-3 py-1 rounded-lg cursor-pointer"
-                                >
-                                  Pay Deposit ($ & ₦)
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right Column: Milestone Tracker & Billing */}
-                  <div className="space-y-6">
-                    {/* Live Progress Pipeline */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-emerald-400" />
-                        <span>Artisan Service Progress Pipeline</span>
-                      </h3>
-
-                      <div className="space-y-3 text-xs">
-                        <div className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-xl border border-emerald-500/30">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <div>
-                            <p className="font-bold text-white">1. Requirement & Scope Posted</p>
-                            <p className="text-[10px] text-slate-400">Budget defined in USD & NGN</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-xl border border-indigo-500/30">
-                          <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
-                          <div>
-                            <p className="font-bold text-white">2. Proposal Bids & Verification</p>
-                            <p className="text-[10px] text-slate-400">Artisan credential review</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                          <Clock className="w-4 h-4 text-amber-400 shrink-0" />
-                          <div>
-                            <p className="font-bold text-white">3. Job Execution & Field Service</p>
-                            <p className="text-[10px] text-slate-400">On-site work or diagnostic repair</p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                          <ShieldCheck className="w-4 h-4 text-slate-500 shrink-0" />
-                          <div>
-                            <p className="font-bold text-white">4. Signoff & Final Payment Release</p>
-                            <p className="text-[10px] text-slate-400">Escrow funds released to artisan</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Spend & Invoice Summary */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-indigo-400" />
-                        <span>Customer Billing & Invoices</span>
-                      </h3>
-
-                      <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
-                        <div className="flex justify-between text-slate-300 font-bold">
-                          <span>Total Invoiced</span>
-                          <span className="text-emerald-400">${inquiries.reduce((s, i) => s + i.offeredBudgetUsd, 0) || 350}</span>
-                        </div>
-                        <p className="text-[10px] text-slate-500">Equivalent: ~₦{((inquiries.reduce((s, i) => s + i.offeredBudgetNgn, 0) || 210000)).toLocaleString()} NGN</p>
-                      </div>
-
-                      <button
-                        onClick={() => triggerToast('Official PDF Invoice generated and ready for download.')}
-                        className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 rounded-xl cursor-pointer shadow-sm"
-                      >
-                        Download PDF Statement
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
+        {/* ========================================================================= */}
+        {/* VIEW 4: DEDICATED AI JOB AUTOPILOT & ATS CUSTOMIZER */}
+        {/* ========================================================================= */}
+        {activeTab === 'autopilot' && (
+          <div className="space-y-6">
+            <AIJobAutopilot onTriggerNotification={triggerToast} />
           </div>
         )}
 
@@ -2012,7 +1828,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* ========================================================================= */}
       <AnimatePresence>
         {showcaseTalent && (() => {
-          const { isDigital, caseStudies, serviceOfferings, reviews } = getTalentShowcaseContent(showcaseTalent);
+          const { isDigital, caseStudies, serviceOfferings, reviews, digitalKitItems } = getTalentShowcaseContent(showcaseTalent);
           const sectorLabel = getTalentSector(showcaseTalent.category) === 'Digital Services Providers' 
             ? 'Digital Service Provider' 
             : 'Skilled Artisan / Master Technician';
@@ -2064,9 +1880,9 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               <div className="max-w-5xl w-full mx-auto p-4 sm:p-8 space-y-8 my-6">
                 {/* Hero Banner Header Card */}
                 <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl relative">
-                  <div className={`h-40 sm:h-52 w-full ${isDigital ? 'bg-gradient-to-r from-blue-900 via-indigo-800 to-slate-900' : 'bg-gradient-to-r from-emerald-900 via-slate-900 to-teal-950'} relative p-6 flex items-end justify-between`}>
+                  <div className="h-40 sm:h-52 w-full bg-white border-b border-slate-200 relative p-6 flex items-end justify-between">
                     <div className="absolute top-4 right-4 flex items-center gap-2">
-                      <span className="bg-white/90 backdrop-blur-md text-slate-900 text-[11px] font-black px-3 py-1 rounded-full border border-white/50 shadow-sm uppercase font-mono tracking-wider">
+                      <span className="bg-slate-100 text-slate-800 text-[11px] font-black px-3 py-1 rounded-full border border-slate-200 shadow-2xs uppercase font-mono tracking-wider">
                         {sectorLabel}
                       </span>
                     </div>
@@ -2204,11 +2020,23 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {caseStudies.map((cs) => (
-                      <div key={cs.id} className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:border-emerald-400 transition-all shadow-xs flex flex-col">
-                        <div className="h-44 w-full relative overflow-hidden bg-slate-200">
-                          <img src={cs.image} alt={cs.title} className="w-full h-full object-cover" />
-                          <div className="absolute top-3 right-3 bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3 text-white" /> Verified Project
+                      <div key={cs.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-emerald-400 transition-all shadow-xs flex flex-col">
+                        <div className="h-36 w-full relative overflow-hidden bg-white border-b border-slate-200 p-6 flex flex-col justify-between">
+                          <div className="flex items-center justify-between">
+                            <UserAvatarIcon
+                              name={showcaseTalent.name}
+                              category={showcaseTalent.category}
+                              size="md"
+                              verified={true}
+                              className="border-2 border-emerald-500 shadow-md"
+                            />
+                            <div className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2.5 py-1 rounded-full shadow-2xs flex items-center gap-1">
+                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified Case Study
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-900 text-xs font-mono font-bold">
+                            <Briefcase className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>{showcaseTalent.category} Trade Showcase</span>
                           </div>
                         </div>
                         <div className="p-5 space-y-3.5 flex-1 flex flex-col justify-between">
@@ -2267,6 +2095,60 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   </div>
                 </div>
 
+                {/* Section: Digital Kit & Professional Toolset (Merged with Portfolio) */}
+                <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
+                        <Layers className="w-5 h-5 text-blue-600" /> Digital Kit & Professional Toolset
+                      </h3>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                        {isDigital
+                          ? 'Standardized technical playbooks, architecture templates, and funnel delivery frameworks.'
+                          : 'Certified diagnostic scanners, calibrated field gear, and guaranteed OEM replacement access.'}
+                      </p>
+                    </div>
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Pulzitive Verified
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {digitalKitItems.map((item, idx) => (
+                      <div key={idx} className="bg-white border border-slate-200 p-5 rounded-2xl space-y-3 flex flex-col justify-between hover:border-blue-300 transition-all shadow-2xs">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md uppercase">
+                              {item.type}
+                            </span>
+                            <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-black px-2 py-0.5 rounded-md">
+                              {item.tag}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-black text-slate-900 leading-snug">{item.name}</h4>
+                          <p className="text-xs text-slate-600 leading-relaxed">{item.description}</p>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-emerald-700 flex items-center gap-1">
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-600" /> Included in Engagement
+                          </span>
+                          <button
+                            onClick={() => {
+                              setHireModalTalent(showcaseTalent);
+                              setShowcaseTalent(null);
+                            }}
+                            className="text-xs font-black text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Request Kit</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Section: Service Deliverables & Guarantees */}
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                   <h3 className="text-lg font-black text-slate-900 uppercase font-mono tracking-wider flex items-center gap-2">
@@ -2275,7 +2157,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {serviceOfferings.map((serv, idx) => (
-                      <div key={idx} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-2 flex flex-col justify-between">
+                      <div key={idx} className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 flex flex-col justify-between shadow-2xs">
                         <div className="space-y-1.5">
                           <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full inline-block">
                             {serv.time}
@@ -2300,7 +2182,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                   <div className="space-y-4">
                     {reviews.map((rev) => (
-                      <div key={rev.id} className="bg-slate-50 border border-slate-200 p-5 rounded-2xl space-y-2">
+                      <div key={rev.id} className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-2xs">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center">
@@ -2323,13 +2205,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 </div>
 
                 {/* Section: Bottom Hire Banner */}
-                <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
+                <div className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
                   <div className="space-y-2 text-center sm:text-left">
-                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
                       Ready to Hire {showcaseTalent.name}?
                     </span>
-                    <h3 className="text-xl sm:text-2xl font-black">Get a Direct Quote & Schedule Delivery</h3>
-                    <p className="text-xs text-slate-300 max-w-xl">
+                    <h3 className="text-xl sm:text-2xl font-black text-slate-900">Get a Direct Quote & Schedule Delivery</h3>
+                    <p className="text-xs text-slate-600 max-w-xl">
                       Send your service scope or project requirements directly. Pulzitive escrow protection guarantees payment safety.
                     </p>
                   </div>
@@ -2338,7 +2220,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       setHireModalTalent(showcaseTalent);
                       setShowcaseTalent(null);
                     }}
-                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm px-8 py-4 rounded-2xl cursor-pointer transition-all shadow-xl active:scale-95 shrink-0 flex items-center gap-2"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm px-8 py-4 rounded-2xl cursor-pointer transition-all shadow-lg active:scale-95 shrink-0 flex items-center gap-2"
                   >
                     <Send className="w-4 h-4" />
                     <span>Hire/Quote</span>
@@ -2413,7 +2295,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Portfolio & Case Studies</h4>
+                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">Portfolio & Digital Kit</h4>
                   <button
                     onClick={() => {
                       setShowcaseTalent(selectedTalentModal);
@@ -2436,7 +2318,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   >
                     <span className="flex items-center gap-2">
                       <Briefcase className="w-4 h-4 text-emerald-400" />
-                      <span>View Full Single-Page Portfolio Showcase</span>
+                      <span>View Full Single-Page Portfolio & Digital Kit</span>
                     </span>
                     <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -2487,83 +2369,85 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* ========================================================================= */}
       <AnimatePresence>
         {hireModalTalent && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative"
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900"
             >
               <button
                 onClick={() => setHireModalTalent(null)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-950 cursor-pointer"
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-full bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold">Direct Talent Connection</span>
-                <h3 className="text-lg font-black text-white">Hire/Quote for {hireModalTalent.name}</h3>
-                <p className="text-xs text-slate-400">{hireModalTalent.title} • {hireModalTalent.location}</p>
+                <span className="text-[10px] font-mono uppercase text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  Direct Talent Connection
+                </span>
+                <h3 className="text-lg font-black text-slate-900">Hire/Quote for {hireModalTalent.name}</h3>
+                <p className="text-xs text-slate-600 font-semibold">{hireModalTalent.title} • {hireModalTalent.location}</p>
               </div>
 
               <form onSubmit={handleSendInquirySubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Project / Service Request Title</label>
+                  <label className="block text-slate-700 font-bold mb-1">Project / Service Request Title</label>
                   <input
                     type="text"
                     value={inquiryProjectTitle}
                     onChange={(e) => setInquiryProjectTitle(e.target.value)}
                     placeholder="e.g. Engine OBD Diagnostics & Overhaul Request"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Offered Budget ($ USD)</label>
+                    <label className="block text-slate-700 font-bold mb-1">Offered Budget ($ USD)</label>
                     <input
                       type="number"
                       value={inquiryBudgetUsd}
                       onChange={(e) => setInquiryBudgetUsd(Number(e.target.value))}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-xs"
                       required
                     />
-                    <span className="text-[10px] text-slate-400 mt-1 block">~₦{(inquiryBudgetUsd * 600).toLocaleString()} NGN</span>
+                    <span className="text-[10px] text-slate-500 mt-1 block">~₦{(inquiryBudgetUsd * 600).toLocaleString()} NGN</span>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Your Location</label>
+                    <label className="block text-slate-700 font-bold mb-1">Your Location</label>
                     <input
                       type="text"
                       value={inquiryLocation}
                       onChange={(e) => setInquiryLocation(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Project Details & Expectations</label>
+                  <label className="block text-slate-700 font-bold mb-1">Project Details & Expectations</label>
                   <textarea
                     rows={4}
                     value={inquiryMessage}
                     onChange={(e) => setInquiryMessage(e.target.value)}
                     placeholder="Describe scope, required deliverables, and timeline..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Your Contact Email</label>
+                  <label className="block text-slate-700 font-bold mb-1">Your Contact Email</label>
                   <input
                     type="email"
                     value={inquiryClientEmail}
                     onChange={(e) => setInquiryClientEmail(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
@@ -2571,7 +2455,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 <button
                   type="submit"
                   disabled={isSubmittingInquiry}
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
                 >
                   {isSubmittingInquiry ? (
                     <>
@@ -2596,46 +2480,48 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* ========================================================================= */}
       <AnimatePresence>
         {isPostGigModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative"
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900"
             >
               <button
                 onClick={() => setIsPostGigModalOpen(false)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-950 cursor-pointer"
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-full bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold">Employer Portal</span>
-                <h3 className="text-lg font-black text-white">Post an Opportunity for Local Talents</h3>
-                <p className="text-xs text-slate-400">Broadcast your project brief directly to verified talents in your area.</p>
+                <span className="text-[10px] font-mono uppercase text-blue-700 font-bold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                  Employer & Customer Portal
+                </span>
+                <h3 className="text-lg font-black text-slate-900">Post an Opportunity for Local Talents</h3>
+                <p className="text-xs text-slate-600">Broadcast your project brief directly to verified talents in your area.</p>
               </div>
 
               <form onSubmit={handlePostGigSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Opportunity / Service Request Title</label>
+                  <label className="block text-slate-700 font-bold mb-1">Opportunity / Service Request Title</label>
                   <input
                     type="text"
                     value={gigTitle}
                     onChange={(e) => setGigTitle(e.target.value)}
                     placeholder="e.g. Urgent Hydraulic Brake & Suspension Repair for SUV"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Category / Trade</label>
+                    <label className="block text-slate-700 font-bold mb-1">Category / Trade</label>
                     <select
                       value={gigCategory}
                       onChange={(e) => setGigCategory(e.target.value)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     >
                       <optgroup label="Artisans & Technicians">
                         {ARTISAN_CATEGORIES.map(c => (
@@ -2651,13 +2537,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Location / Target Area</label>
+                    <label className="block text-slate-700 font-bold mb-1">Location / Target Area</label>
                     <input
                       type="text"
                       value={gigLocation}
                       onChange={(e) => setGigLocation(e.target.value)}
                       placeholder="e.g. Remote / Global, London, UK, or Lagos, NG"
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                       required
                     />
                   </div>
@@ -2665,23 +2551,23 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Budget ($ USD)</label>
+                    <label className="block text-slate-700 font-bold mb-1">Budget ($ USD)</label>
                     <input
                       type="number"
                       value={gigBudgetUsd}
                       onChange={(e) => setGigBudgetUsd(Number(e.target.value))}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-xs"
                       required
                     />
-                    <span className="text-[10px] text-slate-400 mt-1 block">~₦{(gigBudgetUsd * 600).toLocaleString()} NGN</span>
+                    <span className="text-[10px] text-slate-500 mt-1 block">~₦{(gigBudgetUsd * 600).toLocaleString()} NGN</span>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Urgency</label>
+                    <label className="block text-slate-700 font-bold mb-1">Urgency</label>
                     <select
                       value={gigUrgency}
                       onChange={(e) => setGigUrgency(e.target.value as any)}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     >
                       <option value="Immediate (24-48 hrs)">Immediate (24-48 hrs)</option>
                       <option value="This Week">This Week</option>
@@ -2691,13 +2577,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Full Description & Deliverables</label>
+                  <label className="block text-slate-700 font-bold mb-1">Full Description & Deliverables</label>
                   <textarea
                     rows={4}
                     value={gigDescription}
                     onChange={(e) => setGigDescription(e.target.value)}
                     placeholder="Provide details about scope, deliverables, and location expectations..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
@@ -2705,7 +2591,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 <button
                   type="submit"
                   disabled={isSubmittingGig}
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
                 >
                   {isSubmittingGig ? (
                     <>
@@ -2730,57 +2616,59 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* ========================================================================= */}
       <AnimatePresence>
         {isEditProfileModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl relative"
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900"
             >
               <button
                 onClick={() => setIsEditProfileModalOpen(false)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-950 cursor-pointer"
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-full bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold">Artisan Presence Editor</span>
-                <h3 className="text-lg font-black text-white">Update Artisan Profile</h3>
-                <p className="text-xs text-slate-400">Optimize how local customers find and hire your trade services in your area.</p>
+                <span className="text-[10px] font-mono uppercase text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  Artisan Presence Editor
+                </span>
+                <h3 className="text-lg font-black text-slate-900">Update Artisan Profile</h3>
+                <p className="text-xs text-slate-600">Optimize how local customers find and hire your trade services in your area.</p>
               </div>
 
               <form onSubmit={handleSaveProfileSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Full Name / Brand Name</label>
+                  <label className="block text-slate-700 font-bold mb-1">Full Name / Brand Name</label>
                   <input
                     type="text"
                     value={myTalentProfile.name || ''}
                     onChange={(e) => setMyTalentProfile({ ...myTalentProfile, name: e.target.value })}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Primary Trade Headline / Specialty</label>
+                  <label className="block text-slate-700 font-bold mb-1">Primary Trade Headline / Specialty</label>
                   <input
                     type="text"
                     value={myTalentProfile.title || ''}
                     onChange={(e) => setMyTalentProfile({ ...myTalentProfile, title: e.target.value })}
                     placeholder="e.g. Master Automobile Diagnostic Mechanic & Engine Rebuilder"
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Category / Trade</label>
+                    <label className="block text-slate-700 font-bold mb-1">Category / Trade</label>
                     <select
                       value={myTalentProfile.category || 'Mechanic'}
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, category: e.target.value })}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     >
                       <optgroup label="Artisans & Technicians">
                         {ARTISAN_CATEGORIES.map(c => (
@@ -2796,13 +2684,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Location</label>
+                    <label className="block text-slate-700 font-bold mb-1">Location</label>
                     <input
                       type="text"
                       value={myTalentProfile.location || ''}
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, location: e.target.value })}
                       placeholder="e.g. Remote / Global, New York, USA, or Lagos, NG"
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                       required
                     />
                   </div>
@@ -2810,23 +2698,23 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Hourly Rate ($ USD)</label>
+                    <label className="block text-slate-700 font-bold mb-1">Hourly Rate ($ USD)</label>
                     <input
                       type="number"
                       value={myTalentProfile.hourlyRateUsd || 25}
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, hourlyRateUsd: Number(e.target.value) })}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-mono shadow-xs"
                       required
                     />
-                    <span className="text-[10px] text-slate-400 mt-1 block">~₦{((myTalentProfile.hourlyRateUsd || 25) * 600).toLocaleString()} NGN/hr</span>
+                    <span className="text-[10px] text-slate-500 mt-1 block">~₦{((myTalentProfile.hourlyRateUsd || 25) * 600).toLocaleString()} NGN/hr</span>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-bold mb-1">Availability Status</label>
+                    <label className="block text-slate-700 font-bold mb-1">Availability Status</label>
                     <select
                       value={myTalentProfile.availability || 'Available Now'}
                       onChange={(e) => setMyTalentProfile({ ...myTalentProfile, availability: e.target.value as any })}
-                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     >
                       <option value="Available Now">Available Now</option>
                       <option value="Part-Time">Part-Time</option>
@@ -2837,19 +2725,19 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Trade Overview & Services</label>
+                  <label className="block text-slate-700 font-bold mb-1">Trade Overview & Services</label>
                   <textarea
                     rows={4}
                     value={myTalentProfile.bio || ''}
                     onChange={(e) => setMyTalentProfile({ ...myTalentProfile, bio: e.target.value })}
                     placeholder="Describe your artisan expertise, workshop tools, and guarantee..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Save & Promote Artisan Profile</span>
@@ -2865,53 +2753,53 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* ========================================================================= */}
       <AnimatePresence>
         {pitchModalGig && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative"
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-slate-900"
             >
               <button
                 onClick={() => setPitchModalGig(null)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-full bg-slate-950 cursor-pointer"
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 rounded-full bg-slate-100 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded">
+                <span className="text-[10px] font-mono uppercase text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   Pitch Proposal to Customer
                 </span>
-                <h3 className="text-lg font-black text-white">{pitchModalGig.title}</h3>
-                <p className="text-xs text-slate-400">
-                  Client: <span className="text-slate-200 font-semibold">{pitchModalGig.clientName}</span> • Offered Budget: <span className="text-emerald-400 font-bold">${pitchModalGig.budgetUsd} (~₦{pitchModalGig.budgetNgn.toLocaleString()} NGN)</span>
+                <h3 className="text-lg font-black text-slate-900">{pitchModalGig.title}</h3>
+                <p className="text-xs text-slate-600">
+                  Client: <span className="text-slate-900 font-semibold">{pitchModalGig.clientName}</span> • Offered Budget: <span className="text-emerald-700 font-bold">${pitchModalGig.budgetUsd} (~₦{pitchModalGig.budgetNgn.toLocaleString()} NGN)</span>
                 </p>
               </div>
 
               <form onSubmit={handlePitchSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Your Proposed Service Budget ($ USD)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Your Proposed Service Budget ($ USD)</label>
                   <input
                     type="number"
                     value={pitchPriceUsd}
                     onChange={(e) => setPitchPriceUsd(Number(e.target.value))}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
-                  <span className="text-[10px] text-slate-400 mt-1 block">
+                  <span className="text-[10px] text-slate-500 mt-1 block">
                     Equivalent Rate: ~₦{(pitchPriceUsd * 600).toLocaleString()} NGN
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Your Proposal Pitch & Execution Guarantee</label>
+                  <label className="block text-slate-700 font-bold mb-1">Your Proposal Pitch & Execution Guarantee</label>
                   <textarea
                     rows={4}
                     value={pitchMessage}
                     onChange={(e) => setPitchMessage(e.target.value)}
                     placeholder="Briefly explain your experience, diagnostic approach, and how quickly you can complete this service..."
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-xs"
                     required
                   />
                 </div>
@@ -2919,7 +2807,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 <button
                   type="submit"
                   disabled={isSubmittingPitch}
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-2xl cursor-pointer transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 active:scale-95"
                 >
                   {isSubmittingPitch ? (
                     <>

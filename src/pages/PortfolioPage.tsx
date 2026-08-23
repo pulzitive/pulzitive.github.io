@@ -51,7 +51,7 @@ export default function PortfolioPage({
       <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto text-center space-y-6">
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-tight">
-            Our Elite Client <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600">Portfolio</span>
+            Our Elite Client <span className="text-emerald-600">Portfolio</span>
           </h1>
           <p className="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
             Discover how Pulzitive drives exponential growth, ranks industry-leading brands on Page 1 of Google, and designs conversion-engineered lead pipelines.

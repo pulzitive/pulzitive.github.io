@@ -254,7 +254,7 @@ export function MiniTools({ currentUser, onBookAppointment, showcaseOnly = false
       {!showcaseOnly && (
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">
-            Vibe-Coding Grow-Tools
+            Marketing Tools
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-500">
             A powerful suite of offline-first and AI-assisted performance tools to scale your brand and workflow.

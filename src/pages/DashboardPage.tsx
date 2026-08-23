@@ -8,7 +8,7 @@ import {
   Award, BookOpen, Calendar, HelpCircle, Users, Shield, Globe, 
   DollarSign, Sparkles, User, Brain, AlertCircle, ChevronRight, 
   Check, FileText, Send, Zap, Plus, LogIn, ExternalLink, RefreshCw,
-  Megaphone, Briefcase, MapPin, Star, SlidersHorizontal, ShieldCheck, CheckCircle2, Clock, Eye, MessageSquare
+  Megaphone, Briefcase, MapPin, Star, SlidersHorizontal, ShieldCheck, CheckCircle2, Clock, Eye, MessageSquare, X, Bot, ArrowRight
 } from 'lucide-react';
 import { UserProfile, UserRole, Course, Appointment, BrandAudit, ChatMessage, Enrollment, Announcement, MentorshipRequest, TalentInquiry, TalentGigOpportunity } from '../types';
 import { 
@@ -19,11 +19,44 @@ import {
   completeLessonInDb, createAnnouncement, getAnnouncements,
   requestMentorship, getMentorshipRequests, updateMentorshipStatus,
   inviteChild, getChildrenProgress, getAllUsers, updateUserRoleAndStatusInDb,
-  getTalentInquiries, getGigOpportunities, updateInquiryStatus
+  getTalentInquiries, getGigOpportunities, updateInquiryStatus,
+  postGigOpportunity, hireArtisanForGig
 } from '../firebase';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { MiniTools } from '../components/MiniTools';
 import { AdminGrowthAutomationHub } from '../components/AdminGrowthAutomationHub';
+import { AIJobAutopilot } from '../components/AIJobAutopilot';
+
+const ARTISAN_CATEGORIES = [
+  'Auto Mechanic (Heavy/Light Duty)',
+  'Panel Beater & Auto Body Specialist',
+  'Industrial & Domestic Electrician',
+  'Automotive Electrician & Rewinder',
+  'Plumber & Pipe Fitting Engineer',
+  'HVAC & Air Conditioning Technician',
+  'Welder & Metal Fabricator',
+  'Carpenter & Bespoke Woodworker',
+  'Tiler & Masonry Specialist',
+  'Painter & Wall Coating Artisan',
+  'Solar & Inverter Installation Engineer',
+  'CCTV, Security & Access Control Specialist',
+  'Generator Repair & Power Technician',
+  'Aluminum Fabricator & Glazing Expert',
+  'Tailor, Fashion Designer & Leather Crafter'
+];
+
+const DIGITAL_SERVICE_CATEGORIES = [
+  'Digital Marketing & Paid Ads Specialist',
+  'SEO & Growth Engine Optimizer',
+  'Brand Strategist & Identity Designer',
+  'Full Stack Web & Cloud Architect',
+  'Mobile App Developer (React Native/Flutter)',
+  'UI/UX Product Designer & Prototyper',
+  'Content Strategist & Copywriter',
+  'Video Editor & Motion Designer',
+  'Data Analyst & BI Specialist',
+  'Cybersecurity & Network Systems Auditor'
+];
 
 interface DashboardPageProps {
   currentUser: UserProfile;
@@ -133,7 +166,21 @@ export default function DashboardPage({
   // Talent and Artisan Dashboard States
   const [talentInquiries, setTalentInquiries] = useState<TalentInquiry[]>([]);
   const [gigOpportunities, setGigOpportunities] = useState<TalentGigOpportunity[]>([]);
-  const [talentWorkspaceTab, setTalentWorkspaceTab] = useState<'artisan' | 'customer'>('artisan');
+
+  // Unitary Client / Customer Dashboard Sub-tab filter
+  const [clientActiveTab, setClientActiveTab] = useState<'all' | 'talents' | 'marketing' | 'simulators' | 'statements'>('all');
+  const [talentWorkspaceTab, setTalentWorkspaceTab] = useState<'overview' | 'autopilot'>('overview');
+
+  // Client Post Service Opportunity Modal State
+  const [isPostGigModalOpen, setIsPostGigModalOpen] = useState(false);
+  const [gigTitle, setGigTitle] = useState('');
+  const [gigCategory, setGigCategory] = useState(ARTISAN_CATEGORIES[0]);
+  const [gigLocation, setGigLocation] = useState('Lagos, Nigeria');
+  const [gigBudgetUsd, setGigBudgetUsd] = useState(150);
+  const [gigType, setGigType] = useState<'Fixed Price' | 'Hourly' | 'Milestone'>('Fixed Price');
+  const [gigUrgency, setGigUrgency] = useState<'Immediate (24-48 hrs)' | 'This Week' | 'Flexible'>('Immediate (24-48 hrs)');
+  const [gigDescription, setGigDescription] = useState('');
+  const [isSubmittingGig, setIsSubmittingGig] = useState(false);
 
   // School Admin/Teacher user search and role/status edit inputs
   const [userSearchQuery, setUserSearchQuery] = useState('');
@@ -402,6 +449,70 @@ Pulse on Data. Impact on Brand.
     setSponsorships(prev => [mockReq, ...prev]);
     setSponsorSubmitted(true);
     onTriggerNotification("Sponsorship request submitted to corporate sponsors.");
+  };
+
+  // Client Post Service Opportunity Submit
+  const handlePostGigSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!gigTitle || !gigLocation || !gigDescription) {
+      onTriggerNotification('Please fill in all required fields.');
+      return;
+    }
+    setIsSubmittingGig(true);
+    try {
+      const newGig: TalentGigOpportunity = {
+        id: `gig-${Date.now()}`,
+        title: gigTitle,
+        clientName: currentUser?.displayName || 'Verified Client',
+        clientEmail: currentUser?.email || 'client@pulzitive.com',
+        category: gigCategory,
+        location: gigLocation,
+        budgetUsd: gigBudgetUsd,
+        budgetNgn: gigBudgetUsd * 600,
+        type: gigType,
+        urgency: gigUrgency,
+        description: gigDescription,
+        postedDate: new Date().toISOString(),
+        proposalsCount: 0,
+        distanceKm: 1.8
+      };
+
+      await postGigOpportunity(newGig);
+      setGigOpportunities(prev => [newGig, ...prev]);
+      setIsSubmittingGig(false);
+      setIsPostGigModalOpen(false);
+      setGigTitle('');
+      setGigDescription('');
+      onTriggerNotification('Service opportunity posted! Local talents in your area have been notified.');
+    } catch (err) {
+      console.error(err);
+      setIsSubmittingGig(false);
+      onTriggerNotification('Failed to post service opportunity.');
+    }
+  };
+
+  // Hire Artisan from Proposal (Client / Customer View)
+  const handleHireArtisanFromProposal = async (gigId: string, proposalId: string) => {
+    try {
+      const newInquiry = await hireArtisanForGig(gigId, proposalId);
+      if (newInquiry) {
+        setTalentInquiries(prev => [newInquiry, ...prev]);
+        setGigOpportunities(prev => prev.map(g => {
+          if (g.id === gigId && g.proposals) {
+            return {
+              ...g,
+              proposals: g.proposals.map(p => p.id === proposalId ? { ...p, status: 'Hired' } : p)
+            };
+          }
+          return g;
+        }));
+        onTriggerNotification(`Artisan hired successfully! Contract added to your active orders.`);
+        onEnrollViaPaystack(newInquiry.offeredBudgetNgn, `Artisan Hire Deposit: ${newInquiry.projectTitle}`);
+      }
+    } catch (err) {
+      console.error(err);
+      onTriggerNotification('Failed to complete hiring action.');
+    }
   };
 
   // Student chat with mentor
@@ -1858,204 +1969,576 @@ Pulse on Data. Impact on Brand.
   // TALENT / ARTISAN WORKSPACE
   const renderTalentWorkspace = () => (
     <div className="space-y-8">
-      
-      {/* Workspace Switcher Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-slate-200 p-3 rounded-2xl shadow-sm">
-        <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
-          <button
-            onClick={() => setTalentWorkspaceTab('artisan')}
-            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
-              talentWorkspaceTab === 'artisan'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Briefcase className="w-4 h-4" />
-            <span>🛠️ Artisan / Talent Workspace</span>
-          </button>
-          <button
-            onClick={() => setTalentWorkspaceTab('customer')}
-            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-black cursor-pointer transition-all flex items-center justify-center gap-2 ${
-              talentWorkspaceTab === 'customer'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <User className="w-4 h-4" />
-            <span>👤 Customer / Employer Workspace</span>
-          </button>
-        </div>
+      {/* Artisan Header Banner */}
+      <div className="bg-white border-2 border-emerald-500/30 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-sm text-slate-900">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                Artisan & Trade Talent Portal
+              </span>
+            </div>
+            <h2 className="text-2xl font-black text-slate-900">
+              {currentUser.displayName || 'Master Artisan Profile'}
+            </h2>
+            <p className="text-xs text-slate-600 max-w-xl leading-relaxed">
+              Verified Local Trade Expert • Email: <span className="text-emerald-700 font-bold">{currentUser.email}</span>
+            </p>
+          </div>
 
-        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-xl text-[10px] text-emerald-700 font-mono font-bold">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Firestore Live Data In-Sync</span>
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <button
+              onClick={() => setTalentWorkspaceTab(talentWorkspaceTab === 'autopilot' ? 'overview' : 'autopilot')}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-5 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
+            >
+              <Bot className="w-4 h-4 text-emerald-200" />
+              <span>{talentWorkspaceTab === 'autopilot' ? 'Portal Overview' : 'AI Job Autopilot'}</span>
+            </button>
+            <button
+              onClick={() => onNavigate('talents')}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-5 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
+            >
+              <Briefcase className="w-4 h-4 text-white" />
+              <span>Open Artisan Directory & Gigs</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {talentWorkspaceTab === 'artisan' ? (
+      {/* Subtabs for Artisan Workspace */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+        <button
+          onClick={() => setTalentWorkspaceTab('overview')}
+          className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
+            talentWorkspaceTab === 'overview'
+              ? 'bg-emerald-600 text-white shadow-sm font-black'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Award className="w-3.5 h-3.5" />
+          <span>Artisan Portal & Inquiries</span>
+        </button>
+        <button
+          onClick={() => setTalentWorkspaceTab('autopilot')}
+          className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
+            talentWorkspaceTab === 'autopilot'
+              ? 'bg-blue-600 text-white shadow-sm font-black'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Bot className="w-3.5 h-3.5 text-blue-600" />
+          <span>AI Job Autopilot (ATS Tool)</span>
+          <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">New</span>
+        </button>
+      </div>
+
+      {talentWorkspaceTab === 'autopilot' ? (
+        <div className="space-y-6">
+          <AIJobAutopilot onTriggerNotification={onTriggerNotification} />
+        </div>
+      ) : (
         <div className="space-y-8">
-          {/* Artisan Header Banner */}
-          <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-lg">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
+          {/* Spotlight Autopilot Card */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 relative overflow-hidden shadow-sm text-slate-900">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                  <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Artisan & Trade Talent Portal</span>
+                  <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+                  <span className="text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">AI Career Automation Engine</span>
+                  <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">LinkedIn & Indeed Ready</span>
                 </div>
-                <h2 className="text-2xl font-black text-white">
-                  {currentUser.displayName || 'Master Artisan Profile'}
-                </h2>
-                <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-                  Verified Local Trade Expert • Email: <span className="text-emerald-300 font-semibold">{currentUser.email}</span>
+                <h3 className="text-xl font-black text-slate-900">
+                  Source Verified Jobs & Auto-Tailor ATS Resumes
+                </h3>
+                <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+                  Turn on AI Autopilot to automatically fetch matching openings, score candidate qualifications, customize keyword-dense resumes, and submit tailored applications with 1 click.
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <button
+                onClick={() => setTalentWorkspaceTab('autopilot')}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95 shrink-0"
+              >
+                <Bot className="w-4 h-4 text-emerald-200" />
+                <span>Launch Autopilot Tool</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+      {/* Performance Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-mono uppercase font-bold">Profile Visibility Score</span>
+            <Award className="w-4 h-4 text-emerald-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900">95%</span>
+            <span className="text-[10px] text-emerald-600 font-bold">+18% top rank</span>
+          </div>
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2">
+            <div className="bg-emerald-500 h-full w-[95%] rounded-full"></div>
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-mono uppercase font-bold">Local Search Views</span>
+            <Eye className="w-4 h-4 text-blue-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900">340+</span>
+            <span className="text-[10px] text-blue-600 font-bold">Lagos & Nigeria</span>
+          </div>
+          <p className="text-[10px] text-slate-500">Verified Badge: Active</p>
+        </div>
+
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-mono uppercase font-bold">Client Inquiries</span>
+            <MessageSquare className="w-4 h-4 text-amber-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900">{talentInquiries.length}</span>
+            <span className="text-[10px] text-amber-600 font-bold">Live Synced</span>
+          </div>
+          <p className="text-[10px] text-slate-500">Avg Response: &lt; 15 mins</p>
+        </div>
+
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-[11px] font-mono uppercase font-bold">Active Opportunities</span>
+            <Briefcase className="w-4 h-4 text-indigo-600" />
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-900">{gigOpportunities.length}</span>
+            <span className="text-[10px] text-emerald-600 font-bold">Local Gigs Feed</span>
+          </div>
+          <p className="text-[10px] text-slate-500">Local Trade Marketplace</p>
+        </div>
+      </div>
+
+      {/* Client Inquiries & Direct Jobs Section */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-emerald-600" />
+              Client Inquiries & Direct Job Requests
+            </h3>
+            <p className="text-xs text-slate-500">
+              Real-time incoming job offers and inquiries sent by local employers and clients.
+            </p>
+          </div>
+          <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full self-start sm:self-auto">
+            {talentInquiries.length} Inquiries Received
+          </span>
+        </div>
+
+        {talentInquiries.length === 0 ? (
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center space-y-3">
+            <MessageSquare className="w-8 h-8 text-slate-400 mx-auto" />
+            <p className="text-xs text-slate-600 font-medium">No direct inquiries received yet.</p>
+            <p className="text-[11px] text-slate-400">
+              Make sure your profile is listed in the Artisan Directory to start receiving direct job offers!
+            </p>
+            <button
+              onClick={() => onNavigate('talents')}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all inline-flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4 text-white" /> Browse & Pitch on Opportunities
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {talentInquiries.map((inquiry) => (
+              <div key={inquiry.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
+                      {inquiry.status || 'Pending'}
+                    </span>
+                    <h4 className="text-sm font-black text-slate-900 mt-1">{inquiry.projectTitle}</h4>
+                    <p className="text-xs text-slate-500 font-medium">From: {inquiry.clientName} ({inquiry.clientEmail})</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-sm font-black text-emerald-600 block">${inquiry.offeredBudgetUsd}</span>
+                    <span className="text-[10px] text-slate-400 block">~₦{inquiry.offeredBudgetNgn?.toLocaleString()} NGN</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
+                  "{inquiry.message}"
+                </p>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                  <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                    {inquiry.location}
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    {inquiry.status !== 'Accepted' && (
+                      <button
+                        onClick={async () => {
+                          await updateInquiryStatus(inquiry.id, 'Accepted');
+                          const updated = await getTalentInquiries();
+                          setTalentInquiries(updated);
+                          onTriggerNotification('Inquiry accepted! Project contract activated.');
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
+                      >
+                        Accept Job
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onTriggerNotification(`Direct message thread opened with ${inquiry.clientName}.`)}
+                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
+                    >
+                      Reply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Local Service Opportunities Feed */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-blue-600" />
+              Live Local Service Opportunities
+            </h3>
+            <p className="text-xs text-slate-500">
+              Jobs posted by customers seeking verified mechanics, panel beaters, electricians, and artisans.
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigate('talents')}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <span>View All Marketplace Gigs</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {gigOpportunities.slice(0, 4).map((gig) => (
+            <div key={gig.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
+                    {gig.category}
+                  </span>
+                  <h4 className="text-sm font-black text-slate-900 mt-1">{gig.title}</h4>
+                  <p className="text-xs text-slate-500">Posted by {gig.clientName}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="text-sm font-black text-emerald-600 block">${gig.budgetUsd}</span>
+                  <span className="text-[10px] text-slate-400 block">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
+                {gig.description}
+              </p>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>{gig.location}</span>
+                </span>
+
                 <button
                   onClick={() => onNavigate('talents')}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs flex items-center gap-1"
                 >
-                  <Briefcase className="w-4 h-4 text-white" />
-                  <span>Open Artisan Directory & Gigs</span>
+                  <Send className="w-3.5 h-3.5 text-white" />
+                  <span>Pitch Proposal</span>
                 </button>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Statements & Earnings Download */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+        <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-indigo-600" />
+          Artisan Financial Statements & Invoices
+        </h3>
+        <p className="text-xs text-slate-500">
+          Generate official PDF statements for completed trade contracts, verified client payments, and tax records.
+        </p>
+        <div className="flex flex-wrap items-center gap-3 pt-2">
+          <button
+            onClick={() => {
+              window.print();
+              onTriggerNotification('PDF Financial Statement generated for your record.');
+            }}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shadow-sm transition-all flex items-center gap-2"
+          >
+            <FileText className="w-4 h-4 text-white" />
+            <span>Print / Download PDF Financial Statement</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mini Tools Integration */}
+      <div className="pt-4 border-t border-slate-200">
+        <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
+      </div>
+      </div>
+      )}
+    </div>
+  );
+
+  // 7. UNITARY CLIENT / CUSTOMER WORKSPACE (FOR BOTH TALENT HIRING & DIGITAL SERVICES)
+  const renderClientWorkspace = () => (
+    <div className="space-y-8">
+      {/* Unitary Client Header Banner */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-lg">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Unitary Client & Customer Operations Portal</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
+              {currentUser.displayName || 'Client Executive Workspace'}
+            </h2>
+            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Unified command center for hiring verified local artisans, managing service bids, launching digital marketing growth audits, and scheduling strategic consultations.
+            </p>
           </div>
 
-          {/* Performance Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-              <div className="flex items-center justify-between text-slate-500">
-                <span className="text-[11px] font-mono uppercase font-bold">Profile Visibility Score</span>
-                <Award className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-slate-900">95%</span>
-                <span className="text-[10px] text-emerald-600 font-bold">+18% top rank</span>
-              </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2">
-                <div className="bg-emerald-500 h-full w-[95%] rounded-full"></div>
-              </div>
-            </div>
-
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-              <div className="flex items-center justify-between text-slate-500">
-                <span className="text-[11px] font-mono uppercase font-bold">Local Search Views</span>
-                <Eye className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-slate-900">340+</span>
-                <span className="text-[10px] text-blue-600 font-bold">Lagos & Nigeria</span>
-              </div>
-              <p className="text-[10px] text-slate-500">Verified Badge: Active</p>
-            </div>
-
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-              <div className="flex items-center justify-between text-slate-500">
-                <span className="text-[11px] font-mono uppercase font-bold">Client Inquiries</span>
-                <MessageSquare className="w-4 h-4 text-amber-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-slate-900">{talentInquiries.length}</span>
-                <span className="text-[10px] text-amber-600 font-bold">Live Synced</span>
-              </div>
-              <p className="text-[10px] text-slate-500">Avg Response: &lt; 15 mins</p>
-            </div>
-
-            <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-2 shadow-sm">
-              <div className="flex items-center justify-between text-slate-500">
-                <span className="text-[11px] font-mono uppercase font-bold">Active Opportunities</span>
-                <Briefcase className="w-4 h-4 text-indigo-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black text-slate-900">{gigOpportunities.length}</span>
-                <span className="text-[10px] text-emerald-600 font-bold">Local Gigs Feed</span>
-              </div>
-              <p className="text-[10px] text-slate-500">Local Trade Marketplace</p>
-            </div>
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <button
+              onClick={() => setIsPostGigModalOpen(true)}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+            >
+              <Plus className="w-4 h-4 text-white" />
+              <span>Post Service Request / Gig</span>
+            </button>
+            <button
+              onClick={() => onNavigate('talents')}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+            >
+              <Briefcase className="w-4 h-4 text-white" />
+              <span>Browse Artisan Directory</span>
+            </button>
           </div>
+        </div>
+      </div>
 
-          {/* Client Inquiries & Hires Section */}
+      {/* Unitary Section Navigation Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-800">
+        <button
+          onClick={() => setClientActiveTab('all')}
+          className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap ${
+            clientActiveTab === 'all'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+          }`}
+        >
+          All-in-One Dashboard
+        </button>
+        <button
+          onClick={() => setClientActiveTab('talents')}
+          className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            clientActiveTab === 'talents'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+          }`}
+        >
+          <Briefcase className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Talent Hiring & Service Gigs</span>
+        </button>
+        <button
+          onClick={() => setClientActiveTab('marketing')}
+          className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            clientActiveTab === 'marketing'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+          }`}
+        >
+          <Globe className="w-3.5 h-3.5 text-indigo-400" />
+          <span>SEO Audits & Consultations</span>
+        </button>
+        <button
+          onClick={() => setClientActiveTab('simulators')}
+          className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            clientActiveTab === 'simulators'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+          }`}
+        >
+          <Zap className="w-3.5 h-3.5 text-amber-400" />
+          <span>Growth Simulators & UTM</span>
+        </button>
+        <button
+          onClick={() => setClientActiveTab('statements')}
+          className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            clientActiveTab === 'statements'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Financial Statements</span>
+        </button>
+      </div>
+
+      {/* Global Client Stats Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
+          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Active Hires & Orders</span>
+          <p className="text-2xl font-black text-emerald-400">{talentInquiries.length}</p>
+          <p className="text-[10px] text-slate-500">Live Escrow Synced</p>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
+          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Posted Gigs</span>
+          <p className="text-2xl font-black text-blue-400">{gigOpportunities.length}</p>
+          <p className="text-[10px] text-slate-500">Marketplace Bids Open</p>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
+          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Brand SEO Audits</span>
+          <p className="text-2xl font-black text-indigo-400">{audits.length}</p>
+          <p className="text-[10px] text-slate-500">Generated Reports</p>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
+          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Scheduled Meets</span>
+          <p className="text-2xl font-black text-amber-400">{appointments.length}</p>
+          <p className="text-[10px] text-slate-500">Google Meet Sessions</p>
+        </div>
+      </div>
+
+      {/* SECTION 1: TALENT & ARTISAN HIRING WORKSPACE */}
+      {(clientActiveTab === 'all' || clientActiveTab === 'talents') && (
+        <div className="space-y-6">
+          {/* Post Service Gig Quick Action Banner */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-emerald-600" />
-                  Client Inquiries & Direct Job Requests
+                  <Briefcase className="w-5 h-5 text-blue-600" />
+                  Your Posted Service Opportunities & Proposals
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Real-time incoming job offers and inquiries sent by local employers and clients.
+                  Manage your active job postings, review incoming bids from verified artisans, and hire directly.
                 </p>
               </div>
-              <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full self-start sm:self-auto">
-                {talentInquiries.length} Inquiries Received
-              </span>
+
+              <button
+                onClick={() => setIsPostGigModalOpen(true)}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all flex items-center gap-1.5 self-start sm:self-auto"
+              >
+                <Plus className="w-4 h-4 text-white" />
+                <span>Post New Service Job</span>
+              </button>
             </div>
 
-            {talentInquiries.length === 0 ? (
+            {gigOpportunities.length === 0 ? (
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center space-y-3">
-                <MessageSquare className="w-8 h-8 text-slate-400 mx-auto" />
-                <p className="text-xs text-slate-600 font-medium">No direct inquiries received yet.</p>
+                <Briefcase className="w-8 h-8 text-slate-400 mx-auto" />
+                <p className="text-xs text-slate-600 font-medium">No service opportunities posted yet.</p>
                 <p className="text-[11px] text-slate-400">
-                  Make sure your profile is listed in the Artisan Directory to start receiving direct job offers!
+                  Post a job requirement (Auto Mechanic, AC Technician, Electrician, Plumber, or Digital Specialist) to receive pitches in minutes!
                 </p>
                 <button
-                  onClick={() => onNavigate('talents')}
+                  onClick={() => setIsPostGigModalOpen(true)}
                   className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl cursor-pointer shadow-sm transition-all inline-flex items-center gap-2"
                 >
-                  <Plus className="w-4 h-4 text-white" /> Browse & Pitch on Opportunities
+                  <Plus className="w-4 h-4 text-white" /> Post Your First Service Request
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {talentInquiries.map((inquiry) => (
-                  <div key={inquiry.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
-                    <div className="flex items-start justify-between gap-3">
+              <div className="space-y-4">
+                {gigOpportunities.map((gig) => (
+                  <div key={gig.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                       <div>
-                        <span className="bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
-                          {inquiry.status || 'Pending'}
-                        </span>
-                        <h4 className="text-sm font-black text-slate-900 mt-1">{inquiry.projectTitle}</h4>
-                        <p className="text-xs text-slate-500 font-medium">From: {inquiry.clientName} ({inquiry.clientEmail})</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="bg-blue-100 text-blue-800 text-[10px] font-black px-2.5 py-0.5 rounded-md uppercase">
+                            {gig.category}
+                          </span>
+                          <span className="bg-white border border-slate-300 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-amber-600" />
+                            {gig.urgency}
+                          </span>
+                        </div>
+                        <h4 className="text-base font-black text-slate-900 mt-2">{gig.title}</h4>
+                        <p className="text-xs text-slate-600 mt-1">{gig.description}</p>
                       </div>
-                      <div className="text-right shrink-0">
-                        <span className="text-sm font-black text-emerald-600 block">${inquiry.offeredBudgetUsd}</span>
-                        <span className="text-[10px] text-slate-400 block">~₦{inquiry.offeredBudgetNgn?.toLocaleString()} NGN</span>
+
+                      <div className="text-left sm:text-right shrink-0">
+                        <span className="text-base font-black text-emerald-600 block">${gig.budgetUsd} USD</span>
+                        <span className="text-xs text-slate-500 font-mono block">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
-                      "{inquiry.message}"
-                    </p>
-
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-                      {/* Location Badge with WHITE background */}
-                      <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                        {inquiry.location}
-                      </span>
-
-                      <div className="flex items-center gap-2">
-                        {inquiry.status !== 'Accepted' && (
-                          <button
-                            onClick={async () => {
-                              await updateInquiryStatus(inquiry.id, 'Accepted');
-                              const updated = await getTalentInquiries();
-                              setTalentInquiries(updated);
-                              onTriggerNotification('Inquiry accepted! Project contract activated.');
-                            }}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
-                          >
-                            Accept Job
-                          </button>
-                        )}
-                        <button
-                          onClick={() => onTriggerNotification(`Direct message thread opened with ${inquiry.clientName}.`)}
-                          className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs"
-                        >
-                          Reply
-                        </button>
+                    {/* Proposals Received */}
+                    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-800 border-b border-slate-100 pb-2">
+                        <span className="flex items-center gap-1.5">
+                          <Users className="w-4 h-4 text-blue-600" />
+                          Proposals from Verified Artisans ({gig.proposals?.length || 0})
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">1-Click Escrow Deposit</span>
                       </div>
+
+                      {(!gig.proposals || gig.proposals.length === 0) ? (
+                        <p className="text-xs text-slate-400 italic py-1">
+                          Waiting for nearby artisans to submit bids. You will be notified instantly once proposals arrive.
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {gig.proposals.map((prop) => (
+                            <div key={prop.id} className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-black text-slate-900">{prop.artisanName}</span>
+                                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                    ★ {prop.artisanRating} ({prop.artisanCompletedJobs} jobs)
+                                  </span>
+                                  <span className="text-[10px] text-slate-500 font-mono">{prop.deliveryTimeframe}</span>
+                                </div>
+                                <p className="text-slate-600 text-[11px] italic">"{prop.coverNote}"</p>
+                              </div>
+
+                              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <div className="text-right">
+                                  <span className="font-black text-emerald-600 text-sm block">${prop.proposedPriceUsd}</span>
+                                  <span className="text-[9px] text-slate-400 font-mono">~₦{prop.proposedPriceNgn.toLocaleString()}</span>
+                                </div>
+
+                                {prop.status === 'Hired' ? (
+                                  <span className="bg-emerald-600 text-white text-xs font-black px-3 py-1.5 rounded-xl flex items-center gap-1">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-white" /> Hired
+                                  </span>
+                                ) : (
+                                  <button
+                                    onClick={() => handleHireArtisanFromProposal(gig.id, prop.id)}
+                                    className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-3.5 py-1.5 rounded-xl cursor-pointer shadow-sm transition-all"
+                                  >
+                                    Hire & Deposit
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -2063,207 +2546,212 @@ Pulse on Data. Impact on Brand.
             )}
           </div>
 
-          {/* Local Service Opportunities Feed */}
+          {/* Active Work Orders & Inquiries List */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-blue-600" />
-                  Live Local Service Opportunities
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                  Active Artisan Contracts & Work Orders
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Jobs posted by customers seeking verified mechanics, panel beaters, electricians, and artisans.
+                  Track ongoing projects, deposit confirmations, and artisan deliverables.
                 </p>
               </div>
+              <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full self-start sm:self-auto">
+                {talentInquiries.length} Active Contracts
+              </span>
+            </div>
+
+            {talentInquiries.length === 0 ? (
+              <p className="text-xs text-slate-500 text-center py-4">No active work orders currently placed.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {talentInquiries.map((inquiry) => (
+                  <div key={inquiry.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
+                          {inquiry.status || 'Active Order'}
+                        </span>
+                        <h4 className="text-sm font-black text-slate-900 mt-1">{inquiry.projectTitle}</h4>
+                        <p className="text-xs text-slate-500 font-mono">Location: {inquiry.location}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-sm font-black text-emerald-600 block">${inquiry.offeredBudgetUsd}</span>
+                        <span className="text-[10px] text-slate-400 block">~₦{inquiry.offeredBudgetNgn?.toLocaleString()} NGN</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-700 bg-white p-3 rounded-xl border border-slate-200 leading-relaxed">
+                      "{inquiry.message}"
+                    </p>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-200">
+                      <button
+                        onClick={() => {
+                          window.print();
+                          onTriggerNotification('Printing work order agreement...');
+                        }}
+                        className="bg-white hover:bg-slate-100 text-slate-900 border border-slate-300 font-bold px-3 py-1 rounded-lg text-[10px] cursor-pointer flex items-center gap-1"
+                      >
+                        <FileText className="w-3 h-3 text-slate-700" />
+                        Print Agreement
+                      </button>
+
+                      <button
+                        onClick={() => onTriggerNotification(`Messaging channel open for ${inquiry.projectTitle}`)}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1 rounded-lg text-[10px] cursor-pointer"
+                      >
+                        Contact Artisan
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SECTION 2: DIGITAL MARKETING, AUDITS & CONSULTATIONS */}
+      {(clientActiveTab === 'all' || clientActiveTab === 'marketing') && (
+        <div className="space-y-6">
+          {/* Brand Audit & Book Appointments CTA */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
+                <Globe className="w-4.5 h-4.5 text-indigo-400" /> Brand SEO & Performance Audits
+              </h3>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Submit your business domains! Our platform computes custom site speed, SEO rankings, and localized metadata metrics instantly.
+              </p>
               <button
-                onClick={() => onNavigate('talents')}
-                className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer transition-all shadow-sm flex items-center gap-1.5"
+                onClick={onOpenAuditModal}
+                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
               >
-                <span>View All Marketplace Gigs</span>
-                <ChevronRight className="w-4 h-4" />
+                Request Site Brand Audit
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {gigOpportunities.slice(0, 4).map((gig) => (
-                <div key={gig.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs hover:border-blue-300 transition-all">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <span className="bg-slate-100 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">
-                        {gig.category}
-                      </span>
-                      <h4 className="text-sm font-black text-slate-900 mt-1">{gig.title}</h4>
-                      <p className="text-xs text-slate-500">Posted by {gig.clientName}</p>
+            <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
+                <Calendar className="w-4.5 h-4.5 text-emerald-400" /> Executive Growth Consultations
+              </h3>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Schedule a 1-on-1 growth planning strategy meeting with a Pulzitive Executive Consultant. Auto-generates instant Google Meet coordinates.
+              </p>
+              <button
+                onClick={onOpenApptModal}
+                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
+              >
+                Schedule Meet Session
+              </button>
+            </div>
+          </div>
+
+          {/* Active Audits Display Results */}
+          {audits.length > 0 && (
+            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+              <h3 className="text-sm font-bold text-white">Completed Audit Reports</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {audits.map(audit => (
+                  <div key={audit.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs space-y-3">
+                    <div className="flex justify-between font-bold border-b border-slate-850 pb-2">
+                      <span className="truncate max-w-xs text-white">{audit.websiteUrl}</span>
+                      <span className="text-emerald-400 font-mono font-black">{audit.overallScore}% Score</span>
                     </div>
-                    <div className="text-right shrink-0">
-                      <span className="text-sm font-black text-emerald-600 block">${gig.budgetUsd}</span>
-                      <span className="text-[10px] text-slate-400 block">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
+                    <div className="grid grid-cols-3 gap-2 text-center text-[9px] font-mono">
+                      <div className="bg-slate-900 p-1.5 rounded">
+                        <p className="text-slate-500 uppercase">SEO</p>
+                        <p className="font-bold text-white">{audit.seoScore}</p>
+                      </div>
+                      <div className="bg-slate-900 p-1.5 rounded">
+                        <p className="text-slate-500 uppercase">SPEED</p>
+                        <p className="font-bold text-white">{audit.speedScore}</p>
+                      </div>
+                      <div className="bg-slate-900 p-1.5 rounded">
+                        <p className="text-slate-500 uppercase">SOCIAL</p>
+                        <p className="font-bold text-white">{audit.socialScore}</p>
+                      </div>
                     </div>
-                  </div>
-
-                  <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
-                    {gig.description}
-                  </p>
-
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-                    {/* Location Badge with WHITE background */}
-                    <span className="bg-white border border-slate-300 text-slate-900 font-bold px-2.5 py-1 rounded-md flex items-center gap-1 text-[10px] shadow-xs">
-                      <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{gig.location}</span>
-                    </span>
-
                     <button
-                      onClick={() => onNavigate('talents')}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl cursor-pointer transition-all shadow-xs flex items-center gap-1"
+                      onClick={() => window.print()}
+                      className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-semibold py-1.5 rounded-lg text-[10px] flex items-center justify-center gap-1 cursor-pointer"
                     >
-                      <Send className="w-3.5 h-3.5 text-white" />
-                      <span>Pitch Proposal</span>
+                      <FileText className="w-3.5 h-3.5" /> Download PDF Report
                     </button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Statements & Earnings Download */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
-            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-indigo-600" />
-              Artisan Financial Statements & Invoices
-            </h3>
-            <p className="text-xs text-slate-500">
-              Generate official PDF statements for completed trade contracts, verified client payments, and tax records.
-            </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <button
-                onClick={() => {
-                  window.print();
-                  onTriggerNotification('PDF Financial Statement generated for your record.');
-                }}
-                className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shadow-sm transition-all flex items-center gap-2"
-              >
-                <FileText className="w-4 h-4 text-white" />
-                <span>Print / Download PDF Financial Statement</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Mini Tools Integration */}
-          <div className="pt-4 border-t border-slate-200">
-            <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
-          </div>
-        </div>
-      ) : (
-        renderClientWorkspace()
-      )}
-    </div>
-  );
-
-  // 7. CLIENT
-  const renderClientWorkspace = () => (
-    <div className="space-y-6">
-      
-      {/* Brand Audit & Book Appointments CTA */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Globe className="w-4.5 h-4.5 text-indigo-400" /> Brand SEO & Performance Audits</h3>
-          <p className="text-[10px] text-slate-400 leading-relaxed">
-            Submit your business domains! Our platform computes custom site speed, SEO rankings, and localized metadata metrics instantly.
-          </p>
-          <button
-            onClick={onOpenAuditModal}
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs"
-          >
-            Request Site Brand Audit
-          </button>
-        </div>
-
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Calendar className="w-4.5 h-4.5 text-emerald-400" /> Book Consultations</h3>
-          <p className="text-[10px] text-slate-400 leading-relaxed">
-            Schedule a 1-on-1 growth planning strategy meeting with a Pulzitive Executive Consultant. Auto-generates instant Google Meet coordinates.
-          </p>
-          <button
-            onClick={onOpenApptModal}
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs"
-          >
-            Schedule Meet Session
-          </button>
-        </div>
-      </div>
-
-      {/* active Audits display results */}
-      {audits.length > 0 && (
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-bold">Completed Audit Reports</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {audits.map(audit => (
-              <div key={audit.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs space-y-3">
-                <div className="flex justify-between font-bold border-b border-slate-850 pb-2">
-                  <span className="truncate max-w-xs">{audit.websiteUrl}</span>
-                  <span className="text-emerald-400 font-mono font-black">{audit.overallScore}% Score</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-center text-[9px] font-mono">
-                  <div className="bg-slate-900 p-1.5 rounded">
-                    <p className="text-slate-500 uppercase">SEO</p>
-                    <p className="font-bold text-white">{audit.seoScore}</p>
-                  </div>
-                  <div className="bg-slate-900 p-1.5 rounded">
-                    <p className="text-slate-500 uppercase">SPEED</p>
-                    <p className="font-bold text-white">{audit.speedScore}</p>
-                  </div>
-                  <div className="bg-slate-900 p-1.5 rounded">
-                    <p className="text-slate-500 uppercase">SOCIAL</p>
-                    <p className="font-bold text-white">{audit.socialScore}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => window.print()}
-                  className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-semibold py-1.5 rounded-lg text-[10px] flex items-center justify-center gap-1"
-                >
-                  <FileText className="w-3.5 h-3.5" /> Download PDF Report
-                </button>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Appointments List */}
-      {appointments.length > 0 && (
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-bold">Scheduled Meetings</h3>
-          <div className="space-y-2">
-            {appointments.map(appt => (
-              <div key={appt.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-3">
-                <div>
-                  <p className="font-bold text-white">{appt.serviceType}</p>
-                  <p className="text-[10px] text-slate-400">Date: {appt.dateTime ? new Date(appt.dateTime).toLocaleString() : 'N/A'}</p>
-                </div>
-                {appt.googleMeetLink && (
-                  <a
-                    href={appt.googleMeetLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white px-3.5 py-1.5 rounded-lg text-[10px] border border-indigo-500/20 font-bold flex items-center gap-1 shrink-0 self-stretch sm:self-auto text-center justify-center"
-                  >
-                    Join Google Meet <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
+          {/* Appointments List */}
+          {appointments.length > 0 && (
+            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+              <h3 className="text-sm font-bold text-white">Scheduled Executive Strategy Meetings</h3>
+              <div className="space-y-2">
+                {appointments.map(appt => (
+                  <div key={appt.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-3">
+                    <div>
+                      <p className="font-bold text-white">{appt.serviceType}</p>
+                      <p className="text-[10px] text-slate-400">Date: {appt.dateTime ? new Date(appt.dateTime).toLocaleString() : 'N/A'}</p>
+                    </div>
+                    {appt.googleMeetLink && (
+                      <a
+                        href={appt.googleMeetLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white px-3.5 py-1.5 rounded-lg text-[10px] border border-indigo-500/20 font-bold flex items-center gap-1 shrink-0 self-stretch sm:self-auto text-center justify-center"
+                      >
+                        Join Google Meet <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Digital Marketing Simulators for Client Workspace */}
-      {renderDigitalMarketingSimulators()}
+      {/* SECTION 3: DIGITAL MARKETING SIMULATORS */}
+      {(clientActiveTab === 'all' || clientActiveTab === 'simulators') && (
+        <div className="space-y-6">
+          {renderDigitalMarketingSimulators()}
+        </div>
+      )}
+
+      {/* SECTION 4: FINANCIAL STATEMENTS & INVOICES */}
+      {(clientActiveTab === 'all' || clientActiveTab === 'statements') && (
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+          <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-indigo-600" />
+            Client Statements & Invoices
+          </h3>
+          <p className="text-xs text-slate-500">
+            Generate and export official consolidated PDF statements of your hiring transactions, digital marketing audits, and consult services.
+          </p>
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => {
+                window.print();
+                onTriggerNotification('Consolidated Client Financial Statement generated.');
+              }}
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-3 rounded-xl cursor-pointer shadow-sm transition-all flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4 text-white" />
+              <span>Print / Download PDF Statement</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Mini-Tools Workspace Section */}
       <div className="mt-8 pt-6 border-t border-slate-800">
         <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
       </div>
-
     </div>
   );
 
@@ -2400,6 +2888,165 @@ Pulse on Data. Impact on Brand.
         </div>
 
       </div>
+
+      {/* POST SERVICE GIG / REQUEST MODAL */}
+      <AnimatePresence>
+        {isPostGigModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 text-slate-900 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <Briefcase className="w-5 h-5 text-blue-600" />
+                    Post Service Opportunity
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Broadcast your job request to verified mechanics, electricians, artisans & tech specialists.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => setIsPostGigModalOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100 cursor-pointer transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handlePostGigSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Project / Job Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., Toyota Camry Engine Diagnostic & Overhaul"
+                    value={gigTitle}
+                    onChange={(e) => setGigTitle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Trade Category *</label>
+                    <select
+                      value={gigCategory}
+                      onChange={(e) => setGigCategory(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    >
+                      <optgroup label="Artisans & Technicians">
+                        {ARTISAN_CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Digital Specialists">
+                        {DIGITAL_SERVICE_CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Job Location / Area *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., Ikeja, Lagos"
+                      value={gigLocation}
+                      onChange={(e) => setGigLocation(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Budget ($ USD) *</label>
+                    <input
+                      type="number"
+                      min="20"
+                      step="10"
+                      required
+                      value={gigBudgetUsd}
+                      onChange={(e) => setGigBudgetUsd(Number(e.target.value))}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    />
+                    <span className="text-[10px] text-slate-400 font-mono mt-1 block">~₦{(gigBudgetUsd * 600).toLocaleString()} NGN</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Billing Type</label>
+                    <select
+                      value={gigType}
+                      onChange={(e) => setGigType(e.target.value as any)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    >
+                      <option value="Fixed Price">Fixed Price</option>
+                      <option value="Hourly">Hourly</option>
+                      <option value="Milestone">Milestone</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Urgency</label>
+                    <select
+                      value={gigUrgency}
+                      onChange={(e) => setGigUrgency(e.target.value as any)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    >
+                      <option value="Immediate (24-48 hrs)">Immediate (24-48 hrs)</option>
+                      <option value="This Week">This Week</option>
+                      <option value="Flexible">Flexible</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Job Description & Requirements *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Describe the issue, required tools/materials, timeline, or special instructions..."
+                    value={gigDescription}
+                    onChange={(e) => setGigDescription(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 text-xs text-emerald-800">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <p className="text-[11px] leading-relaxed">
+                    <strong className="font-bold">Zero Risk Escrow Guarantee:</strong> Your funds remain protected in escrow until the artisan completes the job and you sign off on the work order.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsPostGigModalOpen(false)}
+                    className="px-4 py-2.5 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmittingGig}
+                    className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs px-6 py-2.5 rounded-xl cursor-pointer shadow-md transition-all flex items-center gap-2"
+                  >
+                    {isSubmittingGig ? 'Publishing...' : 'Publish Job Opportunity'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
