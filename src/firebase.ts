@@ -51,7 +51,6 @@ if (isRealFirebase) {
     firebaseApp = initializeApp(firebaseConfig);
     const firestoreSettings = {
       experimentalAutoDetectLongPolling: true,
-      experimentalForceLongPolling: true
     };
     db = firebaseConfig.firestoreDatabaseId
       ? initializeFirestore(firebaseApp, firestoreSettings, firebaseConfig.firestoreDatabaseId)
