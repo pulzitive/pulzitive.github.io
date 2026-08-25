@@ -8,6 +8,8 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import AITutorWidget from './components/AITutorWidget';
 import WhatsAppWidget from './components/WhatsAppWidget';
+import SplashScreen from './components/SplashScreen';
+import ProspectingAuditModal from './components/ProspectingAuditModal';
 import { 
   CompleteProfileModal, BookAppointmentModal, BrandAuditModal, 
   ManageStudentModal, CertificateModal, PremiumPurchaseModal,
@@ -122,6 +124,33 @@ export default function App() {
   const [trialInitialEmail, setTrialInitialEmail] = useState('');
   const [isClientSignUpOnly, setIsClientSignUpOnly] = useState(false);
 
+  // Splash screen loading animation state
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
+
+  // 7-second homepage prospecting audit modal states
+  const [isProspectingAuditOpen, setIsProspectingAuditOpen] = useState(false);
+  const [hasProspectingAuditBeenShown, setHasProspectingAuditBeenShown] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('pulzitive_prospecting_audit_shown') === 'true';
+    }
+    return false;
+  });
+
+  // Trigger prospecting free audit modal 7 seconds after landing on homepage
+  useEffect(() => {
+    if (activePage === 'home' && !hasProspectingAuditBeenShown) {
+      const timer = setTimeout(() => {
+        setIsProspectingAuditOpen(true);
+        setHasProspectingAuditBeenShown(true);
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('pulzitive_prospecting_audit_shown', 'true');
+        }
+      }, 7000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [activePage, hasProspectingAuditBeenShown]);
+
   // Load database items whenever current user changes (sign in, sign out, or role changes)
   useEffect(() => {
     const loadData = async () => {
@@ -209,6 +238,28 @@ export default function App() {
     setAudits(prev => [audit, ...prev]);
     triggerToast(`Brand Audit SEO metrics computed for ${fields.websiteUrl}. Score: ${audit.scores?.seo || 80}%`);
     setActivePage('dashboard');
+    return audit;
+  };
+
+  // Save 7-second homepage prospecting audit request
+  const handleProspectingAuditSubmit = async (fields: {
+    clientEmail: string;
+    websiteUrl: string;
+    clientName: string;
+    industry: string;
+    primaryGoal: string;
+  }) => {
+    const audit = await saveBrandAudit({
+      clientName: fields.clientName || 'Prospect Lead',
+      clientEmail: fields.clientEmail,
+      websiteUrl: fields.websiteUrl,
+      industry: fields.industry || 'Digital Growth',
+      primaryGoal: fields.primaryGoal || 'SEO & Traffic'
+    });
+
+    setAudits(prev => [audit, ...prev]);
+    triggerToast(`Free Brand & SEO Audit compiled! Detailed roadmap sent to ${fields.clientEmail}.`);
+    return audit;
   };
 
   // Save combined Brand Audit & Strategy Meeting request
@@ -657,6 +708,32 @@ export default function App() {
         }}
         initialEmail={trialInitialEmail}
       />
+
+      {/* 7-SECOND HOMEPAGE PROSPECTING FREE AUDIT POPUP MODAL */}
+      <ProspectingAuditModal
+        isOpen={isProspectingAuditOpen}
+        onClose={() => setIsProspectingAuditOpen(false)}
+        onSubmit={handleProspectingAuditSubmit}
+        onNavigateToDashboard={() => {
+          if (currentUser) {
+            setActivePage('dashboard');
+          } else {
+            setAuthTab('signin');
+            setIsAuthOpen(true);
+          }
+        }}
+        onBookStrategyCall={() => {
+          setIsMergedFlowOpen(true);
+        }}
+      />
+
+      {/* SPLASH SCREEN LOADING ANIMATION */}
+      {showSplashScreen && (
+        <SplashScreen
+          onComplete={() => setShowSplashScreen(false)}
+          minDisplayTimeMs={1600}
+        />
+      )}
 
     </div>
   );
