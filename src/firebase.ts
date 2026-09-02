@@ -33,7 +33,15 @@ import {
   onSnapshot
 } from 'firebase/firestore';
 import firebaseConfig from './firebase-applet-config.json';
-import { UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry, B2BProspect, WebinarFunnel, ProductOrService, PlatformOrder, OutreachLog, GoogleSheetsSyncState } from './types';
+import { 
+  UserProfile, UserRole, ChatMessage, Notification, CommissionLog, Appointment, 
+  BrandAudit, SponsorshipRequest, Course, UtmLink, Subscriber, Enrollment, 
+  Announcement, MentorshipRequest, TalentProfile, TalentGigOpportunity, TalentInquiry, 
+  B2BProspect, WebinarFunnel, ProductOrService, PlatformOrder, OutreachLog, GoogleSheetsSyncState,
+  MinisterProfile, MediaRequestTask, PrayerRequestPost, DreamVisionInterpretation, 
+  MinistryAssetResource, MinisterDirectMessage, MinisterVerificationStatus, MediaRequestStatus,
+  MediaDeliverableFile, MinistrySubscriptionTier, PrayerCategory, DreamTag
+} from './types';
 
 // Detect whether real Firebase is configured
 export const isRealFirebase = 
@@ -141,7 +149,13 @@ const LOCAL_STORAGE_KEYS = {
   PRODUCTS_AND_SERVICES: 'sac_products_services',
   ORDERS: 'sac_orders',
   OUTREACH_LOGS: 'sac_outreach_logs',
-  SHEETS_SYNC: 'sac_sheets_sync'
+  SHEETS_SYNC: 'sac_sheets_sync',
+  MINISTER_PROFILES: 'pulzitive_minister_profiles',
+  MEDIA_REQUESTS: 'pulzitive_media_requests',
+  PRAYER_REQUESTS: 'pulzitive_prayer_requests',
+  DREAM_INTERPRETATIONS: 'pulzitive_dream_interpretations',
+  MINISTRY_RESOURCES: 'pulzitive_ministry_resources',
+  MINISTER_MESSAGES: 'pulzitive_minister_messages'
 };
 
 const getLocalStorage = <T>(key: string, defaultValue: T): T => {
@@ -2141,6 +2155,7 @@ export const signInWithGoogleSimulated = async (role: UserRole = 'Student'): Pro
     'Sponsor': 'Alhaji Salami',
     'Client': 'Abiodun Salami',
     'Talent': 'Tunde Bakare',
+    'Minister': 'Pastor John Doe',
     'Admin': 'Pulzitive Admin'
   };
   const name = roleNameMap[role] || 'Platform Explorer';
@@ -3822,5 +3837,737 @@ export const syncGoogleSheetsStaging = async (): Promise<GoogleSheetsSyncState> 
   setLocalStorage(LOCAL_STORAGE_KEYS.SHEETS_SYNC, syncState);
   return syncState;
 };
+
+// =========================================================================
+// KINGDOMMEDIA & MINISTERS NETWORK (ECCLESIAHUB) PERSISTENCE SERVICES
+// =========================================================================
+
+export const SEEDED_MINISTER_PROFILES: MinisterProfile[] = [
+  {
+    uid: 'usr_9981237',
+    email: 'pastor.john@gracechurch.org',
+    displayName: 'Pastor John Doe',
+    title: 'Pastor',
+    churchName: 'Grace City Chapel',
+    denomination: 'Non-Denominational / Evangelical',
+    country: 'Nigeria',
+    city: 'Lagos',
+    ministryFocus: 'Pastoral',
+    verificationStatus: 'VERIFIED',
+    role: 'MINISTER',
+    subscriptionTier: 'GROWTH_MINISTRY',
+    googleDriveFolderId: '1a2b3c4d5e6f7g8h9i',
+    googleDriveFolderName: 'Grace_City_Chapel_Media_Vault',
+    websiteUrl: 'https://gracecitychapel.org',
+    socialProofUrl: 'https://instagram.com/gracecitychapel',
+    bio: 'Lead Pastor passionate about preaching grace, community transformation, and raising kingdom leaders.',
+    phone: '+234 803 456 7890',
+    createdAt: '2026-08-31T00:00:00Z'
+  },
+  {
+    uid: 'usr_8829104',
+    email: 'apostle.emmanuel@dominionembassy.org',
+    displayName: 'Apostle Emmanuel Eze',
+    title: 'Apostle',
+    churchName: 'Kingdom Dominion Embassy',
+    denomination: 'Apostolic / Pentecostal',
+    country: 'Nigeria',
+    city: 'Abuja',
+    ministryFocus: 'Church Planting',
+    verificationStatus: 'VERIFIED',
+    role: 'MINISTER',
+    subscriptionTier: 'ENTERPRISE',
+    googleDriveFolderId: '2b3c4d5e6f7g8h9i0j',
+    googleDriveFolderName: 'Kingdom_Dominion_Embassy_Vault',
+    websiteUrl: 'https://dominionembassy.org',
+    socialProofUrl: 'https://youtube.com/@ApostleEmmanuelEze',
+    bio: 'Pioneering apostolic church networks, global crusades, and marketplace ministry equipping.',
+    phone: '+234 812 345 6789',
+    createdAt: '2026-08-28T14:20:00Z'
+  },
+  {
+    uid: 'usr_7718290',
+    email: 'bishop.sarah@covenantcathedral.org',
+    displayName: 'Bishop Sarah Adeleke',
+    title: 'Bishop',
+    churchName: 'Covenant Life Cathedral',
+    denomination: 'Charismatic',
+    country: 'United Kingdom',
+    city: 'London',
+    ministryFocus: 'Worship',
+    verificationStatus: 'VERIFIED',
+    role: 'MINISTER',
+    subscriptionTier: 'STARTER',
+    googleDriveFolderId: '3c4d5e6f7g8h9i0j1k',
+    googleDriveFolderName: 'Covenant_Life_Media_Storage',
+    websiteUrl: 'https://covenantcathedral.org',
+    bio: 'Overseer of Covenant Life Cathedral. Passionate about prayer movements, women in ministry, and youth worship.',
+    phone: '+44 7700 900123',
+    createdAt: '2026-08-25T11:15:00Z'
+  },
+  {
+    uid: 'usr_6639182',
+    email: 'evang.david@harvestfire.org',
+    displayName: 'Evangelist David Mwangi',
+    title: 'Evangelist',
+    churchName: 'Harvest Fire Global Outreach',
+    denomination: 'Global Missions',
+    country: 'Kenya',
+    city: 'Nairobi',
+    ministryFocus: 'Evangelism',
+    verificationStatus: 'VERIFIED',
+    role: 'MINISTER',
+    subscriptionTier: 'FREE',
+    websiteUrl: 'https://harvestfire.org',
+    bio: 'City-wide open air gospel crusades, signs and wonders, and rural evangelism missions.',
+    phone: '+254 712 345678',
+    createdAt: '2026-08-20T09:45:00Z'
+  }
+];
+
+export const SEEDED_MEDIA_REQUESTS: MediaRequestTask[] = [
+  {
+    requestId: 'req_55412',
+    userId: 'usr_9981237',
+    ministerName: 'Pastor John Doe',
+    churchName: 'Grace City Chapel',
+    title: 'Sunday Message - Overcoming Storms (Part 2)',
+    rawVideoUrl: 'https://drive.google.com/file/d/1XyZ987SundaySermonRaw/view?usp=sharing',
+    requestType: 'SERMON_SHORTS',
+    status: 'IN_PROGRESS',
+    assignedEditorId: 'staff_004',
+    assignedEditorName: 'David K. (Senior Video Specialist)',
+    outputFolderId: '1x2y3z_deliverables_folder',
+    timestampNotes: 'Key viral hook at 14:20 - 15:45 and prophetic declaration at 38:10 - 39:30',
+    primaryTopic: 'Faith in Crisis, Divine Peace & Supernatural Breakthrough',
+    targetPlatforms: ['Instagram Reels', 'TikTok', 'YouTube Shorts', 'Facebook'],
+    graphicStyleChoice: 'Bold High-Contrast Minimalist + Kinetic Captions',
+    completedFiles: [
+      {
+        fileName: 'Short_Clip_1_Hook_PeaceInTheStorm.mp4',
+        driveFileId: 'file_881923',
+        webViewLink: 'https://drive.google.com/file/d/1ShortClip1Preview/view',
+        webContentLink: 'https://drive.google.com/uc?id=file_881923&export=download',
+        duration: '0:58',
+        fileSize: '24.8 MB',
+        uploadedAt: '2026-08-31T10:00:00Z'
+      }
+    ],
+    createdAt: '2026-08-31T10:00:00Z'
+  },
+  {
+    requestId: 'req_55413',
+    userId: 'usr_8829104',
+    ministerName: 'Apostle Emmanuel Eze',
+    churchName: 'Kingdom Dominion Embassy',
+    title: 'Kingdom Economics & Wealth Transfer Masterclass',
+    rawVideoUrl: 'https://youtube.com/watch?v=kingdom_wealth_live_feed',
+    requestType: 'GRAPHIC_SERIES',
+    status: 'COMPLETED',
+    assignedEditorId: 'staff_002',
+    assignedEditorName: 'Grace T. (Brand Design Lead)',
+    outputFolderId: '3a4b5c_graphics_deliverables',
+    primaryTopic: 'Biblical Stewardship, Covenant Wealth, Business Apostles',
+    targetPlatforms: ['Instagram Reels', 'YouTube Shorts', 'LinkedIn'],
+    graphicStyleChoice: 'Royal Gold & Deep Navy Series Theme',
+    completedFiles: [
+      {
+        fileName: 'Sermon_Series_Instagram_Carousel_Set.zip',
+        driveFileId: 'file_991823',
+        webViewLink: 'https://drive.google.com/file/d/1GraphicPackPreview/view',
+        webContentLink: 'https://drive.google.com/uc?id=file_991823&export=download',
+        fileSize: '48.2 MB',
+        uploadedAt: '2026-08-30T16:00:00Z'
+      },
+      {
+        fileName: 'Sunday_Sermon_SlideDeck_16x9.pptx',
+        driveFileId: 'file_991824',
+        webViewLink: 'https://drive.google.com/file/d/1SlidesPreview/view',
+        webContentLink: 'https://drive.google.com/uc?id=file_991824&export=download',
+        fileSize: '18.5 MB',
+        uploadedAt: '2026-08-30T16:15:00Z'
+      },
+      {
+        fileName: 'Sermon_Short_Clip_CovenantSecrets.mp4',
+        driveFileId: 'file_991825',
+        webViewLink: 'https://drive.google.com/file/d/1ClipCovenant/view',
+        webContentLink: 'https://drive.google.com/uc?id=file_991825&export=download',
+        duration: '0:52',
+        fileSize: '22.1 MB',
+        uploadedAt: '2026-08-30T17:00:00Z'
+      }
+    ],
+    createdAt: '2026-08-29T08:30:00Z',
+    completedAt: '2026-08-30T17:00:00Z'
+  },
+  {
+    requestId: 'req_55414',
+    userId: 'usr_7718290',
+    ministerName: 'Bishop Sarah Adeleke',
+    churchName: 'Covenant Life Cathedral',
+    title: 'Prophetic Gathering 2026 - Lower Thirds & Screen Graphics',
+    rawVideoUrl: 'https://vimeo.com/covenantlife/prophetic_preview',
+    requestType: 'BANNER',
+    status: 'REVIEW',
+    assignedEditorId: 'staff_004',
+    assignedEditorName: 'David K. (Senior Video Specialist)',
+    primaryTopic: 'Spiritual Awakening, Global Intercession, Prophetic Flow',
+    targetPlatforms: ['LED Screens (16:9)', 'Social Flyers', 'Live Stream Overlays'],
+    graphicStyleChoice: 'Modern Emerald Ambient Glassmorphism',
+    completedFiles: [
+      {
+        fileName: 'Prophetic_Night_OBS_Overlays_Set.zip',
+        driveFileId: 'file_772183',
+        webViewLink: 'https://drive.google.com/file/d/1OverlaysView/view',
+        webContentLink: 'https://drive.google.com/uc?id=file_772183&export=download',
+        fileSize: '35.4 MB',
+        uploadedAt: '2026-08-31T06:00:00Z'
+      }
+    ],
+    createdAt: '2026-08-30T19:00:00Z'
+  }
+];
+
+export const SEEDED_PRAYER_REQUESTS: PrayerRequestPost[] = [
+  {
+    postId: 'pray_7712',
+    authorId: 'usr_9981237',
+    authorName: 'Pastor John Doe',
+    authorTitle: 'Pastor',
+    authorChurch: 'Grace City Chapel',
+    title: 'Prayer for Regional Revival & Next-Gen Campus Awakening',
+    content: 'Standing in faith for our upcoming 3-day youth conference across 5 university campuses. Praying for deep repentance, conviction of the Holy Spirit, and lasting discipleship.',
+    category: 'REGIONAL_REVIVAL',
+    intercessionCount: 48,
+    isPrivate: false,
+    prayingMinisterIds: ['usr_8829104', 'usr_7718290', 'usr_6639182'],
+    createdAt: '2026-08-31T12:00:00Z'
+  },
+  {
+    postId: 'pray_7713',
+    authorId: 'usr_8829104',
+    authorName: 'Apostle Emmanuel Eze',
+    authorTitle: 'Apostle',
+    authorChurch: 'Kingdom Dominion Embassy',
+    title: 'New 3,000-Seat Cathedral Zoning Permit & Funding Provision',
+    content: 'We are in the final week of land clearance and government architectural zoning approvals in the capital territory. Praying against administrative resistance and for supernatural financial release.',
+    category: 'CHURCH_GROWTH',
+    intercessionCount: 64,
+    isPrivate: false,
+    prayingMinisterIds: ['usr_9981237', 'usr_7718290'],
+    createdAt: '2026-08-30T14:30:00Z'
+  },
+  {
+    postId: 'pray_7714',
+    authorId: 'usr_6639182',
+    authorName: 'Evangelist David Mwangi',
+    authorTitle: 'Evangelist',
+    authorChurch: 'Harvest Fire Global Outreach',
+    title: 'Frontline Missionary Safety & Medical Healing for Evangelism Team',
+    content: 'Our rural mission team is advancing into unreached northern frontiers. Asking for angelic protection, divine health, open doors with village elders, and physical strength for the team.',
+    category: 'HEALING_DELIVERANCE',
+    intercessionCount: 82,
+    isPrivate: false,
+    prayingMinisterIds: ['usr_9981237', 'usr_8829104', 'usr_7718290'],
+    createdAt: '2026-08-29T18:00:00Z'
+  }
+];
+
+export const SEEDED_DREAM_INTERPRETATIONS: DreamVisionInterpretation[] = [
+  {
+    postId: 'dream_3301',
+    authorId: 'usr_9981237',
+    authorName: 'Pastor John Doe',
+    authorChurch: 'Grace City Chapel',
+    title: 'Vision of the Golden Sickle & Rain of Fire over Mega-Cities',
+    description: 'During 3:00 AM prayer watch, I saw a glowing golden sickle descending into dense metropolitan skyscrapers. Clouds broke and a golden liquid rain fell, touching youth who immediately stood up preaching boldly with tears.',
+    tags: ['Harvest', 'End-Times', 'Evangelism'],
+    commentsCount: 8,
+    comments: [
+      {
+        id: 'c_001',
+        authorId: 'usr_8829104',
+        authorName: 'Apostle Emmanuel Eze',
+        authorTitle: 'Apostle',
+        authorChurch: 'Kingdom Dominion Embassy',
+        comment: 'Brother John, this strongly aligns with Joel 2:28 and Revelation 14:14-16. The Lord is bypassing traditional pulpit platforms and anointing marketplace youth as field evangelists in urban centers.',
+        scripturesCited: ['Joel 2:28', 'Revelation 14:15', 'Matthew 9:37-38'],
+        timestamp: '2026-08-31T15:10:00Z'
+      },
+      {
+        id: 'c_002',
+        authorId: 'usr_7718290',
+        authorName: 'Bishop Sarah Adeleke',
+        authorTitle: 'Bishop',
+        authorChurch: 'Covenant Life Cathedral',
+        comment: 'Confirming this vision! We experienced the exact same burden during our London intercessory vigil last Thursday. The golden sickle represents accelerated harvest—no delays in discipleship.',
+        scripturesCited: ['Amos 9:13', 'John 4:35'],
+        timestamp: '2026-08-31T16:45:00Z'
+      }
+    ],
+    createdAt: '2026-08-31T14:30:00Z'
+  },
+  {
+    postId: 'dream_3302',
+    authorId: 'usr_8829104',
+    authorName: 'Apostle Emmanuel Eze',
+    authorChurch: 'Kingdom Dominion Embassy',
+    title: 'Dream of Clear River Water Bursting Through Church Foundations',
+    description: 'I saw our church auditorium floor crack open, and out came crystal clear, surging river water. Instead of destroying the building, the water washed away old rusty filing cabinets and filled the entire sanctuary with peace and radiant light.',
+    tags: ['Church Guidance', 'Personal Prophetic', 'Ministry Direction'],
+    commentsCount: 5,
+    comments: [
+      {
+        id: 'c_003',
+        authorId: 'usr_9981237',
+        authorName: 'Pastor John Doe',
+        authorTitle: 'Pastor',
+        authorChurch: 'Grace City Chapel',
+        comment: 'Ezekiel 47:1-9! The river issuing from beneath the sanctuary threshold. The removal of rusty files symbolizes stripping away man-made bureaucratic friction in exchange for pure Holy Spirit governance.',
+        scripturesCited: ['Ezekiel 47:1-12', 'John 7:38'],
+        timestamp: '2026-08-30T11:20:00Z'
+      }
+    ],
+    createdAt: '2026-08-30T09:15:00Z'
+  }
+];
+
+export const SEEDED_MINISTRY_RESOURCES: MinistryAssetResource[] = [
+  {
+    id: 'res_001',
+    title: 'Overcoming the Storm 4-Part Sermon Branding Kit',
+    category: 'Sermon Graphic Kits',
+    format: 'PSD',
+    downloadUrl: 'https://drive.google.com/file/d/1ResSermonKitOvercomingStorm/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 342,
+    fileSize: '124 MB',
+    isPremiumOnly: false,
+    tags: ['Faith', 'Storms', 'Sermon Series', 'Photoshop', 'Canva']
+  },
+  {
+    id: 'res_002',
+    title: 'ProPresenter & OBS 4K Lower-Thirds & Motion Title Overlays',
+    category: 'Lower Thirds & Overlays',
+    format: 'MP4',
+    downloadUrl: 'https://drive.google.com/file/d/1ResLowerThirds4KPack/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 580,
+    fileSize: '310 MB',
+    isPremiumOnly: true,
+    tags: ['ProPresenter', 'OBS', 'Live Stream', 'Alpha Channel', '4K']
+  },
+  {
+    id: 'res_003',
+    title: 'Kingdom Wealth & Stewardship 16:9 Presentation Deck (24 Slides)',
+    category: 'Slide Deck Templates',
+    format: 'PPTX',
+    downloadUrl: 'https://drive.google.com/file/d/1ResSlideDeckStewardship/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 412,
+    fileSize: '45 MB',
+    isPremiumOnly: false,
+    tags: ['Stewardship', 'Finance', 'Keynote', 'PowerPoint', 'Minimalist']
+  },
+  {
+    id: 'res_004',
+    title: 'Ambient Deep Atmospheric Worship Motion Backgrounds (10 Loops)',
+    category: 'Motion Backgrounds',
+    format: 'MP4',
+    downloadUrl: 'https://drive.google.com/file/d/1ResMotionBackgroundsWorship/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 789,
+    fileSize: '650 MB',
+    isPremiumOnly: true,
+    tags: ['Worship', 'Motion Graphics', 'Seamless Loop', 'Atmospheric']
+  },
+  {
+    id: 'res_005',
+    title: 'Global Missions & Crusades Social Media Vector Flyer Pack',
+    category: 'Social Banner Vectors',
+    format: 'AI / Vector',
+    downloadUrl: 'https://drive.google.com/file/d/1ResMissionsVectorFlyers/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 295,
+    fileSize: '88 MB',
+    isPremiumOnly: false,
+    tags: ['Evangelism', 'Outreach', 'Instagram Story', 'Illustrator']
+  },
+  {
+    id: 'res_006',
+    title: 'End-Times Prophetic Series Full Visual Identity Package',
+    category: 'Sermon Graphic Kits',
+    format: 'Canva',
+    downloadUrl: 'https://drive.google.com/file/d/1ResPropheticSeriesCanva/view?usp=sharing',
+    previewUrl: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=800&q=80',
+    downloadsCount: 460,
+    fileSize: '95 MB',
+    isPremiumOnly: true,
+    tags: ['Prophetic', 'End Times', 'Canva Link', 'YouTube Thumbnail']
+  }
+];
+
+export const SEEDED_MINISTER_MESSAGES: MinisterDirectMessage[] = [
+  {
+    id: 'msg_001',
+    senderId: 'usr_8829104',
+    senderName: 'Apostle Emmanuel Eze',
+    senderChurch: 'Kingdom Dominion Embassy',
+    recipientId: 'usr_9981237',
+    recipientName: 'Pastor John Doe',
+    text: 'Greetings Pastor John! Loved your sermon hook on Overcoming Storms. We are holding our ministers round table in Abuja next month; would love to have you share with the pastors on church media leverage.',
+    timestamp: '2026-08-31T09:30:00Z'
+  },
+  {
+    id: 'msg_002',
+    senderId: 'usr_9981237',
+    senderName: 'Pastor John Doe',
+    senderChurch: 'Grace City Chapel',
+    recipientId: 'usr_8829104',
+    recipientName: 'Apostle Emmanuel Eze',
+    text: 'Apostle Emmanuel! Honored by the invitation. KingdomMedia has been saving our media team 25+ hours every week on sermon shorts. I will send over the teaching outline.',
+    hasVoiceNote: true,
+    voiceDurationSec: 45,
+    attachedDocName: 'Church_Media_Systems_SOP.pdf',
+    attachedDocUrl: 'https://drive.google.com/file/d/1ChurchMediaSOP/view',
+    timestamp: '2026-08-31T09:45:00Z'
+  }
+];
+
+// --- 1. MINISTER PROFILES ---
+export const getMinisterProfiles = async (): Promise<MinisterProfile[]> => {
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'ministers'));
+      if (!snap.empty) {
+        return snap.docs.map(d => ({ ...d.data(), uid: d.id } as MinisterProfile));
+      }
+    } catch (err) {
+      console.warn("Firestore getMinisterProfiles fallback to local:", err);
+    }
+  }
+  return getLocalStorage<MinisterProfile[]>(LOCAL_STORAGE_KEYS.MINISTER_PROFILES, SEEDED_MINISTER_PROFILES);
+};
+
+export const saveMinisterProfile = async (profile: MinisterProfile): Promise<MinisterProfile> => {
+  const list = await getMinisterProfiles();
+  const index = list.findIndex(m => m.uid === profile.uid || m.email.toLowerCase() === profile.email.toLowerCase());
+  let updatedList: MinisterProfile[];
+  if (index >= 0) {
+    updatedList = [...list];
+    updatedList[index] = { ...updatedList[index], ...profile };
+  } else {
+    updatedList = [profile, ...list];
+  }
+  setLocalStorage(LOCAL_STORAGE_KEYS.MINISTER_PROFILES, updatedList);
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'ministers', profile.uid), cleanUndefined(profile));
+    } catch (err) {
+      console.warn("Firestore saveMinisterProfile error:", err);
+    }
+  }
+  return profile;
+};
+
+export const updateMinisterVerification = async (uid: string, status: MinisterVerificationStatus): Promise<void> => {
+  const list = await getMinisterProfiles();
+  const updatedList = list.map(m => m.uid === uid ? { ...m, verificationStatus: status } : m);
+  setLocalStorage(LOCAL_STORAGE_KEYS.MINISTER_PROFILES, updatedList);
+
+  if (isRealFirebase) {
+    try {
+      await updateDoc(doc(db, 'ministers', uid), { verificationStatus: status });
+    } catch (err) {
+      console.warn("Firestore updateMinisterVerification error:", err);
+    }
+  }
+};
+
+// --- 2. MEDIA REQUESTS (HUMAN-POWERED ENGINE) ---
+export const getMediaRequests = async (): Promise<MediaRequestTask[]> => {
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'media_requests'));
+      if (!snap.empty) {
+        return snap.docs.map(d => ({ ...d.data(), requestId: d.id } as MediaRequestTask));
+      }
+    } catch (err) {
+      console.warn("Firestore getMediaRequests fallback to local:", err);
+    }
+  }
+  return getLocalStorage<MediaRequestTask[]>(LOCAL_STORAGE_KEYS.MEDIA_REQUESTS, SEEDED_MEDIA_REQUESTS);
+};
+
+export const submitMediaRequest = async (taskData: Omit<MediaRequestTask, 'requestId' | 'createdAt' | 'status'>): Promise<MediaRequestTask> => {
+  const newTask: MediaRequestTask = {
+    ...taskData,
+    requestId: `req_${Date.now()}`,
+    status: 'SUBMITTED',
+    outputFolderId: `drive_folder_${Math.random().toString(36).substring(2, 9)}`,
+    createdAt: new Date().toISOString()
+  };
+
+  const list = await getMediaRequests();
+  const updatedList = [newTask, ...list];
+  setLocalStorage(LOCAL_STORAGE_KEYS.MEDIA_REQUESTS, updatedList);
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'media_requests', newTask.requestId), cleanUndefined(newTask));
+    } catch (err) {
+      console.warn("Firestore submitMediaRequest error:", err);
+    }
+  }
+  return newTask;
+};
+
+export const updateMediaRequestStatus = async (requestId: string, status: MediaRequestStatus, assignedEditorId?: string, assignedEditorName?: string): Promise<void> => {
+  const list = await getMediaRequests();
+  const updatedList = list.map(req => {
+    if (req.requestId === requestId) {
+      return {
+        ...req,
+        status,
+        ...(assignedEditorId ? { assignedEditorId, assignedEditorName } : {}),
+        ...(status === 'COMPLETED' ? { completedAt: new Date().toISOString() } : {})
+      };
+    }
+    return req;
+  });
+  setLocalStorage(LOCAL_STORAGE_KEYS.MEDIA_REQUESTS, updatedList);
+
+  if (isRealFirebase) {
+    try {
+      const payload: any = { status };
+      if (assignedEditorId) {
+        payload.assignedEditorId = assignedEditorId;
+        payload.assignedEditorName = assignedEditorName;
+      }
+      if (status === 'COMPLETED') {
+        payload.completedAt = new Date().toISOString();
+      }
+      await updateDoc(doc(db, 'media_requests', requestId), cleanUndefined(payload));
+    } catch (err) {
+      console.warn("Firestore updateMediaRequestStatus error:", err);
+    }
+  }
+};
+
+export const addMediaDeliverableFile = async (requestId: string, deliverable: MediaDeliverableFile): Promise<void> => {
+  const list = await getMediaRequests();
+  const updatedList = list.map(req => {
+    if (req.requestId === requestId) {
+      const existing = req.completedFiles || [];
+      return {
+        ...req,
+        status: 'COMPLETED',
+        completedAt: new Date().toISOString(),
+        completedFiles: [...existing, { ...deliverable, uploadedAt: new Date().toISOString() }]
+      };
+    }
+    return req;
+  });
+  setLocalStorage(LOCAL_STORAGE_KEYS.MEDIA_REQUESTS, updatedList);
+
+  if (isRealFirebase) {
+    try {
+      const target = updatedList.find(r => r.requestId === requestId);
+      if (target) {
+        await updateDoc(doc(db, 'media_requests', requestId), cleanUndefined({
+          status: 'COMPLETED',
+          completedAt: target.completedAt,
+          completedFiles: target.completedFiles
+        }));
+      }
+    } catch (err) {
+      console.warn("Firestore addMediaDeliverableFile error:", err);
+    }
+  }
+};
+
+// --- 3. PRAYER REQUESTS & INTERCESSION WALL ---
+export const getPrayerRequests = async (): Promise<PrayerRequestPost[]> => {
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'prayer_requests'));
+      if (!snap.empty) {
+        return snap.docs.map(d => ({ ...d.data(), postId: d.id } as PrayerRequestPost));
+      }
+    } catch (err) {
+      console.warn("Firestore getPrayerRequests fallback to local:", err);
+    }
+  }
+  return getLocalStorage<PrayerRequestPost[]>(LOCAL_STORAGE_KEYS.PRAYER_REQUESTS, SEEDED_PRAYER_REQUESTS);
+};
+
+export const submitPrayerRequest = async (postData: Omit<PrayerRequestPost, 'postId' | 'createdAt' | 'intercessionCount'>): Promise<PrayerRequestPost> => {
+  const newPost: PrayerRequestPost = {
+    ...postData,
+    postId: `pray_${Date.now()}`,
+    intercessionCount: 1,
+    prayingMinisterIds: [postData.authorId],
+    createdAt: new Date().toISOString()
+  };
+
+  const list = await getPrayerRequests();
+  const updated = [newPost, ...list];
+  setLocalStorage(LOCAL_STORAGE_KEYS.PRAYER_REQUESTS, updated);
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'prayer_requests', newPost.postId), cleanUndefined(newPost));
+    } catch (err) {
+      console.warn("Firestore submitPrayerRequest error:", err);
+    }
+  }
+  return newPost;
+};
+
+export const incrementIntercession = async (postId: string, ministerId: string): Promise<number> => {
+  const list = await getPrayerRequests();
+  let newCount = 0;
+  const updated = list.map(item => {
+    if (item.postId === postId) {
+      const prayingIds = item.prayingMinisterIds || [];
+      const hasPrayed = prayingIds.includes(ministerId);
+      const updatedPrayingIds = hasPrayed ? prayingIds : [...prayingIds, ministerId];
+      newCount = item.intercessionCount + (hasPrayed ? 1 : 1);
+      return {
+        ...item,
+        intercessionCount: newCount,
+        prayingMinisterIds: updatedPrayingIds
+      };
+    }
+    return item;
+  });
+  setLocalStorage(LOCAL_STORAGE_KEYS.PRAYER_REQUESTS, updated);
+
+  if (isRealFirebase) {
+    try {
+      const target = updated.find(p => p.postId === postId);
+      if (target) {
+        await updateDoc(doc(db, 'prayer_requests', postId), {
+          intercessionCount: target.intercessionCount,
+          prayingMinisterIds: target.prayingMinisterIds
+        });
+      }
+    } catch (err) {
+      console.warn("Firestore incrementIntercession error:", err);
+    }
+  }
+  return newCount;
+};
+
+// --- 4. DREAMS & VISIONS INTERPRETATION BOARD ---
+export const getDreamInterpretations = async (): Promise<DreamVisionInterpretation[]> => {
+  if (isRealFirebase) {
+    try {
+      const snap = await getDocs(collection(db, 'dream_interpretations'));
+      if (!snap.empty) {
+        return snap.docs.map(d => ({ ...d.data(), postId: d.id } as DreamVisionInterpretation));
+      }
+    } catch (err) {
+      console.warn("Firestore getDreamInterpretations fallback to local:", err);
+    }
+  }
+  return getLocalStorage<DreamVisionInterpretation[]>(LOCAL_STORAGE_KEYS.DREAM_INTERPRETATIONS, SEEDED_DREAM_INTERPRETATIONS);
+};
+
+export const submitDreamInterpretation = async (data: Omit<DreamVisionInterpretation, 'postId' | 'createdAt' | 'commentsCount' | 'comments'>): Promise<DreamVisionInterpretation> => {
+  const newPost: DreamVisionInterpretation = {
+    ...data,
+    postId: `dream_${Date.now()}`,
+    commentsCount: 0,
+    comments: [],
+    createdAt: new Date().toISOString()
+  };
+
+  const list = await getDreamInterpretations();
+  const updated = [newPost, ...list];
+  setLocalStorage(LOCAL_STORAGE_KEYS.DREAM_INTERPRETATIONS, updated);
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'dream_interpretations', newPost.postId), cleanUndefined(newPost));
+    } catch (err) {
+      console.warn("Firestore submitDreamInterpretation error:", err);
+    }
+  }
+  return newPost;
+};
+
+export const addDreamComment = async (postId: string, commentData: { authorId: string; authorName: string; authorTitle?: string; authorChurch?: string; comment: string; scripturesCited?: string[] }): Promise<void> => {
+  const list = await getDreamInterpretations();
+  const newComment = {
+    id: `c_${Date.now()}`,
+    ...commentData,
+    timestamp: new Date().toISOString()
+  };
+
+  const updated = list.map(item => {
+    if (item.postId === postId) {
+      const comments = item.comments || [];
+      return {
+        ...item,
+        commentsCount: comments.length + 1,
+        comments: [...comments, newComment]
+      };
+    }
+    return item;
+  });
+  setLocalStorage(LOCAL_STORAGE_KEYS.DREAM_INTERPRETATIONS, updated);
+
+  if (isRealFirebase) {
+    try {
+      const target = updated.find(d => d.postId === postId);
+      if (target) {
+        await updateDoc(doc(db, 'dream_interpretations', postId), cleanUndefined({
+          commentsCount: target.commentsCount,
+          comments: target.comments
+        }));
+      }
+    } catch (err) {
+      console.warn("Firestore addDreamComment error:", err);
+    }
+  }
+};
+
+// --- 5. MINISTRY ASSETS & SERMON PREP LIBRARY ---
+export const getMinistryResources = async (): Promise<MinistryAssetResource[]> => {
+  return getLocalStorage<MinistryAssetResource[]>(LOCAL_STORAGE_KEYS.MINISTRY_RESOURCES, SEEDED_MINISTRY_RESOURCES);
+};
+
+// --- 6. MINISTER DIRECT MESSAGING ---
+export const getMinisterMessages = async (userId: string, peerId: string): Promise<MinisterDirectMessage[]> => {
+  const all = getLocalStorage<MinisterDirectMessage[]>(LOCAL_STORAGE_KEYS.MINISTER_MESSAGES, SEEDED_MINISTER_MESSAGES);
+  return all.filter(m => 
+    (m.senderId === userId && m.recipientId === peerId) || 
+    (m.senderId === peerId && m.recipientId === userId)
+  );
+};
+
+export const sendMinisterMessage = async (msg: Omit<MinisterDirectMessage, 'id' | 'timestamp'>): Promise<MinisterDirectMessage> => {
+  const newMsg: MinisterDirectMessage = {
+    ...msg,
+    id: `msg_${Date.now()}`,
+    timestamp: new Date().toISOString()
+  };
+
+  const all = getLocalStorage<MinisterDirectMessage[]>(LOCAL_STORAGE_KEYS.MINISTER_MESSAGES, SEEDED_MINISTER_MESSAGES);
+  const updated = [...all, newMsg];
+  setLocalStorage(LOCAL_STORAGE_KEYS.MINISTER_MESSAGES, updated);
+
+  if (isRealFirebase) {
+    try {
+      await setDoc(doc(db, 'minister_messages', newMsg.id), cleanUndefined(newMsg));
+    } catch (err) {
+      console.warn("Firestore sendMinisterMessage error:", err);
+    }
+  }
+  return newMsg;
+};
+
 
 

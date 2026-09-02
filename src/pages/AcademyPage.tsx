@@ -12,6 +12,7 @@ import {
   CloudSun, Brain, TrendingUp, Volume2, RefreshCw, Lock, Unlock, Laptop
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { AnimatedHeroTitle } from '../components/AnimatedHeroTitle';
 import { getCourses, loginWithGoogleSimulated, enrollInCourse, isRealFirebase, signInWithGoogleReal, sendNotification } from '../firebase';
 import { Course, UserProfile, UserRole } from '../types';
 
@@ -1137,27 +1138,33 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
             <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
             
             {/* Floating Background Icons */}
-            <div className="absolute top-1/4 left-[8%] opacity-[0.05] animate-bounce" style={{ animationDuration: '6s' }}>
+            <div className="absolute top-1/4 left-[8%] opacity-[0.07] animate-bounce" style={{ animationDuration: '6s' }}>
               <GraduationCap className="w-16 h-16 text-emerald-600" />
             </div>
-            <div className="absolute bottom-1/4 right-[8%] opacity-[0.05] animate-pulse" style={{ animationDuration: '4s' }}>
+            <div className="absolute bottom-1/4 right-[8%] opacity-[0.07] animate-pulse" style={{ animationDuration: '4s' }}>
               <BookOpen className="w-20 h-20 text-indigo-600" />
+            </div>
+            <div className="absolute top-1/3 right-[15%] opacity-[0.06] animate-bounce" style={{ animationDuration: '8s' }}>
+              <Award className="w-14 h-14 text-pink-600" />
+            </div>
+            <div className="absolute bottom-1/3 left-[15%] opacity-[0.06] animate-pulse" style={{ animationDuration: '5s' }}>
+              <Sparkles className="w-12 h-12 text-teal-600" />
+            </div>
+            <div className="absolute top-1/2 left-[5%] opacity-[0.05] animate-pulse" style={{ animationDuration: '7s' }}>
+              <Laptop className="w-14 h-14 text-indigo-600" />
+            </div>
+            <div className="absolute bottom-1/2 right-[6%] opacity-[0.05] animate-bounce" style={{ animationDuration: '9s' }}>
+              <Code className="w-14 h-14 text-emerald-600" />
             </div>
           </div>
 
           <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
             
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+            <AnimatedHeroTitle 
+              primaryText="Unlock Your Tech & Digital Marketing"
+              highlightText="Career Potential."
               className="text-4xl sm:text-6xl font-black tracking-tight leading-tight max-w-4xl mx-auto text-slate-900"
-            >
-              Unlock Your Digital Marketing <br />
-              <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-indigo-600 bg-clip-text text-transparent">
-                Career Potential
-              </span>
-            </motion.h1>
+            />
 
             <motion.p 
               initial={{ opacity: 0, y: 15 }}
@@ -1165,7 +1172,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               transition={{ delay: 0.2 }}
               className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium"
             >
-              Training professionals, marketers, and business owners on certified Digital Marketing paths.
+              Training professionals, marketers, and business owners on certified Tech & Digital Marketing paths.
             </motion.p>
 
             <motion.div 
@@ -3043,26 +3050,26 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
       {/* RECEPTION COURSES LAUNCH PORTAL MODAL */}
       {launchingReceptionCourse && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
           <motion.div
             initial={{ opacity: 0, y: 15, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md overflow-hidden text-white shadow-2xl flex flex-col"
+            className="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden text-slate-900 shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="bg-slate-950 p-5 border-b border-slate-800 flex items-center justify-between">
+            <div className="bg-slate-50 p-5 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-indigo-500/10 p-2 rounded-xl text-indigo-400">
+                <div className="bg-indigo-50 p-2 rounded-xl text-indigo-600">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white leading-tight">Launch Practice Portal</h3>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Pulzitive Sandbox</p>
+                  <h3 className="text-sm font-bold text-slate-900 leading-tight">Launch Practice Portal</h3>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Pulzitive Sandbox</p>
                 </div>
               </div>
               <button
                 onClick={() => setLaunchingReceptionCourse(null)}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white p-1.5 rounded-xl transition-colors cursor-pointer"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 p-1.5 rounded-xl transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -3072,12 +3079,12 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
               {receptionSuccess ? (
                 /* Success message */
                 <div className="space-y-4 py-4 animate-fade-in">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <CheckCircle className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-slate-200">Sandbox Access Synchronized</h4>
-                    <p className="text-[11px] text-slate-400 max-w-xs mx-auto mt-1 leading-relaxed">
+                    <h4 className="text-sm font-bold text-slate-900">Sandbox Access Synchronized</h4>
+                    <p className="text-[11px] text-slate-600 max-w-xs mx-auto mt-1 leading-relaxed">
                       We have successfully launched your practice sandbox in a new window and registered your activity to your dashboard coursework.
                     </p>
                   </div>
@@ -3086,7 +3093,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                       onClick={() => {
                         window.open(launchingReceptionCourse.url, '_blank');
                       }}
-                      className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-extrabold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                     >
                       <ExternalLink className="w-3.5 h-3.5" /> Re-launch Sandbox Portal
                     </button>
@@ -3095,7 +3102,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         setLaunchingReceptionCourse(null);
                         onNavigate('dashboard');
                       }}
-                      className="text-xs text-indigo-400 hover:text-indigo-300 font-bold"
+                      className="text-xs text-indigo-600 hover:text-indigo-700 font-bold cursor-pointer"
                     >
                       Go to Dashboard Coursework
                     </button>
@@ -3105,28 +3112,28 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                 /* Main confirmation step */
                 <>
                   <div className="space-y-2">
-                    <h4 className="text-sm font-bold text-slate-200">{launchingReceptionCourse.title}</h4>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                    <h4 className="text-sm font-bold text-slate-900">{launchingReceptionCourse.title}</h4>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
                       You are launching external access to this secure sandbox. Pulzitive automatically synchronizes this playground onto your dashboard, ensuring immediate certification logs.
                     </p>
                   </div>
 
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-850/80 text-left text-[10.5px] space-y-2.5">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-[10.5px] space-y-2.5">
                     <div className="flex justify-between">
                       <span className="text-slate-500">Workspace Type:</span>
-                      <span className="font-semibold text-slate-200">Self-Paced Practice Sandbox</span>
+                      <span className="font-semibold text-slate-800">Self-Paced Practice Sandbox</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Access Type:</span>
-                      <span className="font-semibold text-indigo-400">100% Free Scholarship</span>
+                      <span className="font-semibold text-indigo-700">100% Free Scholarship</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Goal Award XP:</span>
-                      <span className="font-bold text-emerald-400">+{launchingReceptionCourse.points} XP Logged</span>
+                      <span className="font-bold text-emerald-700">+{launchingReceptionCourse.points} XP Logged</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Security:</span>
-                      <span className="font-semibold text-slate-300">Google Workspace Safe Connection</span>
+                      <span className="font-semibold text-slate-700">Google Workspace Safe Connection</span>
                     </div>
                   </div>
 
@@ -3134,7 +3141,7 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                     <button
                       onClick={handleConfirmReceptionLaunch}
                       disabled={isSyncingReception}
-                      className="bg-white hover:bg-slate-50 disabled:bg-slate-800 text-slate-950 border border-slate-200 font-black py-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                      className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-300 text-white font-black py-3 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                     >
                       {isSyncingReception ? (
                         <>
@@ -3142,13 +3149,13 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
                         </>
                       ) : (
                         <>
-                          <Play className="w-3.5 h-3.5 fill-slate-950 text-slate-950" /> Confirm & Launch Sandbox Portal
+                          <Play className="w-3.5 h-3.5 fill-white text-white" /> Confirm & Launch Sandbox Portal
                         </>
                       )}
                     </button>
                     <button
                       onClick={() => setLaunchingReceptionCourse(null)}
-                      className="text-xs text-slate-400 hover:text-white font-medium"
+                      className="text-xs text-slate-500 hover:text-slate-800 font-medium cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -3162,8 +3169,8 @@ export default function AcademyPage({ onEnroll, onSelectPlan, currentUser, onUse
 
       {/* LOCAL TOAST SYSTEM */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 bg-slate-950 border border-slate-800 text-white text-xs font-semibold px-4.5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 z-50 animate-fade-in-up">
-          <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+        <div className="fixed bottom-5 right-5 bg-white border border-slate-200 text-slate-900 text-xs font-semibold px-4.5 py-3 rounded-2xl shadow-xl flex items-center gap-2 z-50 animate-fade-in-up">
+          <Sparkles className="w-4 h-4 text-emerald-600 animate-pulse" />
           <span>{toastMessage}</span>
         </div>
       )}

@@ -6,15 +6,17 @@
 import React, { useState } from 'react';
 import { 
   Menu, X, Bell, LogIn, LogOut, ChevronDown, User, Sparkles, BookOpen, 
-  ShoppingBag, ShieldAlert, Award, Calendar, Globe, DollarSign, UserPlus, Briefcase
+  ShoppingBag, ShieldAlert, Award, Calendar, Globe, DollarSign, UserPlus, Briefcase,
+  Video, HeartHandshake, Users, Download
 } from 'lucide-react';
-import { UserProfile, UserRole } from '../types';
+import { UserProfile, UserRole, MinisterProfile } from '../types';
 import { 
   triggerSignOut,
   signInWithEmailReal,
   signUpWithEmailReal,
   getFriendlyAuthErrorMessage,
-  saveProfile
+  saveProfile,
+  saveMinisterProfile
 } from '../firebase';
 import Logo from './Logo';
 
@@ -205,6 +207,7 @@ interface HeaderProps {
   isAdminAuth?: boolean;
   setIsAdminAuth?: (val: boolean) => void;
   isClientSignUpOnly?: boolean;
+  onNavigateMinistryTab?: (tab: string) => void;
 }
 
 export default function Header({
@@ -220,7 +223,8 @@ export default function Header({
   setAuthTab: propSetAuthTab,
   isAdminAuth,
   setIsAdminAuth,
-  isClientSignUpOnly = false
+  isClientSignUpOnly = false,
+  onNavigateMinistryTab
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
@@ -241,6 +245,14 @@ export default function Header({
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
+  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState('');
+
+  // Pastor & Minister Registration Specific States
+  const [ministerTitle, setMinisterTitle] = useState<'Pastor' | 'Apostle' | 'Bishop' | 'Prophet' | 'Evangelist' | 'Reverend' | 'Minister'>('Pastor');
+  const [ministerChurchName, setMinisterChurchName] = useState('');
+  const [ministerDenomination, setMinisterDenomination] = useState('Evangelical / Charismatic');
+  const [ministerCity, setMinisterCity] = useState('Lagos');
+  const [ministerCountry, setMinisterCountry] = useState('Nigeria');
   
   // SMS Authentication State variables
   const [smsPhoneNumber, setSmsPhoneNumber] = useState('');
@@ -252,7 +264,9 @@ export default function Header({
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
 
-  const availableRoles: { role: UserRole; label: string; desc: string; icon: any }[] = [
+  const [selectedMinistryTab, setSelectedMinistryTab] = useState<string>('media');
+
+  const availableRoles: { role: UserRole; label: string; desc: string; icon: any; tabId?: string }[] = [
     { role: 'Client', label: 'Customer / Client', desc: 'Hire Local Artisans & Services', icon: Calendar },
     { role: 'Student', label: 'Student', desc: 'Track XP, Badges & Learn', icon: Award },
     { role: 'Parent', label: 'Parent', desc: 'Monitor Progress & Advise', icon: User },
@@ -261,8 +275,11 @@ export default function Header({
     { role: 'Mentor', label: 'Mentor Hub', desc: 'Guided Mentees & Real-time chat', icon: Globe },
     { role: 'Sponsor', label: 'Sponsorship Desk', desc: 'Fund Technical Talents', icon: DollarSign },
     { role: 'Talent', label: 'Talent Dashboard', desc: 'List Services & Get Hired', icon: Briefcase },
+    { role: 'Minister', label: 'Pastors & Ministers Dashboard (EcclesiaHub)', desc: 'Done-For-You Media Engine & Fellowship', icon: Sparkles },
     { role: 'Admin', label: 'Global Administration', desc: 'Revenue, Leads & platform controls', icon: Sparkles }
   ];
+
+  const isMinisterContext = activePage === 'ministry' || signUpRole === 'Minister';
 
   const handleSignInSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -272,6 +289,9 @@ export default function Header({
       const profile = await signInWithEmailReal(signInEmail, signInPassword);
       if (activePage === 'home') {
         profile.role = 'Client';
+        await saveProfile(profile);
+      } else if (activePage === 'ministry') {
+        profile.role = 'Minister';
         await saveProfile(profile);
       }
       onUserChanged(profile);
@@ -290,21 +310,71 @@ export default function Header({
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+
+    const isMinisterMode = activePage === 'ministry' || signUpRole === 'Minister';
+
+    if (isMinisterMode) {
+      if (signUpPassword !== signUpConfirmPassword) {
+        setAuthError('Passwords do not match. Please re-type your password.');
+        return;
+      }
+      if (signUpPassword.length < 6) {
+        setAuthError('Password must be at least 6 characters long.');
+        return;
+      }
+    }
+
     setAuthLoading(true);
     try {
-      sessionStorage.setItem('selected_role', signUpRole);
+      sessionStorage.setItem('selected_role', isMinisterMode ? 'Minister' : signUpRole);
       const fullPhone = `${selectedPhoneCode}${signUpPhone}`;
-      const profile = await signUpWithEmailReal(signUpEmail, signUpPassword, signUpName, signUpRole, fullPhone);
-      if (activePage === 'home') {
+      const effectiveRole: UserRole = isMinisterMode ? 'Minister' : (activePage === 'home' ? 'Client' : signUpRole);
+      const finalDisplayName = isMinisterMode 
+        ? `${ministerTitle} ${signUpName.trim()}`
+        : signUpName;
+
+      const profile = await signUpWithEmailReal(signUpEmail, signUpPassword, finalDisplayName, effectiveRole, fullPhone);
+      
+      if (isMinisterMode) {
+        profile.role = 'Minister';
+        profile.displayName = finalDisplayName;
+        profile.companyName = ministerChurchName || 'Grace City Chapel';
+        profile.phone = fullPhone;
+        await saveProfile(profile);
+
+        const ministerProf: MinisterProfile = {
+          uid: profile.uid,
+          email: signUpEmail,
+          displayName: signUpName,
+          title: ministerTitle,
+          churchName: ministerChurchName || 'Grace City Chapel',
+          denomination: ministerDenomination,
+          country: ministerCountry,
+          city: ministerCity,
+          ministryFocus: 'Pastoral',
+          verificationStatus: 'PENDING',
+          role: 'MINISTER',
+          subscriptionTier: 'GROWTH_MINISTRY',
+          googleDriveFolderName: `${(ministerChurchName || signUpName || 'Ministry').replace(/\s+/g, '_')}_Media_Vault`,
+          createdAt: new Date().toISOString()
+        };
+        try {
+          await saveMinisterProfile(ministerProf);
+        } catch (mErr) {
+          console.warn('Could not save minister profile:', mErr);
+        }
+      } else if (activePage === 'home') {
         profile.role = 'Client';
         await saveProfile(profile);
       }
+
       onUserChanged(profile);
       setIsAuthModalOpen(false);
       setSignUpName('');
       setSignUpEmail('');
       setSignUpPhone('');
       setSignUpPassword('');
+      setSignUpConfirmPassword('');
       onNavigate('dashboard');
     } catch (err: any) {
       console.error("Sign-up error:", err);
@@ -340,7 +410,9 @@ export default function Header({
         ? availableRoles.filter(item => item.role === 'Talent' || item.role === 'Client')
         : activePage === 'academy'
           ? availableRoles.filter(item => item.role === 'Student')
-          : availableRoles.filter(item => item.role !== 'Client' && item.role !== 'Admin');
+          : activePage === 'ministry'
+            ? availableRoles.filter(item => item.role === 'Minister')
+            : availableRoles.filter(item => item.role !== 'Client' && item.role !== 'Admin');
 
   React.useEffect(() => {
     if (isAdminAuth) {
@@ -349,6 +421,8 @@ export default function Header({
       setSignUpRole('Client');
     } else if (activePage === 'talents') {
       setSignUpRole('Talent');
+    } else if (activePage === 'ministry') {
+      setSignUpRole('Minister');
     } else {
       setSignUpRole('Student');
     }
@@ -357,7 +431,7 @@ export default function Header({
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950 text-white border-b border-slate-900 shadow-md">
+    <header className="sticky top-0 z-40 bg-white text-slate-900 border-b border-slate-200 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -376,7 +450,7 @@ export default function Header({
               href="#home"
               onClick={(e) => { e.preventDefault(); onNavigate('home'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'home' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'home' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Home
@@ -385,7 +459,7 @@ export default function Header({
               href="#portfolio"
               onClick={(e) => { e.preventDefault(); onNavigate('portfolio'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'portfolio' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'portfolio' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Portfolio
@@ -394,7 +468,7 @@ export default function Header({
               href="#talents"
               onClick={(e) => { e.preventDefault(); onNavigate('talents'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'talents' ? 'bg-slate-900 text-emerald-400 font-bold' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'talents' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Talents
@@ -403,7 +477,7 @@ export default function Header({
               href="#academy"
               onClick={(e) => { e.preventDefault(); onNavigate('academy'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'academy' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'academy' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Academy
@@ -412,7 +486,7 @@ export default function Header({
               href="#marketplace"
               onClick={(e) => { e.preventDefault(); onNavigate('marketplace'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'marketplace' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'marketplace' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Resource Vault
@@ -421,16 +495,25 @@ export default function Header({
               href="#community"
               onClick={(e) => { e.preventDefault(); onNavigate('community'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'community' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'community' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Community
             </a>
             <a
+              href="#ministry"
+              onClick={(e) => { e.preventDefault(); onNavigate('ministry'); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                activePage === 'ministry' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              EcclesiaHub
+            </a>
+            <a
               href="#pricing"
               onClick={(e) => { e.preventDefault(); onNavigate('pricing'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'pricing' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'pricing' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Pricing Plans
@@ -439,7 +522,7 @@ export default function Header({
               href="#pr"
               onClick={(e) => { e.preventDefault(); onNavigate('pr'); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activePage === 'pr' ? 'bg-slate-900 text-emerald-400' : 'text-gray-300 hover:text-white hover:bg-slate-900/50'
+                activePage === 'pr' ? 'bg-emerald-50 text-emerald-700 font-bold border border-emerald-200/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
               Press
@@ -454,8 +537,8 @@ export default function Header({
                 onClick={(e) => { e.preventDefault(); onNavigate('dashboard'); }}
                 className={`hidden md:block px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-all ${
                   activePage === 'dashboard' 
-                    ? 'bg-emerald-500 text-slate-950 border-emerald-500' 
-                    : 'text-emerald-400 border-emerald-400/30 hover:bg-emerald-500/10'
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' 
+                    : 'text-emerald-700 border-emerald-300 hover:bg-emerald-50'
                 }`}
               >
                 Access Dashboard
@@ -470,26 +553,26 @@ export default function Header({
                     setIsNotifDropdownOpen(!isNotifDropdownOpen);
                     if (!isNotifDropdownOpen) onMarkNotificationsRead();
                   }}
-                  className="p-1.5 text-gray-400 hover:text-white hover:bg-slate-900 rounded-full cursor-pointer transition-colors relative"
+                  className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full cursor-pointer transition-colors relative"
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-slate-950 animate-ping"></span>
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white animate-ping"></span>
                   )}
                 </button>
                 {isNotifDropdownOpen && (
-                  <div className="absolute right-0 mt-2.5 w-64 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-2.5 text-xs z-50 text-slate-200">
-                    <h4 className="font-semibold text-white pb-1.5 mb-1.5 border-b border-slate-800 flex justify-between">
+                  <div className="absolute right-0 mt-2.5 w-64 bg-white border border-slate-200 rounded-xl shadow-2xl p-2.5 text-xs z-50 text-slate-700">
+                    <h4 className="font-semibold text-slate-900 pb-1.5 mb-1.5 border-b border-slate-200 flex justify-between">
                       <span>Notifications</span>
-                      {unreadCount > 0 && <span className="text-[10px] text-emerald-400 font-mono">({unreadCount} new)</span>}
+                      {unreadCount > 0 && <span className="text-[10px] text-emerald-600 font-mono font-bold">({unreadCount} new)</span>}
                     </h4>
                     <div className="space-y-1.5 max-h-48 overflow-y-auto">
                       {notifications.length === 0 ? (
-                        <p className="text-gray-500 text-center py-2">No notifications yet</p>
+                        <p className="text-slate-400 text-center py-2">No notifications yet</p>
                       ) : (
                         notifications.map(notif => (
-                          <div key={notif.id} className="p-1.5 bg-slate-950/50 rounded border border-slate-800/30">
-                            <p className="text-[10px] leading-tight">{notif.text}</p>
+                          <div key={notif.id} className="p-1.5 bg-slate-50 rounded border border-slate-200">
+                            <p className="text-[10px] leading-tight text-slate-700">{notif.text}</p>
                           </div>
                         ))
                       )}
@@ -507,7 +590,7 @@ export default function Header({
                     setAuthTab('signin');
                     setIsAuthModalOpen(true);
                   }}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer transition-all shadow-md"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer transition-all shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
                   <span>Start</span>
@@ -518,36 +601,36 @@ export default function Header({
               <div className="relative">
                 <button
                   onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer font-medium tracking-wide transition-all shadow-sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer font-medium tracking-wide transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-emerald-400" />
+                    <User className="w-3.5 h-3.5 text-white" />
                     <span className="max-w-[100px] truncate">{currentUser.displayName || 'My Profile'}</span>
                   </div>
-                  <ChevronDown className="w-3 h-3 text-gray-400" />
+                  <ChevronDown className="w-3 h-3 text-blue-100" />
                 </button>
 
                 {isRoleDropdownOpen && (
-                  <div className="absolute right-0 mt-2.5 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 text-left">
-                    <div className="border-b border-slate-800 pb-3 mb-3">
-                      <p className="text-xs font-bold text-white truncate">{currentUser.displayName || 'User Profile'}</p>
-                      <p className="text-[10px] text-gray-400 truncate">{currentUser.email}</p>
+                  <div className="absolute right-0 mt-2.5 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 z-50 text-left">
+                    <div className="border-b border-slate-200 pb-3 mb-3">
+                      <p className="text-xs font-bold text-slate-900 truncate">{currentUser.displayName || 'User Profile'}</p>
+                      <p className="text-[10px] text-slate-500 truncate">{currentUser.email}</p>
                     </div>
                     
                     <div className="space-y-2 mb-3">
-                      <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/50">
-                        <p className="text-[9px] font-mono uppercase text-slate-400 tracking-wider">Assigned Role</p>
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                        <p className="text-[9px] font-mono uppercase text-slate-500 tracking-wider">Assigned Role</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                          <span className="text-xs font-semibold text-emerald-400">{currentUser.role}</span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                          <span className="text-xs font-semibold text-emerald-700">{currentUser.role}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-2 border-t border-slate-800">
+                    <div className="pt-2 border-t border-slate-200">
                       <button
                         onClick={handleSignOut}
-                        className="w-full text-left p-2 rounded-xl hover:bg-rose-950/20 text-rose-400 hover:text-rose-300 transition-colors cursor-pointer text-xs flex items-center justify-center gap-1.5 font-medium"
+                        className="w-full text-left p-2 rounded-xl hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer text-xs flex items-center justify-center gap-1.5 font-medium"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -561,7 +644,7 @@ export default function Header({
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-slate-900 cursor-pointer"
+              className="lg:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 cursor-pointer"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -571,88 +654,95 @@ export default function Header({
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 py-3 space-y-2">
+        <div className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 space-y-2 shadow-lg">
           <a
             href="#home"
             onClick={(e) => { e.preventDefault(); onNavigate('home'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Home
           </a>
           <a
             href="#portfolio"
             onClick={(e) => { e.preventDefault(); onNavigate('portfolio'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Portfolio
           </a>
           <a
             href="#talents"
             onClick={(e) => { e.preventDefault(); onNavigate('talents'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Talents
           </a>
           <a
             href="#academy"
             onClick={(e) => { e.preventDefault(); onNavigate('academy'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Academy
           </a>
           <a
             href="#marketplace"
             onClick={(e) => { e.preventDefault(); onNavigate('marketplace'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Resource Vault
           </a>
           <a
             href="#community"
             onClick={(e) => { e.preventDefault(); onNavigate('community'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Community
           </a>
           <a
+            href="#ministry"
+            onClick={(e) => { e.preventDefault(); onNavigate('ministry'); setIsMobileMenuOpen(false); }}
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
+          >
+            EcclesiaHub
+          </a>
+          <a
             href="#pricing"
             onClick={(e) => { e.preventDefault(); onNavigate('pricing'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Pricing Plans
           </a>
           <a
             href="#pr"
             onClick={(e) => { e.preventDefault(); onNavigate('pr'); setIsMobileMenuOpen(false); }}
-            className="block w-full text-left px-3 py-2 text-xs font-medium text-gray-300 hover:text-white hover:bg-slate-800 rounded-lg"
+            className="block w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg"
           >
             Press
           </a>
           {!currentUser ? (
-            <div className="pt-2 border-t border-slate-800">
+            <div className="pt-2 border-t border-slate-200">
               <button
                 onClick={() => {
                   setAuthTab('signin');
                   setIsAuthModalOpen(true);
                   setIsMobileMenuOpen(false);
                 }}
-                className="block w-full text-center px-3 py-2.5 text-xs font-bold text-slate-950 bg-emerald-500 hover:bg-emerald-400 rounded-xl cursor-pointer shadow-md transition-colors"
+                className="block w-full text-center px-3 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl cursor-pointer shadow-sm transition-colors"
               >
                 Start
               </button>
             </div>
           ) : (
-            <div className="pt-2 border-t border-slate-800 space-y-1">
-              <p className="px-3 text-[9px] text-gray-500 uppercase font-mono">Active Account: {currentUser.role}</p>
+            <div className="pt-2 border-t border-slate-200 space-y-1">
+              <p className="px-3 text-[9px] text-slate-500 uppercase font-mono">Active Account: {currentUser.role}</p>
               <button
                 onClick={() => { onNavigate('dashboard'); setIsMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2 text-xs font-medium text-emerald-400 bg-slate-950 hover:bg-slate-800 rounded-lg border border-emerald-500/20 cursor-pointer"
+                className="block w-full text-left px-3 py-2 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 cursor-pointer"
               >
                 Access Dashboard
               </button>
               <button
                 onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2 text-xs font-medium text-rose-400 hover:bg-slate-800 rounded-lg cursor-pointer"
+                className="block w-full text-left px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer"
               >
                 Sign Out
               </button>
@@ -660,105 +750,117 @@ export default function Header({
           )}
         </div>
       )}
-      {/* UNIFIED AUTH MODAL */}
+      {/* UNIFIED AUTH MODAL (MERGED ACCESS PORTAL & PASTORS & MINISTERS REGISTRATION) */}
       {isAuthModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 text-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-5 text-left">
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl relative space-y-5 text-left my-8 max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => {
                 setIsAuthModalOpen(false);
                 setAuthError(null);
                 if (setIsAdminAuth) setIsAdminAuth(false);
               }} 
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Modal Header */}
-            <div className="flex items-center gap-3">
-              <Logo size="sm" showText={false} />
-              <div>
-                <h3 className="text-lg font-black text-white leading-none">Access Portal</h3>
+            {isMinisterContext ? (
+              <div className="space-y-2 text-center pt-1">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  {authTab === 'signup' ? 'Pastors & Ministers Registration' : 'Pastor & Minister Sign In'}
+                </h3>
+                <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+                  Access the Pastors & Ministers Dashboard with Done-For-You Media Engine, Global Intercession Wall, Prophetic Sanctuary & Sermon Vault.
+                </p>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Logo size="sm" showText={false} />
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 leading-none">Access Portal</h3>
+                  <p className="text-xs text-slate-500 mt-1">Sign in or create an account to access your workspace.</p>
+                </div>
+              </div>
+            )}
 
-            {isClientSignUpOnly && (
-              <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] p-3.5 rounded-2xl space-y-1">
-                <p className="font-bold text-emerald-200">✨ Client Access Activated</p>
-                <p className="text-[10px] text-emerald-300/80 leading-relaxed">
+            {isClientSignUpOnly && !isMinisterContext && (
+              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] p-3.5 rounded-2xl space-y-1">
+                <p className="font-bold text-emerald-900">✨ Client Access Activated</p>
+                <p className="text-[10px] text-emerald-700 leading-relaxed">
                   Please sign up or sign in as a <strong>Client</strong> below to instantly unlock your Website SEO audit and calendar coordinates.
                 </p>
               </div>
             )}
 
             {/* Segmented Tab Controls */}
-            <div className="flex bg-slate-950 p-1 rounded-2xl border border-slate-800/80 gap-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setAuthTab('signin');
-                  setAuthError(null);
-                }}
-                className={`flex-1 py-1.5 text-center text-[10px] font-bold rounded-xl transition-all cursor-pointer ${
-                  authTab === 'signin'
-                    ? 'bg-slate-800 text-emerald-400 shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                Sign In
-              </button>
+            <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 gap-1">
               <button
                 type="button"
                 onClick={() => {
                   setAuthTab('signup');
                   setAuthError(null);
                 }}
-                className={`flex-1 py-1.5 text-center text-[10px] font-bold rounded-xl transition-all cursor-pointer ${
+                className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   authTab === 'signup'
-                    ? 'bg-slate-800 text-emerald-400 shadow-md'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white text-emerald-700 shadow-sm border border-slate-200/80'
+                    : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                Start
+                {isMinisterContext ? 'Register as Pastor / Minister' : 'Start'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab('signin');
+                  setAuthError(null);
+                }}
+                className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all cursor-pointer ${
+                  authTab === 'signin'
+                    ? 'bg-white text-emerald-700 shadow-sm border border-slate-200/80'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {isMinisterContext ? 'Sign In to Ministry Portal' : 'Sign In'}
               </button>
             </div>
  
             {/* Error Banner */}
             {authError && (
               authError === 'auth/unauthorized-domain' ? (
-                <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs p-4 rounded-2xl space-y-3">
+                <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-4 rounded-2xl space-y-3">
                   <div className="flex items-start gap-2.5">
-                    <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-bold text-amber-200">Domain Authorization Required!</h4>
-                      <p className="text-[10px] text-amber-300/90 mt-1 leading-relaxed">
-                        This custom domain (<span className="font-mono text-white underline">pulzitive.github.io</span>) has not yet been authorized in your Firebase Project's Settings.
+                      <h4 className="font-bold text-amber-950">Domain Authorization Required!</h4>
+                      <p className="text-[10px] text-amber-800 mt-1 leading-relaxed">
+                        This custom domain (<span className="font-mono text-slate-900 bg-amber-100 px-1 py-0.5 rounded">pulzitive.github.io</span>) has not yet been authorized in your Firebase Project's Settings.
                       </p>
                     </div>
                   </div>
                   
-                  <div className="bg-slate-950/60 p-3 rounded-xl text-[10px] space-y-1.5 border border-slate-800 text-slate-300">
-                     <p className="font-semibold text-slate-200">How to authorize this domain:</p>
+                  <div className="bg-white p-3 rounded-xl text-[10px] space-y-1.5 border border-amber-200 text-slate-700">
+                     <p className="font-semibold text-slate-900">How to authorize this domain:</p>
                      <ol className="list-decimal pl-4 space-y-1">
-                       <li>Open the <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline font-semibold hover:text-emerald-300">Firebase Console</a>.</li>
-                       <li>Go to <span className="font-semibold text-slate-200">Authentication &gt; Settings</span> tab.</li>
-                       <li>Scroll down to <span className="font-semibold text-slate-200">Authorized domains</span> and click <span className="font-semibold text-slate-200">Add domain</span>.</li>
-                       <li>Add: <span className="font-mono text-white bg-slate-800 px-1 py-0.5 rounded">pulzitive.github.io</span></li>
+                       <li>Open the <a href="https://console.firebase.google.com/" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline font-semibold hover:text-emerald-800">Firebase Console</a>.</li>
+                       <li>Go to <span className="font-semibold text-slate-900">Authentication &gt; Settings</span> tab.</li>
+                       <li>Scroll down to <span className="font-semibold text-slate-900">Authorized domains</span> and click <span className="font-semibold text-slate-900">Add domain</span>.</li>
+                       <li>Add: <span className="font-mono text-slate-900 bg-slate-100 px-1 py-0.5 rounded">pulzitive.github.io</span></li>
                      </ol>
                   </div>
                 </div>
               ) : (
-                <div className="bg-rose-500/10 border border-rose-500/25 text-rose-400 text-[11px] p-3.5 rounded-2xl">
+                <div className="bg-rose-50 border border-rose-200 text-rose-700 text-[11px] p-3.5 rounded-2xl">
                   <div className="flex items-center gap-2">
-                    <ShieldAlert className="w-4.5 h-4.5 shrink-0 text-rose-400" />
+                    <ShieldAlert className="w-4.5 h-4.5 shrink-0 text-rose-600" />
                     <span className="font-medium">{authError}</span>
                   </div>
                 </div>
               )
             )}
  
-            {/* Form Content */}
+            {/* Form Content - Sign In */}
             {authTab === 'signin' && (
               <form onSubmit={handleSignInSubmit} className="space-y-3.5">
                 <div>
@@ -793,35 +895,127 @@ export default function Header({
                   ) : (
                     <LogIn className="w-3.5 h-3.5" />
                   )}
-                  <span>Sign In</span>
+                  <span>{isMinisterContext ? 'Sign In to Ministry Portal' : 'Sign In'}</span>
                 </button>
               </form>
             )}
  
+            {/* Form Content - Sign Up / Start */}
             {authTab === 'signup' && (
               <form onSubmit={handleSignUpSubmit} className="space-y-3.5">
-                <div>
-                  <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., Adebayo Oluwaseun"
-                    value={signUpName}
-                    onChange={(e) => setSignUpName(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
-                  />
-                </div>
+                {isMinisterContext ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Title</label>
+                        <select
+                          value={ministerTitle}
+                          onChange={(e) => setMinisterTitle(e.target.value as any)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 text-xs font-semibold"
+                        >
+                          <option value="Pastor">Pastor</option>
+                          <option value="Apostle">Apostle</option>
+                          <option value="Bishop">Bishop</option>
+                          <option value="Prophet">Prophet</option>
+                          <option value="Reverend">Reverend</option>
+                          <option value="Evangelist">Evangelist</option>
+                          <option value="Minister">Minister / Leader</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., John Adebayo"
+                          value={signUpName}
+                          onChange={(e) => setSignUpName(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Church / Ministry Name</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., Grace City Chapel"
+                          value={ministerChurchName}
+                          onChange={(e) => setMinisterChurchName(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Denomination / Stream</label>
+                        <select
+                          value={ministerDenomination}
+                          onChange={(e) => setMinisterDenomination(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 text-xs font-semibold"
+                        >
+                          <option value="Evangelical / Charismatic">Evangelical / Charismatic</option>
+                          <option value="Pentecostal">Pentecostal</option>
+                          <option value="Baptist">Baptist</option>
+                          <option value="Anglican / Episcopal">Anglican / Episcopal</option>
+                          <option value="Methodist / Presbyterian">Methodist / Presbyterian</option>
+                          <option value="Apostolic / Prophetic">Apostolic / Prophetic</option>
+                          <option value="Non-Denominational / Other">Non-Denominational / Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">City</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., Lagos"
+                          value={ministerCity}
+                          onChange={(e) => setMinisterCity(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Country</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., Nigeria"
+                          value={ministerCountry}
+                          onChange={(e) => setMinisterCountry(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                        />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., Adebayo Oluwaseun"
+                      value={signUpName}
+                      onChange={(e) => setSignUpName(e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                    />
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Email Address</label>
                   <input
                     type="email"
                     required
-                    placeholder="e.g., adebayo@example.com"
+                    placeholder={isMinisterContext ? "e.g., pastor@gracechurch.org" : "e.g., adebayo@example.com"}
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
                     className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
                   />
                 </div>
+
                 <div>
                   <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Phone Number</label>
                   <div className="flex gap-1.5">
@@ -846,42 +1040,80 @@ export default function Header({
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Select Profile Role</label>
-                  <select
-                    value={signUpRole}
-                    onChange={(e) => setSignUpRole(e.target.value as UserRole)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 text-xs font-medium"
-                  >
-                    {rolesToDisplay.map(item => (
-                      <option key={item.role} value={item.role} className="text-slate-900 bg-white">
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Password</label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={signUpPassword}
-                    onChange={(e) => setSignUpPassword(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
-                  />
-                </div>
+
+                {!isMinisterContext && (
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">
+                      Select Profile Role
+                    </label>
+                    <select
+                      value={signUpRole}
+                      onChange={(e) => setSignUpRole(e.target.value as UserRole)}
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 text-xs font-medium"
+                    >
+                      {rolesToDisplay.map(item => (
+                        <option key={item.role} value={item.role} className="text-slate-900 bg-white">
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {isMinisterContext ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Password</label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={signUpPassword}
+                        onChange={(e) => setSignUpPassword(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Confirm Password</label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={signUpConfirmPassword}
+                        onChange={(e) => setSignUpConfirmPassword(e.target.value)}
+                        className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1">Password</label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={signUpPassword}
+                      onChange={(e) => setSignUpPassword(e.target.value)}
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 text-xs font-medium"
+                    />
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-black py-2.5 rounded-xl transition-colors cursor-pointer text-xs flex items-center justify-center gap-1.5 shadow-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`w-full font-black py-2.5 rounded-xl transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5 shadow-sm mt-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isMinisterContext
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/40'
+                      : 'bg-white hover:bg-slate-50 text-slate-950 border border-slate-200'
+                  }`}
                 >
                   {authLoading ? (
-                    <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    <span className={`w-4 h-4 border-2 ${isMinisterContext ? 'border-white' : 'border-slate-950'} border-t-transparent rounded-full animate-spin`} />
                   ) : (
                     <UserPlus className="w-3.5 h-3.5" />
                   )}
-                  <span>Start / Create Account</span>
+                  <span>{isMinisterContext ? 'Register as Pastor / Minister' : 'Start / Create Account'}</span>
                 </button>
               </form>
             )}

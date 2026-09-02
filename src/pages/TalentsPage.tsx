@@ -9,7 +9,8 @@ import {
   DollarSign, Filter, Plus, Send, Eye, Award, TrendingUp, ChevronRight, User, 
   ExternalLink, SlidersHorizontal, Zap, X, MessageSquare, Globe, 
   RefreshCw, FileText, Check, AlertCircle, ThumbsUp, Lock, Share2, Layers,
-  Wrench, Laptop, ArrowLeft, Download, CheckCircle, GraduationCap, BookOpen, ArrowRight, Bot
+  Wrench, Laptop, ArrowLeft, Download, CheckCircle, GraduationCap, BookOpen, ArrowRight, Bot,
+  UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserAvatarIcon } from '../components/UserAvatarIcon';
@@ -722,6 +723,28 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       <section className="relative overflow-hidden bg-white border-b border-slate-200 text-slate-900 pt-10 pb-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,_var(--tw-gradient-stops))] from-emerald-50/80 via-transparent to-transparent pointer-events-none" />
         
+        {/* Floating Background Icons */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
+          <div className="absolute top-1/4 left-[8%] opacity-[0.07] animate-bounce" style={{ animationDuration: '6s' }}>
+            <Briefcase className="w-16 h-16 text-emerald-600" />
+          </div>
+          <div className="absolute bottom-1/4 right-[8%] opacity-[0.07] animate-pulse" style={{ animationDuration: '4s' }}>
+            <UserCheck className="w-20 h-20 text-indigo-600" />
+          </div>
+          <div className="absolute top-1/3 right-[15%] opacity-[0.06] animate-bounce" style={{ animationDuration: '8s' }}>
+            <Star className="w-14 h-14 text-pink-600" />
+          </div>
+          <div className="absolute bottom-1/3 left-[15%] opacity-[0.06] animate-pulse" style={{ animationDuration: '5s' }}>
+            <Sparkles className="w-12 h-12 text-teal-600" />
+          </div>
+          <div className="absolute top-1/2 left-[5%] opacity-[0.05] animate-pulse" style={{ animationDuration: '7s' }}>
+            <Award className="w-14 h-14 text-amber-500" />
+          </div>
+          <div className="absolute bottom-1/2 right-[6%] opacity-[0.05] animate-bounce" style={{ animationDuration: '9s' }}>
+            <Globe className="w-14 h-14 text-blue-600" />
+          </div>
+        </div>
+
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center space-y-5">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight max-w-3xl">
             Hire & Connect with Verified
@@ -976,20 +999,20 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               </div>
 
               {/* Toggles & Badges */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80 text-xs">
-                <label className="flex items-center gap-2 cursor-pointer text-slate-300 font-medium select-none">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 text-xs">
+                <label className="flex items-center gap-2 cursor-pointer text-slate-700 font-medium select-none">
                   <input
                     type="checkbox"
                     checked={verifiedOnly}
                     onChange={(e) => setVerifiedOnly(e.target.checked)}
-                    className="rounded border-slate-800 text-emerald-500 focus:ring-0 bg-slate-950 w-4 h-4 cursor-pointer"
+                    className="rounded border-slate-300 text-emerald-600 focus:ring-0 bg-white w-4 h-4 cursor-pointer"
                   />
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>Only show Pulzitive Verified Digital Profiles</span>
                 </label>
 
-                <p className="text-slate-400 text-[11px] font-mono">
-                  Showing <span className="text-emerald-400 font-bold">{filteredTalents.length}</span> verified talents in location radius
+                <p className="text-slate-500 text-[11px] font-mono">
+                  Showing <span className="text-emerald-700 font-bold">{filteredTalents.length}</span> verified talents in location radius
                 </p>
               </div>
             </div>
@@ -997,14 +1020,14 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             {/* Talents Directory Cards Grid */}
             {isLoading ? (
               <div className="text-center py-20 space-y-3">
-                <RefreshCw className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-                <p className="text-xs text-slate-400 font-mono">Syncing location directory & digital profiles...</p>
+                <RefreshCw className="w-8 h-8 text-emerald-600 animate-spin mx-auto" />
+                <p className="text-xs text-slate-500 font-mono">Syncing location directory & digital profiles...</p>
               </div>
             ) : filteredTalents.length === 0 ? (
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center space-y-4">
-                <User className="w-12 h-12 text-slate-600 mx-auto" />
-                <h3 className="text-base font-bold text-white">No talents matched your current location or skill filter</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto">
+              <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-4 shadow-sm">
+                <User className="w-12 h-12 text-slate-400 mx-auto" />
+                <h3 className="text-base font-bold text-slate-900">No talents matched your current location or skill filter</h3>
+                <p className="text-xs text-slate-600 max-w-md mx-auto">
                   Try clearing search keywords or switching location filter to "All Locations" or "Global / Remote" to view talents worldwide.
                 </p>
                 <button
@@ -1160,13 +1183,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
         {/* ========================================================================= */}
         {activeTab === 'gigs' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-emerald-400" />
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-emerald-600" />
                   <span>Live Client Gig Feed in Your Location</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   Global employers & local clients looking for verified creators, software engineers, AI specialists, and master trade experts worldwide.
                 </p>
               </div>
@@ -1179,45 +1202,45 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     setIsPostGigModalOpen(true);
                   }
                 }}
-                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 cursor-pointer shadow-md shrink-0"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 cursor-pointer shadow-sm shrink-0"
               >
                 <Plus className="w-4 h-4" />
-                <span>Post a Opportunity</span>
+                <span>Post an Opportunity</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {gigs.map((gig) => (
-                <div key={gig.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 hover:border-slate-700 transition-all">
+                <div key={gig.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 hover:border-slate-300 shadow-sm transition-all">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
-                      <span className="bg-slate-800 text-slate-300 text-[10px] font-mono px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      <span className="bg-slate-100 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded-md uppercase tracking-wider font-bold border border-slate-200">
                         {gig.category}
                       </span>
-                      <h3 className="text-sm font-bold text-white">{gig.title}</h3>
-                      <p className="text-[11px] text-slate-400 font-medium">
-                        Posted by <span className="text-slate-200 font-semibold">{gig.clientName}</span>
+                      <h3 className="text-sm font-bold text-slate-900">{gig.title}</h3>
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        Posted by <span className="text-slate-800 font-semibold">{gig.clientName}</span>
                       </p>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <span className="text-base font-black text-emerald-400 block">${gig.budgetUsd}</span>
+                      <span className="text-base font-black text-emerald-600 block">${gig.budgetUsd}</span>
                       <span className="text-[9px] text-slate-500 block">~₦{gig.budgetNgn.toLocaleString()} NGN</span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-300 leading-relaxed bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
                     {gig.description}
                   </p>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400 border-t border-slate-800 pt-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-500 border-t border-slate-100 pt-3">
                     <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1 text-slate-300">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="flex items-center gap-1 text-slate-700 font-semibold">
+                        <MapPin className="w-3.5 h-3.5 text-emerald-600" />
                         <span>{gig.location}</span>
-                        {gig.distanceKm && <span className="text-emerald-400 font-mono">({gig.distanceKm}km away)</span>}
+                        {gig.distanceKm && <span className="text-emerald-700 font-mono">({gig.distanceKm}km away)</span>}
                       </span>
-                      <span className="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">
+                      <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-bold">
                         {gig.urgency}
                       </span>
                     </div>
@@ -1231,7 +1254,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                           setPitchPriceUsd(gig.budgetUsd);
                         }
                       }}
-                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-md"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs"
                     >
                       <Send className="w-3 h-3" />
                       <span>Submit Proposal Pitch</span>
@@ -1251,16 +1274,16 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             
             {/* Unitary Client Notice if logged in as Client */}
             {currentUser?.role === 'Client' && (
-              <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 border border-blue-500/30 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+              <div className="bg-white border border-blue-200 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
                 <div className="space-y-2 text-center sm:text-left">
                   <div className="flex items-center gap-2 justify-center sm:justify-start">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Unitary Client & Customer Dashboard</span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">Unitary Client & Customer Dashboard</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900">
                     Client & Employer Workspace is Consolidated
                   </h2>
-                  <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                  <p className="text-xs text-slate-600 max-w-xl leading-relaxed">
                     Manage all your digital marketing services, active artisan hires, escrow deposits, and job opportunities from your single unitary client dashboard.
                   </p>
                 </div>
@@ -1268,14 +1291,14 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                 <div className="flex items-center gap-3 shrink-0">
                   <button
                     onClick={() => onNavigate('dashboard')}
-                    className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
                   >
                     <Briefcase className="w-4 h-4" />
                     <span>Open Unitary Client Dashboard</span>
                   </button>
                   <button
                     onClick={() => setIsPostGigModalOpen(true)}
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-3.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-3.5 rounded-2xl flex items-center gap-2 shadow-sm cursor-pointer transition-all active:scale-95"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Post Service Job</span>
@@ -1287,32 +1310,32 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             {/* ARTISAN & TALENT PROFESSIONAL WORKSPACE */}
             <div className="space-y-8">
               {/* Dashboard Header Banner */}
-              <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                      <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Talent & Artisan Professional Workspace</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                      <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">Talent & Artisan Professional Workspace</span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">
+                    <h2 className="text-2xl font-black text-slate-900">
                       {myTalentProfile.name || currentUser?.displayName || 'Master Artisan Profile'}
                     </h2>
-                    <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
-                      Category: <span className="text-slate-200 font-semibold">{myTalentProfile.category || 'Mechanic'}</span> • Rate: <span className="text-emerald-400 font-bold">${myTalentProfile.hourlyRateUsd || 25}/hr (~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN)</span>
+                    <p className="text-xs text-slate-600 max-w-xl leading-relaxed">
+                      Category: <span className="text-slate-800 font-semibold">{myTalentProfile.category || 'Mechanic'}</span> • Rate: <span className="text-emerald-700 font-bold">${myTalentProfile.hourlyRateUsd || 25}/hr (~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN)</span>
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
                     <button
                       onClick={() => setDashboardSubTab(dashboardSubTab === 'autopilot' ? 'overview' : 'autopilot')}
-                      className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                      className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-sm cursor-pointer transition-all active:scale-95"
                     >
-                      <Bot className="w-4 h-4 text-emerald-300" />
+                      <Bot className="w-4 h-4 text-emerald-200" />
                       <span>{dashboardSubTab === 'autopilot' ? 'Back to Overview' : 'Open AI Job Autopilot'}</span>
                     </button>
                     <button
                       onClick={() => setIsEditProfileModalOpen(true)}
-                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-lg cursor-pointer transition-all active:scale-95"
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-sm cursor-pointer transition-all active:scale-95"
                     >
                       <SlidersHorizontal className="w-4 h-4" />
                       <span>Edit Digital Profile</span>
@@ -1322,13 +1345,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
               </div>
 
               {/* Sub-Navigation Tabs */}
-              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
                 <button
                   onClick={() => setDashboardSubTab('overview')}
                   className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
                     dashboardSubTab === 'overview'
-                      ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                      ? 'bg-emerald-600 text-white shadow-sm font-black'
+                      : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
                   <TrendingUp className="w-3.5 h-3.5" />
@@ -1338,13 +1361,13 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   onClick={() => setDashboardSubTab('autopilot')}
                   className={`px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-2 ${
                     dashboardSubTab === 'autopilot'
-                      ? 'bg-blue-600 text-white shadow-md font-black'
-                      : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800'
+                      ? 'bg-blue-600 text-white shadow-sm font-black'
+                      : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
-                  <Bot className="w-3.5 h-3.5 text-emerald-400" />
+                  <Bot className="w-3.5 h-3.5 text-emerald-600" />
                   <span>AI Job Autopilot (ATS Customizer)</span>
-                  <span className="bg-emerald-500/20 text-emerald-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">Live AI</span>
+                  <span className="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">Live AI</span>
                 </button>
               </div>
 
@@ -1357,53 +1380,53 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                 {/* Performance Stats Metrics Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Profile Visibility Score</span>
-                      <Award className="w-4 h-4 text-emerald-400" />
+                  <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-2 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500">
+                      <span className="text-[11px] font-mono uppercase font-bold">Profile Visibility Score</span>
+                      <Award className="w-4 h-4 text-emerald-600" />
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-white">92%</span>
-                      <span className="text-[10px] text-emerald-400 font-bold">+14% this week</span>
+                      <span className="text-2xl font-black text-slate-900">92%</span>
+                      <span className="text-[10px] text-emerald-700 font-bold">+14% this week</span>
                     </div>
-                    <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden mt-2">
-                      <div className="bg-emerald-400 h-full w-[92%] rounded-full"></div>
+                    <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2">
+                      <div className="bg-emerald-500 h-full w-[92%] rounded-full"></div>
                     </div>
                   </div>
 
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Location Search Views</span>
-                      <Eye className="w-4 h-4 text-indigo-400" />
+                  <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-2 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500">
+                      <span className="text-[11px] font-mono uppercase font-bold">Location Search Views</span>
+                      <Eye className="w-4 h-4 text-indigo-600" />
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-white">{(myTalentProfile.viewsCount || 240).toLocaleString()}</span>
-                      <span className="text-[10px] text-indigo-400 font-bold">Global & Regional</span>
+                      <span className="text-2xl font-black text-slate-900">{(myTalentProfile.viewsCount || 240).toLocaleString()}</span>
+                      <span className="text-[10px] text-indigo-700 font-bold">Global & Regional</span>
                     </div>
                     <p className="text-[10px] text-slate-500">Top keywords: {myTalentProfile.category}</p>
                   </div>
 
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Client Inquiries</span>
-                      <MessageSquare className="w-4 h-4 text-amber-400" />
+                  <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-2 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500">
+                      <span className="text-[11px] font-mono uppercase font-bold">Client Inquiries</span>
+                      <MessageSquare className="w-4 h-4 text-amber-500" />
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-white">{inquiries.length}</span>
-                      <span className="text-[10px] text-amber-400 font-bold">~{myTalentProfile.responseTimeMinutes || 10}m response</span>
+                      <span className="text-2xl font-black text-slate-900">{inquiries.length}</span>
+                      <span className="text-[10px] text-amber-700 font-bold">~{myTalentProfile.responseTimeMinutes || 10}m response</span>
                     </div>
                     <p className="text-[10px] text-slate-500">Avg conversion rate: 85%</p>
                   </div>
 
-                  <div className="bg-slate-900 border border-slate-800 p-4 sm:p-5 rounded-2xl space-y-2">
-                    <div className="flex items-center justify-between text-slate-400">
-                      <span className="text-[11px] font-mono uppercase">Direct Payout Rate</span>
-                      <DollarSign className="w-4 h-4 text-emerald-400" />
+                  <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-2 shadow-sm">
+                    <div className="flex items-center justify-between text-slate-500">
+                      <span className="text-[11px] font-mono uppercase font-bold">Direct Payout Rate</span>
+                      <DollarSign className="w-4 h-4 text-emerald-600" />
                     </div>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black text-white">${myTalentProfile.hourlyRateUsd || 25} <span className="text-xs font-normal text-slate-400">/hr</span></span>
+                      <span className="text-2xl font-black text-slate-900">${myTalentProfile.hourlyRateUsd || 25} <span className="text-xs font-normal text-slate-500">/hr</span></span>
                     </div>
-                    <p className="text-[10px] text-emerald-400 font-semibold">~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN/hr</p>
+                    <p className="text-[10px] text-emerald-700 font-semibold">~₦{(myTalentProfile.hourlyRateNgn || 15000).toLocaleString()} NGN/hr</p>
                   </div>
                 </div>
 
@@ -1440,21 +1463,21 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   
                   {/* Left Column: Direct Client Inquiries Management (2 cols) */}
                   <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4 text-emerald-400" />
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4 text-emerald-600" />
                           <span>Direct Customer Hiring Inquiries & Service Requests</span>
                         </h3>
-                        <span className="bg-slate-800 text-slate-300 text-[10px] font-mono px-2 py-0.5 rounded-full">
+                        <span className="bg-slate-100 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold border border-slate-200">
                           {inquiries.length} Records
                         </span>
                       </div>
 
                       {inquiries.length === 0 ? (
                         <div className="text-center py-10 space-y-2">
-                          <MessageSquare className="w-8 h-8 text-slate-600 mx-auto" />
-                          <p className="text-xs text-slate-400">No customer inquiries received yet.</p>
+                          <MessageSquare className="w-8 h-8 text-slate-400 mx-auto" />
+                          <p className="text-xs text-slate-600">No customer inquiries received yet.</p>
                           <p className="text-[10px] text-slate-500 max-w-xs mx-auto">
                             Your profile is live in the Talent Directory. Customers seeking your trade specialty will send hire requests here.
                           </p>
@@ -1462,30 +1485,30 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       ) : (
                         <div className="space-y-4">
                           {inquiries.map((inq) => (
-                            <div key={inq.id} className="bg-slate-950 border border-slate-800/80 rounded-xl p-4 space-y-3">
+                            <div key={inq.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
                               <div className="flex flex-wrap items-center justify-between gap-2">
                                 <div>
-                                  <h4 className="text-xs font-bold text-white">{inq.projectTitle}</h4>
-                                  <p className="text-[10px] text-slate-400">
-                                    Customer: <span className="text-slate-200 font-semibold">{inq.clientName}</span> ({inq.clientEmail}) • {inq.location}
+                                  <h4 className="text-xs font-bold text-slate-900">{inq.projectTitle}</h4>
+                                  <p className="text-[10px] text-slate-600">
+                                    Customer: <span className="text-slate-900 font-semibold">{inq.clientName}</span> ({inq.clientEmail}) • {inq.location}
                                   </p>
                                 </div>
                                 <div className="text-right">
-                                  <span className="text-xs font-black text-emerald-400">${inq.offeredBudgetUsd}</span>
+                                  <span className="text-xs font-black text-emerald-700">${inq.offeredBudgetUsd}</span>
                                   <span className="text-[9px] text-slate-500 block">~₦{inq.offeredBudgetNgn.toLocaleString()} NGN</span>
                                 </div>
                               </div>
 
-                              <p className="text-xs text-slate-300 leading-relaxed bg-slate-900/60 p-3 rounded-lg border border-slate-800/50">
+                              <p className="text-xs text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-slate-200">
                                 "{inq.message}"
                               </p>
 
-                              <div className="flex items-center justify-between border-t border-slate-800/80 pt-2 text-xs">
+                              <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-xs">
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                                  inq.status === 'Accepted' ? 'bg-emerald-500/20 text-emerald-400' :
-                                  inq.status === 'In Progress' ? 'bg-indigo-500/20 text-indigo-400' :
-                                  inq.status === 'Completed' ? 'bg-amber-500/20 text-amber-300' :
-                                  'bg-slate-800 text-slate-400'
+                                  inq.status === 'Accepted' ? 'bg-emerald-100 text-emerald-800' :
+                                  inq.status === 'In Progress' ? 'bg-indigo-100 text-indigo-800' :
+                                  inq.status === 'Completed' ? 'bg-amber-100 text-amber-800' :
+                                  'bg-slate-200 text-slate-700'
                                 }`}>
                                   Status: {inq.status}
                                 </span>
@@ -1494,7 +1517,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                                   {inq.status === 'Pending' && (
                                     <button
                                       onClick={() => handleStatusUpdate(inq.id, 'Accepted')}
-                                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-[10px] px-3 py-1 rounded-lg cursor-pointer"
+                                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] px-3 py-1 rounded-lg cursor-pointer"
                                     >
                                       Accept & Connect
                                     </button>
@@ -1518,26 +1541,26 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     </div>
 
                     {/* My Submitted Proposals & Bids Section */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <Send className="w-4 h-4 text-emerald-400" />
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                          <Send className="w-4 h-4 text-emerald-600" />
                           <span>My Submitted Proposals & Bids</span>
                         </h3>
                       </div>
 
                       {gigs.flatMap(g => (g.proposals || []).filter(p => p.artisanEmail === currentUser?.email || p.artisanName === myTalentProfile.name)).length === 0 ? (
-                        <p className="text-xs text-slate-400 italic py-4">You have not submitted proposal bids on customer gig opportunities yet. Visit the "Gig Feed" tab to pitch your services!</p>
+                        <p className="text-xs text-slate-500 italic py-4">You have not submitted proposal bids on customer gig opportunities yet. Visit the "Gig Feed" tab to pitch your services!</p>
                       ) : (
                         <div className="space-y-3">
                           {gigs.flatMap(g => (g.proposals || []).filter(p => p.artisanEmail === currentUser?.email || p.artisanName === myTalentProfile.name)).map(prop => (
-                            <div key={prop.id} className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between gap-3 text-xs">
+                            <div key={prop.id} className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex items-center justify-between gap-3 text-xs">
                               <div>
-                                <span className="text-[10px] font-mono text-emerald-400 block font-bold">Proposed Rate: ${prop.proposedPriceUsd} (~₦{prop.proposedPriceNgn.toLocaleString()} NGN)</span>
-                                <p className="text-slate-200 font-medium mt-0.5">"{prop.pitchMessage}"</p>
+                                <span className="text-[10px] font-mono text-emerald-700 block font-bold">Proposed Rate: ${prop.proposedPriceUsd} (~₦{prop.proposedPriceNgn.toLocaleString()} NGN)</span>
+                                <p className="text-slate-800 font-medium mt-0.5">"{prop.pitchMessage}"</p>
                               </div>
                               <span className={`text-[10px] font-bold px-2 py-0.5 rounded shrink-0 ${
-                                prop.status === 'Hired' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/10 text-amber-400'
+                                prop.status === 'Hired' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800'
                               }`}>
                                 {prop.status}
                               </span>
@@ -1548,30 +1571,30 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     </div>
 
                     {/* Promotional Spotlight & Visibility Boost Engine */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-amber-400" />
+                          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                            <Zap className="w-4 h-4 text-amber-500" />
                             <span>Promotional Boost & Verified Badge</span>
                           </h3>
-                          <p className="text-[11px] text-slate-400 mt-0.5">
+                          <p className="text-[11px] text-slate-500 mt-0.5">
                             Amplify your visibility by up to +350% across global talent directory and regional hubs worldwide.
                           </p>
                         </div>
 
-                        <span className="bg-amber-500/20 text-amber-300 text-[10px] font-mono px-2.5 py-1 rounded-lg font-bold border border-amber-500/30">
+                        <span className="bg-amber-100 text-amber-800 text-[10px] font-mono px-2.5 py-1 rounded-lg font-bold border border-amber-200">
                           Active Spotlight
                         </span>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                          <div className="flex justify-between text-xs font-bold text-white">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                          <div className="flex justify-between text-xs font-bold text-slate-900">
                             <span>Regional Search Index</span>
-                            <span className="text-emerald-400">Active</span>
+                            <span className="text-emerald-700">Active</span>
                           </div>
-                          <p className="text-[10px] text-slate-400 leading-relaxed">
+                          <p className="text-[10px] text-slate-600 leading-relaxed">
                             Ranked top in local directory search when customers filter by {myTalentProfile.category || 'Mechanic'}.
                           </p>
                           <button
@@ -1582,15 +1605,15 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                           </button>
                         </div>
 
-                        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                          <div className="flex justify-between text-xs font-bold text-white">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                          <div className="flex justify-between text-xs font-bold text-slate-900">
                             <span>Verified Badge Certification</span>
-                            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
                           </div>
-                          <p className="text-[10px] text-slate-400 leading-relaxed">
+                          <p className="text-[10px] text-slate-600 leading-relaxed">
                             Pulzitive Trust Seal displayed on your profile, guaranteeing client satisfaction and quality control.
                           </p>
-                          <span className="inline-block text-[10px] text-emerald-400 font-bold font-mono">
+                          <span className="inline-block text-[10px] text-emerald-700 font-bold font-mono">
                             ✓ Pulzitive Verified
                           </span>
                         </div>
@@ -1601,18 +1624,18 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                   {/* Right Column: AI Pitch & Bio Assistant Toolkit */}
                   <div className="space-y-6">
                     {/* AI Elevator Pitch Generator */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                      <div className="flex items-center gap-2 text-white">
-                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
+                      <div className="flex items-center gap-2 text-slate-900">
+                        <Sparkles className="w-4 h-4 text-emerald-600" />
                         <h3 className="text-sm font-bold">AI Elevator Pitch & Bio Writer</h3>
                       </div>
 
-                      <p className="text-[11px] text-slate-400 leading-relaxed">
+                      <p className="text-[11px] text-slate-500 leading-relaxed">
                         Instantly craft compelling elevator proposals and customer pitches tailored to specific job requirements.
                       </p>
 
                       <div className="space-y-2">
-                        <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Target Project / Service Requirement</label>
+                        <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Target Project / Service Requirement</label>
                         <input
                           type="text"
                           value={aiPitchTopic}
@@ -1625,7 +1648,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       <button
                         onClick={handleGenerateAiPitch}
                         disabled={isGeneratingAiPitch}
-                        className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
                       >
                         {isGeneratingAiPitch ? (
                           <>
@@ -1641,20 +1664,20 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                       </button>
 
                       {aiGeneratedResult && (
-                        <div className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2 text-xs">
-                          <div className="flex justify-between items-center text-[10px] text-slate-400">
-                            <span className="font-bold text-emerald-400">Generated Pitch:</span>
+                        <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-2 text-xs">
+                          <div className="flex justify-between items-center text-[10px] text-slate-500">
+                            <span className="font-bold text-emerald-700">Generated Pitch:</span>
                             <button
                               onClick={() => {
                                 navigator.clipboard.writeText(aiGeneratedResult);
                                 triggerToast('Pitch copied to clipboard!');
                               }}
-                              className="text-slate-300 hover:text-white underline cursor-pointer"
+                              className="text-slate-600 hover:text-slate-900 underline cursor-pointer font-bold"
                             >
                               Copy
                             </button>
                           </div>
-                          <p className="text-slate-300 text-[11px] leading-relaxed italic">
+                          <p className="text-slate-700 text-[11px] leading-relaxed italic">
                             {aiGeneratedResult}
                           </p>
                         </div>
@@ -1662,9 +1685,9 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                     </div>
 
                     {/* Portfolio Showcase Quick Links */}
-                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <Globe className="w-4 h-4 text-indigo-400" />
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-sm">
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-indigo-600" />
                         <span>My Work & Trade Showcase</span>
                       </h3>
 
@@ -1675,7 +1698,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
                             href={link.url}
                             target="_blank"
                             rel="noreferrer"
-                            className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs text-slate-200 hover:border-indigo-500/50 transition-colors"
+                            className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex items-center justify-between text-xs text-slate-700 hover:border-indigo-400 transition-colors"
                           >
                             <span className="font-medium truncate">{link.title}</span>
                             <ExternalLink className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -1685,7 +1708,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
 
                       <button
                         onClick={() => setIsEditProfileModalOpen(true)}
-                        className="w-full text-center text-xs font-bold text-emerald-400 hover:underline pt-1 cursor-pointer"
+                        className="w-full text-center text-xs font-bold text-emerald-700 hover:underline pt-1 cursor-pointer"
                       >
                         + Add Trade Portfolio Sample
                       </button>

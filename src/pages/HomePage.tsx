@@ -949,12 +949,12 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
 
       {/* 5. FREELANCE PLATFORMS AVAILABILITY SECTION - AUTO SLIDE CAROUSEL */}
       <section 
-        className="py-16 bg-slate-900 text-white border-t border-slate-800 relative overflow-hidden"
+        className="py-16 bg-white text-slate-900 border-t border-slate-200 relative overflow-hidden"
         onMouseEnter={() => setIsFreelanceAutoPlaying(false)}
         onMouseLeave={() => setIsFreelanceAutoPlaying(true)}
       >
-        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -965,14 +965,14 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
         >
           {/* Header */}
           <div className="text-center space-y-3 mb-8 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
-              <Globe className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+              <Globe className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
               <span>Escrow & Freelance Hub</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
               Hire Us on Leading Freelance Platforms
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Prefer working through escrow-protected marketplace contracts? Pulzitive is active and available for direct projects, custom orders, and long-term agency contracts on top global freelance platforms.
             </p>
           </div>
@@ -986,7 +986,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: -40, scale: 0.98 }}
                 transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-slate-900"
+                className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden text-slate-900"
               >
                 {/* Animated Top Accent Bar */}
                 <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 animate-pulse" />
@@ -1025,7 +1025,7 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                       href={freelancePlatforms[freelanceIndex].url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full py-3.5 px-6 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 ${freelancePlatforms[freelanceIndex].btnClass}`}
+                      className={`w-full py-3.5 px-6 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md active:scale-95 ${freelancePlatforms[freelanceIndex].btnClass}`}
                     >
                       <span>{freelancePlatforms[freelanceIndex].btnText}</span>
                       <ExternalLink className="w-4 h-4" />
@@ -1038,14 +1038,14 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
             {/* Left & Right Chevron Navigation Buttons */}
             <button
               onClick={() => setFreelanceIndex((prev) => (prev - 1 + freelancePlatforms.length) % freelancePlatforms.length)}
-              className="absolute -left-2 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-90 z-20"
+              className="absolute -left-2 sm:-left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-lg active:scale-90 z-20"
               aria-label="Previous platform slide"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => setFreelanceIndex((prev) => (prev + 1) % freelancePlatforms.length)}
-              className="absolute -right-2 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-90 z-20"
+              className="absolute -right-2 sm:-right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-slate-900 border border-slate-300 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-lg active:scale-90 z-20"
               aria-label="Next platform slide"
             >
               <ChevronRight className="w-5 h-5" />
@@ -1060,23 +1060,23 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
                 onClick={() => setFreelanceIndex(idx)}
                 className={`h-2.5 rounded-full transition-all cursor-pointer ${
                   freelanceIndex === idx
-                    ? 'w-9 bg-emerald-500 shadow-md shadow-emerald-500/30'
-                    : 'w-2.5 bg-slate-800 hover:bg-slate-700'
+                    ? 'w-9 bg-emerald-600 shadow-md shadow-emerald-500/30'
+                    : 'w-2.5 bg-slate-200 hover:bg-slate-300'
                 }`}
                 aria-label={`Go to slide ${plat.name}`}
               />
             ))}
           </div>
 
-          <div className="mt-10 pt-6 border-t border-slate-800/80 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-400">
+          <div className="mt-10 pt-6 border-t border-slate-200 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-600">
               Need a direct contract or custom project invoice through Pulzitive Platform instead?
             </p>
             <button
               onClick={() => onNavigate('talents')}
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
             >
-              <Users className="w-4 h-4" />
+              <Users className="w-4 h-4 text-white" />
               <span>Explore Artisans & Gigs Feed</span>
             </button>
           </div>
@@ -1084,23 +1084,23 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
       </section>
 
       {/* 6. PERSUASIVE AGENCY ADVERTISEMENT */}
-      <section className="bg-slate-950 text-white py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="bg-slate-50 text-slate-900 border-t border-slate-200 py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         {/* Floating Background Icons */}
-        <div className="absolute top-12 left-12 opacity-[0.05] animate-pulse">
-          <TrendingUp className="w-16 h-16 text-emerald-400" />
+        <div className="absolute top-12 left-12 opacity-[0.08] animate-pulse">
+          <TrendingUp className="w-16 h-16 text-emerald-600" />
         </div>
-        <div className="absolute bottom-12 right-12 opacity-[0.05] animate-bounce" style={{ animationDuration: '6s' }}>
-          <Megaphone className="w-20 h-20 text-indigo-400" />
+        <div className="absolute bottom-12 right-12 opacity-[0.08] animate-bounce" style={{ animationDuration: '6s' }}>
+          <Megaphone className="w-20 h-20 text-indigo-600" />
         </div>
-        <div className="absolute top-1/3 right-[15%] opacity-[0.04] animate-pulse">
-          <Share2 className="w-14 h-14 text-pink-400" />
+        <div className="absolute top-1/3 right-[15%] opacity-[0.08] animate-pulse">
+          <Share2 className="w-14 h-14 text-pink-600" />
         </div>
-        <div className="absolute bottom-1/3 left-[15%] opacity-[0.04] animate-bounce" style={{ animationDuration: '8s' }}>
-          <Code className="w-12 h-12 text-teal-400" />
+        <div className="absolute bottom-1/3 left-[15%] opacity-[0.08] animate-bounce" style={{ animationDuration: '8s' }}>
+          <Code className="w-12 h-12 text-teal-600" />
         </div>
 
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -1110,10 +1110,10 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
           className="max-w-5xl mx-auto text-center relative z-10 space-y-8"
         >
           <div className="space-y-4 max-w-3xl mx-auto">
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-tight text-slate-900">
               Scale Your Company with Pulzitive
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               We are a premier digital marketing agency platform offering battle-tested growth marketing suite for companies. Partner with Pulzitive to run targeted high-converting campaigns, build custom software platforms, optimize technical SEO structures, and publish authority-building visual content that consistently brings in high-value customers.
             </p>
           </div>

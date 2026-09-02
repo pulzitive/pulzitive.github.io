@@ -4,18 +4,37 @@
  */
 
 import React from 'react';
-import { Shield, Eye, Lock, FileText, ChevronRight } from 'lucide-react';
+import { Shield, Eye, Lock, FileText, ChevronRight, Sparkles, Award } from 'lucide-react';
+import { AnimatedHeroTitle } from '../components/AnimatedHeroTitle';
 
 export default function PrivacyPage() {
   return (
-    <div className="bg-slate-950 text-white min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+    <div className="bg-white text-slate-900 min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Floating Animated Icons */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
+        <div className="absolute top-1/4 left-[8%] opacity-20 animate-bounce" style={{ animationDuration: '6s' }}>
+          <Shield className="w-16 h-16 text-emerald-500" />
+        </div>
+        <div className="absolute bottom-1/4 right-[8%] opacity-20 animate-pulse" style={{ animationDuration: '4s' }}>
+          <Lock className="w-20 h-20 text-indigo-500" />
+        </div>
+        <div className="absolute top-1/3 right-[15%] opacity-15 animate-bounce" style={{ animationDuration: '8s' }}>
+          <Eye className="w-14 h-14 text-pink-500" />
+        </div>
+        <div className="absolute bottom-1/3 left-[15%] opacity-15 animate-pulse" style={{ animationDuration: '5s' }}>
+          <Sparkles className="w-12 h-12 text-teal-500" />
+        </div>
+      </div>
+
       {/* Header */}
-      <div className="max-w-4xl mx-auto text-center space-y-3 mb-16">
-        <h1 className="text-3xl font-extrabold tracking-tight flex items-center justify-center gap-2">
-          <Shield className="w-8 h-8 text-emerald-400" />
-          Privacy Policy
-        </h1>
-        <p className="text-xs text-slate-400 max-w-xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center space-y-4 mb-16 relative z-10">
+        <AnimatedHeroTitle 
+          primaryText="Pulzitive Privacy Policy &"
+          highlightText="Data Protection Standards."
+          dark={false}
+          className="text-3xl sm:text-5xl font-black tracking-tight leading-tight"
+        />
+        <p className="text-xs text-slate-600 max-w-xl mx-auto font-medium">
           Last Updated: July 11, 2026. This Privacy Policy details how Pulzitive collects, handles, protects, and respects your professional data.
         </p>
       </div>
@@ -24,52 +43,52 @@ export default function PrivacyPage() {
         
         {/* Core Notice Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center text-center space-y-2">
-            <Eye className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-xs font-bold text-white">Full Transparency</h3>
-            <p className="text-[10px] text-slate-400 leading-normal">
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs">
+            <Eye className="w-5 h-5 text-emerald-600" />
+            <h3 className="text-xs font-bold text-slate-900">Full Transparency</h3>
+            <p className="text-[10px] text-slate-600 leading-normal">
               No hidden tracking. We clarify exactly what fields and metrics we gather.
             </p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center text-center space-y-2">
-            <Lock className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-xs font-bold text-white">Secure Storage</h3>
-            <p className="text-[10px] text-slate-400 leading-normal">
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs">
+            <Lock className="w-5 h-5 text-emerald-600" />
+            <h3 className="text-xs font-bold text-slate-900">Secure Storage</h3>
+            <p className="text-[10px] text-slate-600 leading-normal">
               All personal accounts are protected with industry-standard secure hosting.
             </p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center text-center space-y-2">
-            <FileText className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-xs font-bold text-white">Your Ownership</h3>
-            <p className="text-[10px] text-slate-400 leading-normal">
+          <div className="bg-white border border-slate-200 p-5 rounded-2xl flex flex-col items-center text-center space-y-2 shadow-xs">
+            <FileText className="w-5 h-5 text-emerald-600" />
+            <h3 className="text-xs font-bold text-slate-900">Your Ownership</h3>
+            <p className="text-[10px] text-slate-600 leading-normal">
               You retain total control over your profile fields, audits, and newsletters.
             </p>
           </div>
         </div>
 
         {/* Content Card */}
-        <div className="bg-slate-900/30 border border-slate-900 rounded-3xl p-6 sm:p-10 space-y-8">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 space-y-8 shadow-xs">
           
           {/* Section 1 */}
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-emerald-400 flex items-center gap-2">
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">01</span>
+            <h2 className="text-base font-bold text-emerald-700 flex items-center gap-2">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono">01</span>
               Information We Collect
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 leading-relaxed">
               We collect information to deliver specialized consulting, academy course enrollments, and professional newsletter insights. This includes:
             </p>
-            <ul className="space-y-1.5 text-xs text-slate-400 list-none pl-1">
+            <ul className="space-y-1.5 text-xs text-slate-600 list-none pl-1">
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span><strong>Personal Identifiers:</strong> First name, email address, phone number, and physical profile pictures when voluntarily registered on our platform.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span><strong>Professional Content:</strong> Company name, website URL, target marketing channels, and strategic goals supplied during Brand Audits.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span><strong>Academic Progress:</strong> Course enrollments, cohort scores, project links, attendance tracker logs, and generated certificates.</span>
               </li>
             </ul>
@@ -77,28 +96,28 @@ export default function PrivacyPage() {
 
           {/* Section 2 */}
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-emerald-400 flex items-center gap-2">
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">02</span>
+            <h2 className="text-base font-bold text-emerald-700 flex items-center gap-2">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono">02</span>
               How Your Information Is Used
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 leading-relaxed">
               The collected logs are utilized strictly inside Pulzitive platform:
             </p>
-            <ul className="space-y-1.5 text-xs text-slate-400 list-none pl-1">
+            <ul className="space-y-1.5 text-xs text-slate-600 list-none pl-1">
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>Executing, rating, and managing custom website SEO / digital marketing brand audits.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>Delivering certified Digital Academy curricula, virtual workspace sessions, and grading.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>Scheduling consulting strategy meetings using integrated calendars and video environments.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>Sending regular agency updates, campaign digests, and system notices via the Pulzitive Insights Desk.</span>
               </li>
             </ul>
@@ -106,31 +125,31 @@ export default function PrivacyPage() {
 
           {/* Section 3 */}
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-emerald-400 flex items-center gap-2">
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">03</span>
+            <h2 className="text-base font-bold text-emerald-700 flex items-center gap-2">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono">03</span>
               Security & Storage Guardrails
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 leading-relaxed">
               Your security is paramount. Pulzitive uses Google Cloud Firestore security rules that strictly isolate personal data records. Unauthorized read or write requests to subscriber collections, student cohort logs, and proprietary brand audit records are automatically blocked by cloud configurations.
             </p>
           </section>
 
           {/* Section 4 */}
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-emerald-400 flex items-center gap-2">
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">04</span>
+            <h2 className="text-base font-bold text-emerald-700 flex items-center gap-2">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono">04</span>
               Third-Party Integrations
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-700 leading-relaxed">
               Certain operational parameters connect with trusted global service providers:
             </p>
-            <ul className="space-y-1.5 text-xs text-slate-400 list-none pl-1">
+            <ul className="space-y-1.5 text-xs text-slate-600 list-none pl-1">
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span><strong>Paystack Gateway:</strong> Handles secure academic fees and premium plans securely. We never view or store credit card details.</span>
               </li>
               <li className="flex items-start gap-1.5">
-                <ChevronRight className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                 <span><strong>Google Workspace:</strong> Integrates Google Meet and calendar schedulers to deliver consulting links directly to clients.</span>
               </li>
             </ul>
@@ -138,20 +157,20 @@ export default function PrivacyPage() {
 
           {/* Section 5 */}
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-emerald-400 flex items-center gap-2">
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">05</span>
+            <h2 className="text-base font-bold text-emerald-700 flex items-center gap-2">
+              <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono">05</span>
               Your Privacy Rights & Controls
             </h2>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              You can query, modify, or completely delete your personal workspace profile at any point. To opt-out from the Pulzitive Insights newsletter, you can unsubscribe instantly or email our privacy representative at <a href="mailto:pulzitive@gmail.com" className="text-emerald-400 hover:underline">pulzitive@gmail.com</a>.
+            <p className="text-xs text-slate-700 leading-relaxed">
+              You can query, modify, or completely delete your personal workspace profile at any point. To opt-out from the Pulzitive Insights newsletter, you can unsubscribe instantly or email our privacy representative at <a href="mailto:pulzitive@gmail.com" className="text-emerald-600 font-semibold hover:underline">pulzitive@gmail.com</a>.
             </p>
           </section>
 
         </div>
 
         {/* Support Footer */}
-        <div className="bg-slate-900/10 border border-slate-900 rounded-2xl p-5 text-center text-xs text-slate-500">
-          <p>Have questions about this Privacy Policy? Reach out directly to Pulzitive via WhatsApp at <strong className="text-slate-300">+234 815 422 4426</strong>.</p>
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center text-xs text-slate-600">
+          <p>Have questions about this Privacy Policy? Reach out directly to Pulzitive via WhatsApp at <strong className="text-slate-900 font-semibold">+234 815 422 4426</strong>.</p>
         </div>
 
       </div>

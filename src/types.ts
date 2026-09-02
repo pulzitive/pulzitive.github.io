@@ -12,6 +12,7 @@ export type UserRole =
   | 'Sponsor'
   | 'Client'
   | 'Talent'
+  | 'Minister'
   | 'Admin';
 
 export interface TalentProfile {
@@ -379,6 +380,160 @@ export interface GoogleSheetsSyncState {
   totalWebinarsSynced: number;
   status: 'idle' | 'syncing' | 'success' | 'error';
 }
+
+// ==========================================
+// KINGDOMMEDIA & MINISTERS NETWORK (ECCLESIAHUB) TYPES
+// ==========================================
+
+export type MinisterRole = 'MINISTER' | 'MEDIA_STAFF' | 'ADMIN';
+export type MinisterVerificationStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
+export type MinistrySubscriptionTier = 'FREE' | 'STARTER' | 'GROWTH_MINISTRY' | 'ENTERPRISE';
+
+export interface MinisterProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  churchName: string;
+  title?: 'Pastor' | 'Apostle' | 'Bishop' | 'Prophet' | 'Evangelist' | 'Reverend' | 'Minister';
+  denomination?: string;
+  country: string;
+  city: string;
+  ministryFocus: 'Pastoral' | 'Worship' | 'Youth' | 'Evangelism' | 'Prophetic' | 'Media' | 'Church Planting';
+  verificationStatus: MinisterVerificationStatus;
+  role: MinisterRole;
+  subscriptionTier: MinistrySubscriptionTier;
+  googleDriveFolderId?: string;
+  googleDriveFolderName?: string;
+  websiteUrl?: string;
+  socialProofUrl?: string;
+  ordinationProofUrl?: string;
+  avatarUrl?: string;
+  bio?: string;
+  phone?: string;
+  createdAt: string;
+}
+
+export type MediaRequestType = 'SERMON_SHORTS' | 'GRAPHIC_SERIES' | 'BANNER' | 'SERMON_SLIDES' | 'EVENT_PROMO';
+export type MediaRequestStatus = 'SUBMITTED' | 'IN_PROGRESS' | 'REVIEW' | 'COMPLETED';
+
+export interface MediaDeliverableFile {
+  fileName: string;
+  driveFileId: string;
+  webViewLink: string;
+  webContentLink: string;
+  fileSize?: string;
+  duration?: string;
+  thumbnailUrl?: string;
+  uploadedAt?: string;
+}
+
+export interface MediaRequestTask {
+  requestId: string;
+  userId: string;
+  ministerName: string;
+  churchName: string;
+  title: string;
+  rawVideoUrl: string;
+  requestType: MediaRequestType;
+  status: MediaRequestStatus;
+  assignedEditorId?: string;
+  assignedEditorName?: string;
+  outputFolderId?: string;
+  timestampNotes?: string;
+  primaryTopic?: string;
+  targetPlatforms?: string[];
+  graphicStyleChoice?: string;
+  completedFiles?: MediaDeliverableFile[];
+  createdAt: string;
+  completedAt?: string;
+}
+
+export type PrayerCategory = 
+  | 'CHURCH_GROWTH' 
+  | 'PERSONAL_PROPHETIC' 
+  | 'HEALING_DELIVERANCE' 
+  | 'REGIONAL_REVIVAL' 
+  | 'FAMILY_MINISTRY' 
+  | 'FINANCIAL_BREAKTHROUGH';
+
+export interface PrayerRequestPost {
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorTitle?: string;
+  authorChurch?: string;
+  authorAvatar?: string;
+  title: string;
+  content: string;
+  category: PrayerCategory;
+  intercessionCount: number;
+  isPrivate: boolean; // false = All Verified Ministers, true = Private Circle
+  prayingMinisterIds?: string[];
+  createdAt: string;
+}
+
+export type DreamTag = 
+  | 'End-Times' 
+  | 'Church Guidance' 
+  | 'Personal Prophetic' 
+  | 'Ministry Direction' 
+  | 'Harvest' 
+  | 'Evangelism' 
+  | 'Spiritual Warfare';
+
+export interface DreamComment {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorTitle?: string;
+  authorChurch?: string;
+  comment: string;
+  scripturesCited?: string[];
+  timestamp: string;
+}
+
+export interface DreamVisionInterpretation {
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorChurch?: string;
+  authorAvatar?: string;
+  title: string;
+  description: string;
+  tags: DreamTag[];
+  commentsCount: number;
+  comments?: DreamComment[];
+  createdAt: string;
+}
+
+export interface MinistryAssetResource {
+  id: string;
+  title: string;
+  category: 'Sermon Graphic Kits' | 'Social Banner Vectors' | 'Lower Thirds & Overlays' | 'Slide Deck Templates' | 'Motion Backgrounds';
+  format: 'PSD' | 'Canva' | 'PPTX' | 'MP4' | 'AI / Vector';
+  downloadUrl: string;
+  previewUrl: string;
+  downloadsCount: number;
+  fileSize: string;
+  isPremiumOnly: boolean;
+  tags: string[];
+}
+
+export interface MinisterDirectMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderChurch?: string;
+  recipientId: string;
+  recipientName: string;
+  text: string;
+  hasVoiceNote?: boolean;
+  voiceDurationSec?: number;
+  attachedDocUrl?: string;
+  attachedDocName?: string;
+  timestamp: string;
+}
+
 
 
 

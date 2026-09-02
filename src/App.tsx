@@ -28,6 +28,7 @@ import TalentsPage from './pages/TalentsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import SitemapPage from './pages/SitemapPage';
+import { MinistryPage } from './pages/MinistryPage';
 import { UserProfile, Course, Appointment, BrandAudit } from './types';
 import { 
   getAppointments, getBrandAudits, bookAppointment, saveBrandAudit, 
@@ -38,14 +39,30 @@ import { Bell, Sparkles, Check, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 const VALID_PAGES = [
   'home', 'courses', 'pricing', 'marketplace', 'community', 'dashboard',
-  'pr', 'academy', 'portfolio', 'talents', 'privacy', 'terms', 'sitemap'
+  'pr', 'academy', 'portfolio', 'talents', 'privacy', 'terms', 'sitemap', 'ministry'
 ];
+
+const normalizePageName = (raw: string): string => {
+  const cleaned = raw.toLowerCase().trim().replace(/^\/+/, '').replace(/^#\/?/, '').split('?')[0].split('#')[0];
+  if (cleaned === 'ecclesiahub' || cleaned === 'church' || cleaned === 'pastors') return 'ministry';
+  if (cleaned === 'news' || cleaned === 'press') return 'pr';
+  if (cleaned === '' || cleaned === 'index.html') return 'home';
+  if (VALID_PAGES.includes(cleaned)) return cleaned;
+  return 'home';
+};
 
 const getInitialPage = (): string => {
   if (typeof window !== 'undefined') {
+    // Check pathname first (e.g. /academy, /ministry, /pricing)
+    const rawPath = window.location.pathname.replace(/^\/+/, '').split('?')[0];
+    if (rawPath && rawPath !== 'index.html') {
+      const pageFromPath = normalizePageName(rawPath);
+      if (pageFromPath !== 'home') return pageFromPath;
+    }
+    // Check hash next (e.g. #academy, #pricing)
     const rawHash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
-    if (rawHash && VALID_PAGES.includes(rawHash)) {
-      return rawHash;
+    if (rawHash) {
+      return normalizePageName(rawHash);
     }
   }
   return 'home';
@@ -55,28 +72,37 @@ export default function App() {
   const [activePage, setActiveState] = useState<string>(getInitialPage);
 
   const setActivePage = (page: string) => {
-    setActiveState(page);
-    const targetHash = page === 'home' ? '#home' : `#${page}`;
-    if (window.location.hash !== targetHash) {
-      window.history.pushState(null, '', targetHash);
+    const normalized = normalizePageName(page);
+    setActiveState(normalized);
+    if (typeof window !== 'undefined') {
+      const targetPath = normalized === 'home' ? '/' : `/${normalized}`;
+      const currentPath = window.location.pathname;
+      if (currentPath !== targetPath && !(currentPath === '/' && normalized === 'home')) {
+        window.history.pushState({ page: normalized }, '', targetPath);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const rawHash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
-      if (rawHash && VALID_PAGES.includes(rawHash)) {
-        setActiveState(rawHash);
-      } else if (!rawHash) {
+    const handlePopState = () => {
+      const pathPage = normalizePageName(window.location.pathname);
+      const hashPage = normalizePageName(window.location.hash);
+      if (pathPage !== 'home') {
+        setActiveState(pathPage);
+      } else if (hashPage !== 'home') {
+        setActiveState(hashPage);
+      } else {
         setActiveState('home');
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    window.addEventListener('popstate', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-      window.removeEventListener('popstate', handleHashChange);
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
     };
   }, []);
 
@@ -126,6 +152,9 @@ export default function App() {
 
   // Splash screen loading animation state
   const [showSplashScreen, setShowSplashScreen] = useState(true);
+
+  // Active Ministry Dashboard Tab state
+  const [ministryActiveTab, setMinistryActiveTab] = useState<string>('media');
 
   // 7-second homepage prospecting audit modal states
   const [isProspectingAuditOpen, setIsProspectingAuditOpen] = useState(false);
@@ -400,7 +429,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 font-sans text-slate-100">
+    <div className="flex flex-col min-h-screen bg-white font-sans text-slate-900">
       
       {/* HEADER SECTION */}
       <Header
@@ -429,24 +458,25 @@ export default function App() {
         isAdminAuth={isAdminAuth}
         setIsAdminAuth={setIsAdminAuth}
         isClientSignUpOnly={isClientSignUpOnly}
+        onNavigateMinistryTab={(tab) => setMinistryActiveTab(tab)}
       />
 
       {/* ACTIVE SESSION WORKSPACE LINK BANNER */}
       {currentUser && activePage !== 'dashboard' && (
-        <div className="bg-emerald-950/40 border-b border-emerald-500/20 py-2.5 px-4 animate-fade-in">
+        <div className="bg-emerald-50 border-b border-emerald-200 py-2.5 px-4 animate-fade-in">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-slate-200">
+            <div className="flex items-center gap-2 text-slate-800 font-medium">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
               </span>
               <span>
-                Logged in as <strong className="text-emerald-400">{currentUser.displayName || currentUser.email}</strong> ({currentUser.role}).
+                Logged in as <strong className="text-emerald-700">{currentUser.displayName || currentUser.email}</strong> ({currentUser.role}).
               </span>
             </div>
             <button
               onClick={() => setActivePage('dashboard')}
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer text-[11px]"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer text-[11px]"
             >
               <span>Access Dashboard</span>
               <span className="font-mono">→</span>
@@ -457,13 +487,13 @@ export default function App() {
 
       {/* FLOATING TOAST NOTIFICATION IF ACTIVE */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 max-w-sm bg-slate-900 border border-emerald-500/30 rounded-2xl shadow-2xl p-4 flex items-start gap-3 text-xs animate-bounce">
-          <div className="bg-emerald-500/10 p-2 rounded-xl text-emerald-400 shrink-0">
+        <div className="fixed top-20 right-6 z-50 max-w-sm bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 flex items-start gap-3 text-xs animate-bounce">
+          <div className="bg-emerald-50 p-2 rounded-xl text-emerald-600 shrink-0 border border-emerald-100">
             <CheckCircle2 className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-white">System Alert</h4>
-            <p className="text-slate-400 mt-1 leading-relaxed">{toastMessage}</p>
+            <h4 className="font-bold text-slate-900">System Alert</h4>
+            <p className="text-slate-600 mt-1 leading-relaxed">{toastMessage}</p>
           </div>
         </div>
       )}
@@ -526,6 +556,23 @@ export default function App() {
 
         {activePage === 'sitemap' && (
           <SitemapPage onNavigate={(page) => setActivePage(page)} />
+        )}
+
+        {activePage === 'ministry' && (
+          <MinistryPage 
+            currentUser={currentUser}
+            onUserChanged={(user) => {
+              setCurrentUser(user);
+              if (user) {
+                triggerToast(`Welcome ${user.displayName}! Opening Minister Dashboard...`);
+                setActivePage('dashboard');
+              }
+            }}
+            onNavigatePage={(page) => setActivePage(page)} 
+            activeTabProp={ministryActiveTab}
+            onTabChangeProp={(tab) => setMinistryActiveTab(tab)}
+            onTriggerNotification={(text) => triggerToast(text)}
+          />
         )}
 
         {activePage === 'portfolio' && (

@@ -26,6 +26,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MiniTools } from '../components/MiniTools';
 import { AdminGrowthAutomationHub } from '../components/AdminGrowthAutomationHub';
 import { AIJobAutopilot } from '../components/AIJobAutopilot';
+import { MinisterDashboard } from '../components/ministry/MinisterDashboard';
+import { EditorSpecialistConsole } from '../components/ministry/EditorSpecialistConsole';
+import { getMediaRequests, updateMediaRequestStatus, addMediaDeliverableFile } from '../firebase';
+import { MediaRequestTask, MediaDeliverableFile, MediaRequestStatus } from '../types';
 
 const ARTISAN_CATEGORIES = [
   'Auto Mechanic (Heavy/Light Duty)',
@@ -126,6 +130,7 @@ export default function DashboardPage({
   const [allUsersList, setAllUsersList] = useState<UserProfile[]>([]);
   const [allEnrollmentsList, setAllEnrollmentsList] = useState<Enrollment[]>([]);
   const [selectedEnrollment, setSelectedEnrollment] = useState<Enrollment | null>(null);
+  const [adminMediaTasks, setAdminMediaTasks] = useState<MediaRequestTask[]>([]);
 
   // Digital Marketing Interactive Tool States
   const [adSpend, setAdSpend] = useState<number>(50000);
@@ -202,8 +207,10 @@ export default function DashboardPage({
 
       const inqs = await getTalentInquiries();
       const gigs = await getGigOpportunities();
+      const mTasks = await getMediaRequests();
       setTalentInquiries(inqs || []);
       setGigOpportunities(gigs || []);
+      setAdminMediaTasks(mTasks || []);
 
       if (currentUser) {
         if (currentUser.role === 'Student') {
@@ -614,63 +621,63 @@ Pulse on Data. Impact on Brand.
         
         {/* Top Ranks & XP Panel */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex items-center justify-between">
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="block text-[10px] text-gray-500 font-mono uppercase">Your Learning XP Meter</span>
-              <p className="text-3xl font-black text-emerald-400 mt-1">{studentXP} XP</p>
-              <p className="text-[10px] text-slate-400 mt-1.5">Earn 50 XP per completed syllabus task</p>
+              <span className="block text-[10px] text-slate-500 font-mono uppercase">Your Learning XP Meter</span>
+              <p className="text-3xl font-black text-emerald-600 mt-1">{studentXP} XP</p>
+              <p className="text-[10px] text-slate-500 mt-1.5">Earn 50 XP per completed syllabus task</p>
             </div>
-            <Award className="w-12 h-12 text-emerald-400" />
+            <Award className="w-12 h-12 text-emerald-600" />
           </div>
 
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl">
-            <span className="block text-[10px] text-gray-500 font-mono uppercase">Level Progress</span>
-            <div className="w-full bg-slate-950 h-2.5 rounded-full mt-3.5 relative overflow-hidden border border-slate-800">
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl">
+            <span className="block text-[10px] text-slate-500 font-mono uppercase">Level Progress</span>
+            <div className="w-full bg-slate-100 h-2.5 rounded-full mt-3.5 relative overflow-hidden border border-slate-200">
               <div className="bg-emerald-500 h-full rounded-full transition-all" style={{ width: `${progressPercent}%` }}></div>
             </div>
-            <div className="flex justify-between text-[10px] text-slate-400 mt-2.5">
+            <div className="flex justify-between text-[10px] text-slate-600 mt-2.5">
               <span>Rank: {getRank(studentXP)}</span>
               <span>{progressPercent}% to {getNextRank(studentXP)}</span>
             </div>
           </div>
 
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl flex items-center justify-between">
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl flex items-center justify-between">
             <div>
-              <span className="block text-[10px] text-gray-500 font-mono uppercase">Earned Badges</span>
+              <span className="block text-[10px] text-slate-500 font-mono uppercase">Earned Badges</span>
               <div className="flex flex-wrap gap-2 mt-2.5">
                 {(currentUser.badges && currentUser.badges.length > 0) ? (
                   currentUser.badges.map((b, i) => (
-                    <span key={i} className="bg-emerald-500/15 text-emerald-400 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-500/25">
+                    <span key={i} className="bg-emerald-50 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-200">
                       {b}
                     </span>
                   ))
                 ) : (
                   <>
-                    <span className="bg-emerald-500/15 text-emerald-400 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-500/25">SEO Specialist</span>
-                    <span className="bg-indigo-600/15 text-indigo-400 text-[9px] font-bold px-2 py-0.5 rounded border border-indigo-500/25">PPC Campaigner</span>
+                    <span className="bg-emerald-50 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-200">SEO Specialist</span>
+                    <span className="bg-blue-50 text-blue-700 text-[9px] font-bold px-2 py-0.5 rounded border border-blue-200">PPC Campaigner</span>
                   </>
                 )}
               </div>
             </div>
-            <Sparkles className="w-8 h-8 text-indigo-400" />
+            <Sparkles className="w-8 h-8 text-indigo-600" />
           </div>
         </div>
 
         {/* Enroll for Courses (Academy Catalog) */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 text-center space-y-4">
-          <div className="mx-auto w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 text-center space-y-4">
+          <div className="mx-auto w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
             <BookOpen className="w-5 h-5" />
           </div>
           <div className="space-y-2 max-w-md mx-auto">
-            <h3 className="text-sm font-bold text-white">Enroll in Academy Courses</h3>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <h3 className="text-sm font-bold text-slate-900">Enroll in Academy Courses</h3>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
               Explore our full premium catalog of flagship tech courses, select your preferred learning mode, and enroll directly from the Academy.
             </p>
           </div>
           <div className="pt-2">
             <button
               onClick={() => onNavigate('academy')}
-              className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md hover:scale-[1.01]"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
             >
               Browse Courses & Enroll
             </button>
@@ -681,13 +688,13 @@ Pulse on Data. Impact on Brand.
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* My Enrolled Coursework */}
-          <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <BookOpen className="w-4.5 h-4.5 text-indigo-400" /> My Active Courses & Syllabus
+          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <BookOpen className="w-4.5 h-4.5 text-indigo-600" /> My Active Courses & Syllabus
             </h3>
             
             {studentEnrollments.length === 0 ? (
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 text-center text-xs text-slate-500">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center text-xs text-slate-500">
                 You are not enrolled in any full courses yet. Enroll from the catalog above!
               </div>
             ) : (
@@ -699,8 +706,8 @@ Pulse on Data. Impact on Brand.
                       onClick={() => setSelectedEnrollment(e)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap shrink-0 transition-all ${
                         selectedEnrollment?.id === e.id
-                          ? 'bg-white text-slate-950 border border-slate-200 shadow-sm'
-                          : 'bg-white text-slate-600 border border-slate-300 hover:bg-slate-50 hover:text-slate-900'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
                       }`}
                     >
                       {e.courseTitle.split(' & ')[0]}
@@ -709,47 +716,47 @@ Pulse on Data. Impact on Brand.
                 </div>
 
                 {selectedEnrollment && (
-                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                     <div className="flex justify-between items-start gap-2">
                       <div>
-                        <h4 className="text-xs font-bold text-white">{selectedEnrollment.courseTitle}</h4>
-                        <p className="text-[10px] text-slate-400 mt-0.5">Overall Progress: {selectedEnrollment.progress}%</p>
+                        <h4 className="text-xs font-bold text-slate-900">{selectedEnrollment.courseTitle}</h4>
+                        <p className="text-[10px] text-slate-500 mt-0.5">Overall Progress: {selectedEnrollment.progress}%</p>
                       </div>
                       {selectedEnrollment.progress === 100 ? (
                         <button
                           onClick={() => onOpenCertificateModal(currentUser.displayName || currentUser.email, selectedEnrollment.courseTitle)}
-                          className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-2.5 py-1 rounded-lg text-[9px] transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-lg text-[9px] transition-all cursor-pointer flex items-center gap-1 shrink-0"
                         >
                           <Award className="w-3.5 h-3.5" /> Certificate
                         </button>
                       ) : (
-                        <span className="text-[9px] font-bold font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded">
+                        <span className="text-[9px] font-bold font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded">
                           In Progress
                         </span>
                       )}
                     </div>
 
-                    <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-slate-850">
+                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden border border-slate-300">
                       <div className="bg-emerald-500 h-full transition-all" style={{ width: `${selectedEnrollment.progress}%` }}></div>
                     </div>
 
                     {/* Enrollment metadata */}
-                    <div className="grid grid-cols-2 gap-2 text-[10px] bg-slate-900/50 p-2.5 rounded-lg border border-slate-850/40">
+                    <div className="grid grid-cols-2 gap-2 text-[10px] bg-white p-2.5 rounded-lg border border-slate-200">
                       <div>
                         <span className="text-slate-500 block uppercase font-mono text-[8px]">Learning Mode</span>
-                        <span className="text-slate-300 font-semibold">{selectedEnrollment.mode || 'Online'}</span>
+                        <span className="text-slate-800 font-semibold">{selectedEnrollment.mode || 'Online'}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block uppercase font-mono text-[8px]">Tuition Price</span>
-                        <span className="text-emerald-400 font-semibold">₦{(selectedEnrollment.pricePaid || 25000).toLocaleString()}</span>
+                        <span className="text-emerald-700 font-semibold">₦{(selectedEnrollment.pricePaid || 25000).toLocaleString()}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block uppercase font-mono text-[8px]">Schedule Time</span>
-                        <span className="text-slate-300 font-semibold">{selectedEnrollment.scheduleDate || 'Jul 18, 2026'} @ {selectedEnrollment.scheduleTime || '11:00 AM'}</span>
+                        <span className="text-slate-800 font-semibold">{selectedEnrollment.scheduleDate || 'Jul 18, 2026'} @ {selectedEnrollment.scheduleTime || '11:00 AM'}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block uppercase font-mono text-[8px]">Duration Details</span>
-                        <span className="text-slate-300 font-semibold">
+                        <span className="text-slate-800 font-semibold">
                           {selectedEnrollment.durationDays || 3} Days ({selectedEnrollment.hoursPerDay || 3}h/day)
                         </span>
                       </div>
@@ -766,8 +773,8 @@ Pulse on Data. Impact on Brand.
                               key={idx}
                               className={`flex items-center gap-2 p-2 rounded-lg border text-left cursor-pointer transition-all ${
                                 isCompleted
-                                  ? 'bg-slate-900/40 border-slate-850/30 opacity-70'
-                                  : 'bg-slate-900 hover:bg-slate-850 border-slate-850'
+                                  ? 'bg-slate-100 border-slate-200 opacity-70'
+                                  : 'bg-white hover:bg-slate-50 border-slate-200'
                               }`}
                             >
                               <input
@@ -777,7 +784,7 @@ Pulse on Data. Impact on Brand.
                                 onChange={() => handleToggleLessonComplete(selectedEnrollment.id, lesson, syllabusLength)}
                                 className="rounded border-slate-300 text-emerald-500 focus:ring-emerald-400/20 bg-white cursor-pointer disabled:cursor-not-allowed"
                               />
-                              <span className={`text-[10px] select-none ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-300'}`}>
+                              <span className={`text-[10px] select-none ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
                                 {lesson}
                               </span>
                             </label>
@@ -792,50 +799,50 @@ Pulse on Data. Impact on Brand.
           </div>
 
           {/* Quests (Daily/Weekly targets) */}
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <Zap className="w-4.5 h-4.5 text-yellow-400" /> Quests & Daily Targets
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <Zap className="w-4.5 h-4.5 text-amber-500" /> Quests & Daily Targets
             </h3>
             <div className="space-y-3">
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-semibold text-white">First Steps Quest</p>
-                  <p className="text-[10px] text-slate-400">Complete your very first course syllabus lesson</p>
+                  <p className="font-semibold text-slate-900">First Steps Quest</p>
+                  <p className="text-[10px] text-slate-500">Complete your very first course syllabus lesson</p>
                 </div>
                 {studentEnrollments.some(e => e.completedLessons.length >= 1) ? (
-                  <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-500/20">Completed</span>
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-200">Completed</span>
                 ) : (
-                  <span className="bg-slate-900 text-slate-400 text-[10px] px-2 py-0.5 rounded border border-slate-800">50 XP</span>
+                  <span className="bg-white text-slate-600 font-bold text-[10px] px-2 py-0.5 rounded border border-slate-200">50 XP</span>
                 )}
               </div>
 
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-semibold text-white">Diploma Achievement Quest</p>
-                  <p className="text-[10px] text-slate-400">Complete 100% of any Academy Coursework</p>
+                  <p className="font-semibold text-slate-900">Diploma Achievement Quest</p>
+                  <p className="text-[10px] text-slate-500">Complete 100% of any Academy Coursework</p>
                 </div>
                 {studentEnrollments.some(e => e.progress === 100) ? (
-                  <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-500/20">Completed</span>
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-200">Completed</span>
                 ) : (
-                  <span className="bg-slate-900 text-slate-400 text-[10px] px-2 py-0.5 rounded border border-slate-800">500 XP</span>
+                  <span className="bg-white text-slate-600 font-bold text-[10px] px-2 py-0.5 rounded border border-slate-200">500 XP</span>
                 )}
               </div>
             </div>
 
             {/* Seek Sponsor Funding */}
-            <div className="pt-4 border-t border-slate-850/60 space-y-3">
-              <h4 className="text-xs font-bold text-slate-200">Need regional aid support?</h4>
+            <div className="pt-4 border-t border-slate-200 space-y-3">
+              <h4 className="text-xs font-bold text-slate-900">Need regional aid support?</h4>
               {sponsorSubmitted ? (
-                <div className="bg-emerald-950/20 border border-emerald-500/10 p-4 rounded-xl text-[11px] space-y-2">
-                  <p className="font-semibold text-emerald-400 flex items-center gap-1"><Check className="w-4 h-4" /> Application Submitted</p>
-                  <p className="text-slate-400">Corporate sponsors have been notified of your need. Check active approvals tab regularly!</p>
+                <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-[11px] space-y-2">
+                  <p className="font-semibold text-emerald-800 flex items-center gap-1"><Check className="w-4 h-4" /> Application Submitted</p>
+                  <p className="text-slate-600">Corporate sponsors have been notified of your need. Check active approvals tab regularly!</p>
                 </div>
               ) : (
                 <form onSubmit={handleRequestSponsorship} className="space-y-3 text-xs">
-                  <p className="text-[10px] text-slate-400 leading-relaxed">Need sponsorship for physical classes, local laptops, or internet stipends?</p>
+                  <p className="text-[10px] text-slate-500 leading-relaxed">Need sponsorship for physical classes, local laptops, or internet stipends?</p>
                   <button
                     type="submit"
-                    className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2 rounded-xl cursor-pointer shadow-sm text-xs"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl cursor-pointer shadow-sm text-xs"
                   >
                     Apply for Regional Student Aid (₦25,000 value)
                   </button>
@@ -848,24 +855,24 @@ Pulse on Data. Impact on Brand.
         {/* Leaderboard & Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Leaderboard */}
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <Award className="w-4.5 h-4.5 text-emerald-400" /> Academy Leaderboard
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <Award className="w-4.5 h-4.5 text-emerald-600" /> Academy Leaderboard
             </h3>
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {allUsersList
                 .filter(u => u.role === 'Student')
                 .sort((a, b) => (b.xp || 0) - (a.xp || 0))
                 .map((st, index) => (
-                  <div key={st.uid} className="bg-slate-950 p-3 rounded-xl border border-slate-850/60 flex items-center justify-between text-xs">
+                  <div key={st.uid} className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-slate-400 font-bold w-4">#{index + 1}</span>
+                      <span className="font-mono text-slate-500 font-bold w-4">#{index + 1}</span>
                       <div>
-                        <p className="font-bold text-slate-200">{st.displayName || st.email}</p>
+                        <p className="font-bold text-slate-900">{st.displayName || st.email}</p>
                         <p className="text-[9px] text-slate-500">{st.email}</p>
                       </div>
                     </div>
-                    <span className="font-mono text-emerald-400 font-bold">{st.xp || 0} XP</span>
+                    <span className="font-mono text-emerald-700 font-bold">{st.xp || 0} XP</span>
                   </div>
                 ))}
               {allUsersList.filter(u => u.role === 'Student').length === 0 && (
@@ -875,16 +882,16 @@ Pulse on Data. Impact on Brand.
           </div>
 
           {/* Quick Actions Panel */}
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <Zap className="w-4.5 h-4.5 text-indigo-400" /> Quick Actions
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <Zap className="w-4.5 h-4.5 text-indigo-600" /> Quick Actions
             </h3>
             <div className="grid grid-cols-2 gap-3 text-center">
               <button
                 onClick={onOpenApptModal}
-                className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-950 rounded-xl py-4 text-[11px] font-semibold cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm"
+                className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 rounded-xl py-4 text-[11px] font-semibold cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm"
               >
-                <Calendar className="w-4.5 h-4.5 text-emerald-400" />
+                <Calendar className="w-4.5 h-4.5 text-emerald-600" />
                 Book Session
               </button>
               <button
@@ -903,28 +910,28 @@ Pulse on Data. Impact on Brand.
                     onTriggerNotification('No mentors available at this moment.');
                   }
                 }}
-                className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-950 rounded-xl py-4 text-[11px] font-semibold cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm"
+                className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 rounded-xl py-4 text-[11px] font-semibold cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 shadow-sm"
               >
-                <Users className="w-4.5 h-4.5 text-indigo-400" />
+                <Users className="w-4.5 h-4.5 text-indigo-600" />
                 Request Mentor
               </button>
             </div>
 
             {/* My Projects */}
-            <div className="pt-3 border-t border-slate-850/60 text-xs">
-              <p className="font-bold text-slate-200">My Projects & Playgrounds</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Use the Marketing Tools on the main Academy catalog to practice your campaign setup skills live!</p>
+            <div className="pt-3 border-t border-slate-200 text-xs">
+              <p className="font-bold text-slate-900">My Projects & Playgrounds</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Use the Marketing Tools on the main Academy catalog to practice your campaign setup skills live!</p>
             </div>
           </div>
         </div>
 
         {/* Real-time mentor chat widget */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Brain className="w-4.5 h-4.5 text-emerald-400" /> Mentor Support Desk</h3>
-          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 h-48 overflow-y-auto space-y-3 flex flex-col justify-end">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Brain className="w-4.5 h-4.5 text-emerald-600" /> Mentor Support Desk</h3>
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 h-48 overflow-y-auto space-y-3 flex flex-col justify-end">
             {studentChat.map((msg, idx) => (
               <div key={idx} className={`flex flex-col ${msg.senderId === 'mentor' ? 'items-start' : 'items-end'}`}>
-                <div className={`p-2.5 rounded-xl text-[11px] max-w-md ${msg.senderId === 'mentor' ? 'bg-slate-900 text-white rounded-bl-none' : 'bg-emerald-500 text-slate-950 rounded-br-none font-medium'}`}>
+                <div className={`p-2.5 rounded-xl text-[11px] max-w-md ${msg.senderId === 'mentor' ? 'bg-white border border-slate-200 text-slate-900 rounded-bl-none shadow-xs' : 'bg-emerald-600 text-white rounded-br-none font-medium'}`}>
                   <p className="font-mono text-[8px] opacity-75 mb-0.5">{msg.senderName}</p>
                   <p>{msg.text}</p>
                 </div>
@@ -941,7 +948,7 @@ Pulse on Data. Impact on Brand.
             />
             <button
               type="submit"
-              className="bg-white text-slate-850 border border-slate-200 font-bold px-4 rounded-xl text-xs cursor-pointer hover:bg-slate-50 shadow-sm"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 rounded-xl text-xs cursor-pointer shadow-sm"
             >
               <Send className="w-4 h-4" />
             </button>
@@ -962,9 +969,9 @@ Pulse on Data. Impact on Brand.
       {/* Invite child via email invite & Enroll student form */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Manage Children & Invite */}
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Users className="w-4.5 h-4.5 text-emerald-400" /> Manage Children Accounts</h3>
-          <p className="text-[10px] text-slate-400">Add or link your children's learning profiles to track progress and sponsor terms.</p>
+        <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Users className="w-4.5 h-4.5 text-emerald-600" /> Manage Children Accounts</h3>
+          <p className="text-[10px] text-slate-500">Add or link your children's learning profiles to track progress and sponsor terms.</p>
           
           <form onSubmit={handleParentInviteChild} className="flex gap-2">
             <input
@@ -973,11 +980,11 @@ Pulse on Data. Impact on Brand.
               value={parentChildEmailInput}
               onChange={(e) => setParentChildEmailInput(e.target.value)}
               placeholder="Child student email..."
-              className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none"
+              className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
             />
             <button
               type="submit"
-              className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-4 rounded-xl text-xs cursor-pointer shadow-sm transition-all"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 rounded-xl text-xs cursor-pointer shadow-sm transition-all"
             >
               Link Account
             </button>
@@ -990,13 +997,13 @@ Pulse on Data. Impact on Brand.
               <p className="text-xs text-slate-500 italic">No linked children found. Invite them above!</p>
             ) : (
               childrenProgressList.map(({ profile, enrollments }) => (
-                <div key={profile.uid} className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-3">
+                <div key={profile.uid} className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-bold text-slate-200 text-xs">{profile.displayName || profile.email}</p>
+                      <p className="font-bold text-slate-900 text-xs">{profile.displayName || profile.email}</p>
                       <p className="text-[9px] text-slate-500">{profile.email} • {profile.xp || 0} Total XP</p>
                     </div>
-                    <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-200">
                       Linked Student
                     </span>
                   </div>
@@ -1007,11 +1014,11 @@ Pulse on Data. Impact on Brand.
                     <div className="space-y-2">
                       {enrollments.map(e => (
                         <div key={e.id} className="text-[10px] space-y-1">
-                          <div className="flex justify-between text-slate-400">
+                          <div className="flex justify-between text-slate-600">
                             <span className="truncate max-w-[180px]">{e.courseTitle}</span>
-                            <span className="font-mono text-emerald-400">{e.progress}%</span>
+                            <span className="font-mono text-emerald-700 font-bold">{e.progress}%</span>
                           </div>
-                          <div className="w-full bg-slate-900 h-1 rounded-full overflow-hidden">
+                          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                             <div className="bg-emerald-500 h-full" style={{ width: `${e.progress}%` }}></div>
                           </div>
                         </div>
@@ -1025,13 +1032,13 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* Enroll student for courses */}
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><BookOpen className="w-4.5 h-4.5 text-indigo-400" /> Enroll Child for Course</h3>
-          <p className="text-[10px] text-slate-400">Select an active linked child account to enroll them directly in high-tier technical course modules.</p>
+        <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><BookOpen className="w-4.5 h-4.5 text-indigo-600" /> Enroll Child for Course</h3>
+          <p className="text-[10px] text-slate-500">Select an active linked child account to enroll them directly in high-tier technical course modules.</p>
 
           <form onSubmit={handleParentEnrollChildSubmit} className="space-y-3 text-xs">
             <div className="space-y-1">
-              <label className="text-[10px] text-slate-400 font-semibold font-mono uppercase">Select Child</label>
+              <label className="text-[10px] text-slate-500 font-semibold font-mono uppercase">Select Child</label>
               <select
                 value={selectedChildEmail}
                 onChange={(e) => setSelectedChildEmail(e.target.value)}
@@ -1045,7 +1052,7 @@ Pulse on Data. Impact on Brand.
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] text-slate-400 font-semibold font-mono uppercase">Select Course</label>
+              <label className="text-[10px] text-slate-500 font-semibold font-mono uppercase">Select Course</label>
               <select
                 value={selectedParentEnrollCourse}
                 onChange={(e) => setSelectedParentEnrollCourse(e.target.value)}
@@ -1059,7 +1066,7 @@ Pulse on Data. Impact on Brand.
 
             <button
               type="submit"
-              className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl cursor-pointer shadow-sm"
             >
               Enroll Student Profile (Free)
             </button>
@@ -1068,7 +1075,7 @@ Pulse on Data. Impact on Brand.
           <div className="pt-2">
             <button
               onClick={() => onEnrollViaPaystack(15000, "Student/Parent Online Term Fee")}
-              className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
             >
               Pay Course Term Dues (₦15,000 NGN)
             </button>
@@ -1077,20 +1084,20 @@ Pulse on Data. Impact on Brand.
       </div>
 
       {/* AI PARENTING TIPS VIA GEMINI */}
-      <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-        <h3 className="text-sm font-bold flex items-center gap-1.5"><Brain className="w-4.5 h-4.5 text-indigo-400" /> Gemini AI Parenting Advisor</h3>
-        <p className="text-[10px] text-slate-400">Query the Gemini model for short, actionable technical learning tips for kids.</p>
+      <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Brain className="w-4.5 h-4.5 text-indigo-600" /> Gemini AI Parenting Advisor</h3>
+        <p className="text-[10px] text-slate-500">Query the Gemini model for short, actionable technical learning tips for kids.</p>
         
         <button
           onClick={fetchParentingTips}
           disabled={isLoadingTips}
-          className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2 rounded-xl cursor-pointer text-xs w-full flex items-center justify-center gap-2"
+          className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl cursor-pointer text-xs w-full flex items-center justify-center gap-2 shadow-sm"
         >
           {isLoadingTips ? 'Connecting Gemini...' : 'Generate New Parenting Tips'}
         </button>
 
         {parentTips && (
-          <div className="bg-slate-950/80 border border-indigo-500/10 p-4 rounded-xl text-[11px] leading-relaxed space-y-2 max-h-48 overflow-y-auto">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-[11px] text-slate-700 leading-relaxed space-y-2 max-h-48 overflow-y-auto">
             {parentTips.split('\n').map((para, idx) => (
               <p key={idx}>{para}</p>
             ))}
@@ -1110,20 +1117,20 @@ Pulse on Data. Impact on Brand.
         
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl">
-            <span className="block text-[10px] text-gray-500 font-mono uppercase">20% Referrals Commission</span>
-            <p className="text-3xl font-black text-emerald-400 mt-1">₦35,000</p>
-            <p className="text-[10px] text-slate-400 mt-1.5">Earned from 3 facilitated student payments</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl">
+            <span className="block text-[10px] text-slate-500 font-mono uppercase">20% Referrals Commission</span>
+            <p className="text-3xl font-black text-emerald-600 mt-1">₦35,000</p>
+            <p className="text-[10px] text-slate-500 mt-1.5">Earned from 3 facilitated student payments</p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl">
-            <span className="block text-[10px] text-gray-500 font-mono uppercase">Active Students Enrolled</span>
-            <p className="text-3xl font-black text-indigo-400 mt-1">{students.length} Pupils</p>
-            <p className="text-[10px] text-slate-400 mt-1.5">Managed under your school cohort</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl">
+            <span className="block text-[10px] text-slate-500 font-mono uppercase">Active Students Enrolled</span>
+            <p className="text-3xl font-black text-indigo-600 mt-1">{students.length} Pupils</p>
+            <p className="text-[10px] text-slate-500 mt-1.5">Managed under your school cohort</p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl">
-            <span className="block text-[10px] text-gray-500 font-mono uppercase">Pending Class Submissions</span>
-            <p className="text-3xl font-black text-slate-400 mt-1">0 tasks</p>
-            <p className="text-[10px] text-slate-400 mt-1.5">Syllabus checkmarks are auto-verified</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl">
+            <span className="block text-[10px] text-slate-500 font-mono uppercase">Pending Class Submissions</span>
+            <p className="text-3xl font-black text-slate-600 mt-1">0 tasks</p>
+            <p className="text-[10px] text-slate-500 mt-1.5">Syllabus checkmarks are auto-verified</p>
           </div>
         </div>
 
@@ -1131,11 +1138,11 @@ Pulse on Data. Impact on Brand.
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* Post Class Announcements */}
-          <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <Megaphone className="w-4.5 h-4.5 text-emerald-400" /> Post Announcements to Student Hub
+          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <Megaphone className="w-4.5 h-4.5 text-emerald-600" /> Post Announcements to Student Hub
             </h3>
-            <p className="text-[10px] text-slate-400">Your bulletin is published immediately to student portals.</p>
+            <p className="text-[10px] text-slate-500">Your bulletin is published immediately to student portals.</p>
 
             <form onSubmit={handleTeacherPostAnnouncementSubmit} className="space-y-3 text-xs">
               <div className="space-y-1">
@@ -1160,22 +1167,22 @@ Pulse on Data. Impact on Brand.
               </div>
               <button
                 type="submit"
-                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl cursor-pointer shadow-sm"
               >
                 Publish Announcement
               </button>
             </form>
 
-            <div className="space-y-2 pt-2 border-t border-slate-850/60">
+            <div className="space-y-2 pt-2 border-t border-slate-200">
               <p className="text-[10px] text-slate-500 font-bold font-mono uppercase">Previous Bulletins ({announcements.length})</p>
               <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
                 {announcements.map(ann => (
-                  <div key={ann.id} className="bg-slate-950 p-2.5 rounded-lg border border-slate-850/40 text-[11px]">
+                  <div key={ann.id} className="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-[11px]">
                     <div className="flex justify-between items-center">
-                      <p className="font-bold text-slate-200">{ann.title}</p>
+                      <p className="font-bold text-slate-900">{ann.title}</p>
                       <p className="text-[8px] text-slate-500 font-mono">{new Date(ann.timestamp).toLocaleDateString()}</p>
                     </div>
-                    <p className="text-slate-400 mt-1 leading-relaxed text-[10px]">{ann.text}</p>
+                    <p className="text-slate-600 mt-1 leading-relaxed text-[10px]">{ann.text}</p>
                   </div>
                 ))}
               </div>
@@ -1183,11 +1190,11 @@ Pulse on Data. Impact on Brand.
           </div>
 
           {/* Assign Course to Student */}
-          <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5">
-              <BookOpen className="w-4.5 h-4.5 text-indigo-400" /> Assign Course & Enroll Students
+          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+              <BookOpen className="w-4.5 h-4.5 text-indigo-600" /> Assign Course & Enroll Students
             </h3>
-            <p className="text-[10px] text-slate-400">Directly link any active student to any of our free-trial course syllabuses.</p>
+            <p className="text-[10px] text-slate-500">Directly link any active student to any of our free-trial course syllabuses.</p>
 
             <form
               onSubmit={async (e) => {
@@ -1216,7 +1223,7 @@ Pulse on Data. Impact on Brand.
               className="space-y-3 text-xs"
             >
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 font-bold uppercase font-mono">Student Email</label>
+                <label className="text-[10px] text-slate-500 font-bold uppercase font-mono">Student Email</label>
                 <input
                   name="assignStudentEmail"
                   type="email"
@@ -1227,7 +1234,7 @@ Pulse on Data. Impact on Brand.
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 font-bold uppercase font-mono">Select Coursework</label>
+                <label className="text-[10px] text-slate-500 font-bold uppercase font-mono">Select Coursework</label>
                 <select
                   name="assignCourseId"
                   className="w-full bg-white border border-slate-200 text-slate-900 rounded-xl p-2.5 focus:outline-none"
@@ -1240,7 +1247,7 @@ Pulse on Data. Impact on Brand.
 
               <button
                 type="submit"
-                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl cursor-pointer shadow-sm"
               >
                 Assign & Enroll Profile
               </button>
@@ -1249,27 +1256,27 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* Class Progress Tracking & Student Roster */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5">
-            <Users className="w-4.5 h-4.5 text-emerald-400" /> Class Progress Tracker & Student Roster
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+            <Users className="w-4.5 h-4.5 text-emerald-600" /> Class Progress Tracker & Student Roster
           </h3>
-          <p className="text-[10px] text-slate-400">Real-time learning progress and overall XP totals computed via Firestore database.</p>
+          <p className="text-[10px] text-slate-500">Real-time learning progress and overall XP totals computed via Firestore database.</p>
 
           <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
             {students.map(st => {
               const studentEnrollments = allEnrollmentsList.filter(e => e.studentId === st.uid);
               return (
-                <div key={st.uid} className="bg-slate-950 p-4 rounded-xl border border-slate-850/60 space-y-3">
+                <div key={st.uid} className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
-                      <p className="font-bold text-white text-xs">{st.displayName || st.email}</p>
-                      <p className="text-[9px] text-slate-500">{st.email} • {st.xp || 0} Total XP • Status: <strong className="text-indigo-400 uppercase font-mono text-[8px]">{st.status || 'active'}</strong></p>
+                      <p className="font-bold text-slate-900 text-xs">{st.displayName || st.email}</p>
+                      <p className="text-[9px] text-slate-500">{st.email} • {st.xp || 0} Total XP • Status: <strong className="text-indigo-600 uppercase font-mono text-[8px]">{st.status || 'active'}</strong></p>
                     </div>
 
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleAdminUpdateUserSubmit(st.uid, 'Student', st.status === 'expired' ? 'active' : 'expired')}
-                        className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 text-[9px] font-bold px-2 py-1 rounded cursor-pointer"
+                        className="bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 text-[9px] font-bold px-2.5 py-1 rounded cursor-pointer shadow-xs"
                       >
                         Toggle Status ({st.status || 'active'})
                       </button>
@@ -1281,12 +1288,12 @@ Pulse on Data. Impact on Brand.
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       {studentEnrollments.map(e => (
-                        <div key={e.id} className="bg-slate-900/50 border border-slate-850 p-2.5 rounded-lg text-[10px] space-y-1.5">
-                          <div className="flex justify-between font-semibold text-slate-300">
+                        <div key={e.id} className="bg-white border border-slate-200 p-2.5 rounded-lg text-[10px] space-y-1.5">
+                          <div className="flex justify-between font-semibold text-slate-800">
                             <span className="truncate max-w-[150px]">{e.courseTitle}</span>
-                            <span className="text-emerald-400 font-mono">{e.progress}%</span>
+                            <span className="text-emerald-700 font-mono">{e.progress}%</span>
                           </div>
-                          <div className="w-full bg-slate-950 h-1 rounded-full overflow-hidden">
+                          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                             <div className="bg-emerald-500 h-full" style={{ width: `${e.progress}%` }}></div>
                           </div>
                         </div>
@@ -1325,30 +1332,30 @@ Pulse on Data. Impact on Brand.
       <div className="space-y-6">
         {/* School Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-            <span className="block text-[9px] text-gray-500 font-mono uppercase">Total Students</span>
-            <p className="text-xl font-bold text-white mt-1">{students.length}</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-4 rounded-xl">
+            <span className="block text-[9px] text-slate-500 font-mono uppercase">Total Students</span>
+            <p className="text-xl font-bold text-slate-900 mt-1">{students.length}</p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-            <span className="block text-[9px] text-gray-500 font-mono uppercase">Instructors</span>
-            <p className="text-xl font-bold text-emerald-400 mt-1">{teachers.length}</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-4 rounded-xl">
+            <span className="block text-[9px] text-slate-500 font-mono uppercase">Instructors</span>
+            <p className="text-xl font-bold text-emerald-600 mt-1">{teachers.length}</p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-            <span className="block text-[9px] text-gray-500 font-mono uppercase">Mentors Listed</span>
-            <p className="text-xl font-bold text-indigo-400 mt-1">{mentors.length}</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-4 rounded-xl">
+            <span className="block text-[9px] text-slate-500 font-mono uppercase">Mentors Listed</span>
+            <p className="text-xl font-bold text-indigo-600 mt-1">{mentors.length}</p>
           </div>
-          <div className="bg-slate-900/40 border border-slate-900 p-4 rounded-xl">
-            <span className="block text-[9px] text-gray-500 font-mono uppercase">Linked Parents</span>
-            <p className="text-xl font-bold text-yellow-500 mt-1">{parents.length}</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-4 rounded-xl">
+            <span className="block text-[9px] text-slate-500 font-mono uppercase">Linked Parents</span>
+            <p className="text-xl font-bold text-amber-600 mt-1">{parents.length}</p>
           </div>
         </div>
 
         {/* User Search & Administration Controls */}
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
+        <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-bold flex items-center gap-1.5"><Shield className="w-4.5 h-4.5 text-emerald-400" /> Administrative User Management</h3>
-              <p className="text-[10px] text-slate-400 mt-0.5">Edit roles, verify credentials, and manage system status for teachers, students, and parents.</p>
+              <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Shield className="w-4.5 h-4.5 text-emerald-600" /> Administrative User Management</h3>
+              <p className="text-[10px] text-slate-500 mt-0.5">Edit roles, verify credentials, and manage system status for teachers, students, and parents.</p>
             </div>
             <input
               type="text"
@@ -1361,18 +1368,18 @@ Pulse on Data. Impact on Brand.
 
           <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
             {filteredUsers.map(usr => (
-              <div key={usr.uid} className="bg-slate-950 p-4 rounded-xl border border-slate-850 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+              <div key={usr.uid} className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
                 <div className="space-y-1">
-                  <p className="font-bold text-slate-200">{usr.displayName || 'No Name Set'}</p>
-                  <p className="text-[10px] text-slate-400">{usr.email}</p>
+                  <p className="font-bold text-slate-900">{usr.displayName || 'No Name Set'}</p>
+                  <p className="text-[10px] text-slate-500">{usr.email}</p>
                   <div className="flex flex-wrap gap-2 pt-1">
-                    <span className="text-[9px] uppercase font-bold font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded">
+                    <span className="text-[9px] uppercase font-bold font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.5 rounded">
                       Role: {usr.role}
                     </span>
                     <span className={`text-[9px] uppercase font-bold font-mono px-1.5 py-0.5 rounded border ${
                       usr.status === 'expired'
-                        ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        ? 'bg-red-50 text-red-700 border-red-200'
+                        : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     }`}>
                       Status: {usr.status || 'active'}
                     </span>
@@ -1380,9 +1387,9 @@ Pulse on Data. Impact on Brand.
                 </div>
 
                 {editingUserId === usr.uid ? (
-                  <div className="flex flex-col sm:flex-row gap-2 bg-slate-900 p-3 rounded-lg border border-slate-800">
+                  <div className="flex flex-col sm:flex-row gap-2 bg-white p-3 rounded-lg border border-slate-200">
                     <div className="space-y-1">
-                      <label className="text-[8px] font-mono text-slate-400 uppercase">Edit Role</label>
+                      <label className="text-[8px] font-mono text-slate-500 uppercase">Edit Role</label>
                       <select
                         value={editingUserRole}
                         onChange={(e) => setEditingUserRole(e.target.value as UserRole)}
@@ -1398,7 +1405,7 @@ Pulse on Data. Impact on Brand.
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[8px] font-mono text-slate-400 uppercase">Edit Status</label>
+                      <label className="text-[8px] font-mono text-slate-500 uppercase">Edit Status</label>
                       <select
                         value={editingUserStatus}
                         onChange={(e) => setEditingUserStatus(e.target.value as 'active' | 'expired')}
@@ -1412,13 +1419,13 @@ Pulse on Data. Impact on Brand.
                     <div className="flex items-end gap-1 pt-2 sm:pt-0">
                       <button
                         onClick={() => handleAdminUpdateUserSubmit(usr.uid, editingUserRole, editingUserStatus)}
-                        className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-2 py-1 rounded text-[9px] cursor-pointer"
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-2 py-1 rounded text-[9px] cursor-pointer"
                       >
                         Save
                       </button>
                       <button
                         onClick={() => setEditingUserId(null)}
-                        className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 px-2 py-1 rounded text-[9px] cursor-pointer"
+                        className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2 py-1 rounded text-[9px] cursor-pointer"
                       >
                         Cancel
                       </button>
@@ -1432,7 +1439,7 @@ Pulse on Data. Impact on Brand.
                         setEditingUserRole(usr.role);
                         setEditingUserStatus(usr.status || 'active');
                       }}
-                      className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-950 rounded font-bold px-3 py-1.5 text-[10px] cursor-pointer transition-all shadow-sm"
+                      className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-900 rounded font-bold px-3 py-1.5 text-[10px] cursor-pointer transition-all shadow-xs"
                     >
                       Change Role/Status
                     </button>
@@ -1460,27 +1467,27 @@ Pulse on Data. Impact on Brand.
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           {/* Mentor revenue tracker */}
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5"><DollarSign className="w-4.5 h-4.5 text-emerald-400" /> Mentor Payout shares</h3>
-            <div className="bg-slate-950 p-5 rounded-xl border border-slate-850 text-center">
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><DollarSign className="w-4.5 h-4.5 text-emerald-600" /> Mentor Payout shares</h3>
+            <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 text-center">
               <span className="block text-[10px] text-slate-500 uppercase font-mono">Your 10% Mentor Commission</span>
-              <p className="text-3xl font-black text-emerald-400 mt-2">₦{(activeMentees.length * 2500).toLocaleString()}</p>
-              <p className="text-[10px] text-slate-400 mt-1.5">Matching {activeMentees.length} active mentees subscriptions</p>
+              <p className="text-3xl font-black text-emerald-600 mt-2">₦{(activeMentees.length * 2500).toLocaleString()}</p>
+              <p className="text-[10px] text-slate-500 mt-1.5">Matching {activeMentees.length} active mentees subscriptions</p>
             </div>
           </div>
 
           {/* Assigned mentees */}
-          <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-            <h3 className="text-sm font-bold flex items-center gap-1.5"><Users className="w-4.5 h-4.5 text-indigo-400" /> Your Assigned Mentees ({activeMentees.length})</h3>
-            <p className="text-[10px] text-slate-400">These students have active direct-line slack and chat linkages with you.</p>
+          <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+            <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Users className="w-4.5 h-4.5 text-indigo-600" /> Your Assigned Mentees ({activeMentees.length})</h3>
+            <p className="text-[10px] text-slate-500">These students have active direct-line slack and chat linkages with you.</p>
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {activeMentees.map(m => (
-                <div key={m.id} className="bg-slate-950 p-3 rounded-xl border border-slate-850 flex items-center justify-between text-xs">
+                <div key={m.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                   <div>
-                    <p className="font-bold text-white">{m.studentName}</p>
-                    <p className="text-[9px] text-slate-400">{m.studentEmail}</p>
+                    <p className="font-bold text-slate-900">{m.studentName}</p>
+                    <p className="text-[9px] text-slate-500">{m.studentEmail}</p>
                   </div>
-                  <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-500/20 font-bold">
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] px-2 py-0.5 rounded border border-emerald-200 font-bold">
                     Connected
                   </span>
                 </div>
@@ -1495,21 +1502,21 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* View/Approve Mentorship Requests */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Sparkles className="w-4.5 h-4.5 text-emerald-400" /> Pending Mentorship Requests</h3>
-          <p className="text-[10px] text-slate-400">Review incoming academic guides proposals from registered students.</p>
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Sparkles className="w-4.5 h-4.5 text-emerald-600" /> Pending Mentorship Requests</h3>
+          <p className="text-[10px] text-slate-500">Review incoming academic guides proposals from registered students.</p>
 
           <div className="space-y-3">
             {pendingMentees.map(req => (
-              <div key={req.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs">
+              <div key={req.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs">
                 <div>
-                  <p className="font-bold text-slate-200">{req.studentName}</p>
+                  <p className="font-bold text-slate-900">{req.studentName}</p>
                   <p className="text-[9px] text-slate-500">{req.studentEmail}</p>
-                  <p className="text-[10px] text-slate-400 mt-1">Requested mentorship link in Academy coursework.</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Requested mentorship link in Academy coursework.</p>
                 </div>
                 <button
                   onClick={() => handleApproveMentorshipRequest(req.id)}
-                  className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-4 py-2 rounded-xl text-xs cursor-pointer"
+                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer shadow-sm"
                 >
                   Approve Mentorship
                 </button>
@@ -1530,39 +1537,39 @@ Pulse on Data. Impact on Brand.
     <div className="space-y-6">
       
       {/* Sponsor Brandexposure */}
-      <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-3">
-        <h3 className="text-sm font-bold flex items-center gap-1.5"><Globe className="w-4.5 h-4.5 text-indigo-400" /> Your Brand Exposure banner</h3>
-        <p className="text-xs text-slate-400">Customize the support banner text shown in student cohorts:</p>
-        <div className="bg-slate-950 border border-slate-850 p-4 rounded-xl text-xs">
-          <p className="font-semibold text-emerald-400">"Sponsored with Pride by Pulzitive Ltd"</p>
+      <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-3">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Globe className="w-4.5 h-4.5 text-indigo-600" /> Your Brand Exposure banner</h3>
+        <p className="text-xs text-slate-500">Customize the support banner text shown in student cohorts:</p>
+        <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs">
+          <p className="font-semibold text-emerald-700">"Sponsored with Pride by Pulzitive Ltd"</p>
           <p className="text-[10px] text-slate-500 mt-1">Impression count: 1,420 views</p>
         </div>
       </div>
 
       {/* Review pending requests */}
-      <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-bold flex items-center gap-1.5"><DollarSign className="w-4.5 h-4.5 text-emerald-400" /> Review Student Sponsorship Appeals</h3>
+      <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+        <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><DollarSign className="w-4.5 h-4.5 text-emerald-600" /> Review Student Sponsorship Appeals</h3>
         
         {sponsorships.length === 0 ? (
           <p className="text-xs text-slate-500">No active student sponsorship requests logged yet.</p>
         ) : (
           <div className="space-y-3 text-xs">
             {sponsorships.map(req => (
-              <div key={req.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div key={req.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="space-y-1">
-                  <p className="font-bold">{req.studentName} <span className="text-[9px] font-normal text-slate-400">({req.studentEmail})</span></p>
-                  <p className="text-[10px] text-slate-400 leading-relaxed">Reason: {req.reason}</p>
-                  <p className="text-[10px] font-mono font-bold text-indigo-400">Funding Requested: ₦{(req.fundingNeeded || 25000).toLocaleString()}</p>
+                  <p className="font-bold text-slate-900">{req.studentName} <span className="text-[9px] font-normal text-slate-500">({req.studentEmail})</span></p>
+                  <p className="text-[10px] text-slate-500 leading-relaxed">Reason: {req.reason}</p>
+                  <p className="text-[10px] font-mono font-bold text-indigo-600">Funding Requested: ₦{(req.fundingNeeded || 25000).toLocaleString()}</p>
                 </div>
                 {req.status === 'Pending' ? (
                   <button
                     onClick={() => handleApproveSponsorship(req.id)}
-                    className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-3.5 py-1.5 rounded-lg text-[10px]"
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-[10px] shadow-sm"
                   >
                     Fund Sponsorship
                   </button>
                 ) : (
-                  <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-3.5 py-1.5 rounded-lg font-bold">Approved</span>
+                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-3.5 py-1.5 rounded-lg font-bold">Approved</span>
                 )}
               </div>
             ))}
@@ -1575,12 +1582,12 @@ Pulse on Data. Impact on Brand.
 
   // REUSABLE DIGITAL MARKETING SIMULATORS
   const renderDigitalMarketingSimulators = () => (
-    <div className="space-y-6 pt-6 border-t border-slate-800">
+    <div className="space-y-6 pt-6 border-t border-slate-200">
       <div className="space-y-1 text-left">
-        <h3 className="text-base font-black text-white flex items-center gap-2">
-          <Megaphone className="w-5 h-5 text-emerald-400" /> Digital Marketing Interactive Practice Hub
+        <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+          <Megaphone className="w-5 h-5 text-emerald-600" /> Digital Marketing Interactive Practice Hub
         </h3>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Interactive performance tools and playground dashboards. Test live funnels, content schemas, SEO title tags, and UTM tracking setups.
         </p>
       </div>
@@ -1588,12 +1595,12 @@ Pulse on Data. Impact on Brand.
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* 1. CAMPAIGN ROI & ROAS CALCULATOR */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-              <DollarSign className="w-4 h-4 text-emerald-400" /> Funnel & ROAS Calculator
+            <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+              <DollarSign className="w-4 h-4 text-emerald-600" /> Funnel & ROAS Calculator
             </h4>
-            <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
+            <span className="text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">
               Live Calculator
             </span>
           </div>
@@ -1601,8 +1608,8 @@ Pulse on Data. Impact on Brand.
           <div className="space-y-3.5 text-xs text-left">
             <div className="space-y-1">
               <div className="flex justify-between font-medium">
-                <span className="text-slate-400">Monthly Ad Budget</span>
-                <span className="text-emerald-400 font-bold">₦{adSpend.toLocaleString()}</span>
+                <span className="text-slate-600">Monthly Ad Budget</span>
+                <span className="text-emerald-700 font-bold">₦{adSpend.toLocaleString()}</span>
               </div>
               <input
                 type="range"
@@ -1611,13 +1618,13 @@ Pulse on Data. Impact on Brand.
                 step={10000}
                 value={adSpend}
                 onChange={(e) => setAdSpend(Number(e.target.value))}
-                className="w-full accent-emerald-500 bg-slate-950 h-1.5 rounded-lg cursor-pointer"
+                className="w-full accent-emerald-600 bg-slate-200 h-1.5 rounded-lg cursor-pointer"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Click-Through-Rate (CTR)</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Click-Through-Rate (CTR)</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -1628,12 +1635,12 @@ Pulse on Data. Impact on Brand.
                     onChange={(e) => setCtr(Number(e.target.value))}
                     className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-1 focus:ring-emerald-400 focus:outline-none"
                   />
-                  <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
+                  <span className="absolute right-2.5 top-2.5 text-slate-400">%</span>
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Conv. Rate</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Conv. Rate</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -1644,15 +1651,15 @@ Pulse on Data. Impact on Brand.
                     onChange={(e) => setConvRate(Number(e.target.value))}
                     className="w-full bg-white border border-slate-300 rounded-lg p-2 text-slate-900 font-mono font-bold focus:ring-1 focus:ring-emerald-400 focus:outline-none"
                   />
-                  <span className="absolute right-2.5 top-2.5 text-slate-500">%</span>
+                  <span className="absolute right-2.5 top-2.5 text-slate-400">%</span>
                 </div>
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Average Order Value (AOV)</label>
+              <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Average Order Value (AOV)</label>
               <div className="relative">
-                <span className="absolute left-2.5 top-2.5 text-emerald-400 font-bold">₦</span>
+                <span className="absolute left-2.5 top-2.5 text-emerald-600 font-bold">₦</span>
                 <input
                   type="number"
                   value={aov}
@@ -1663,28 +1670,28 @@ Pulse on Data. Impact on Brand.
             </div>
 
             {/* CALCULATED RESULTS DASHBOARD */}
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 grid grid-cols-2 gap-3.5 mt-2">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-2 gap-3.5 mt-2">
               <div>
                 <span className="text-slate-500 block uppercase font-mono text-[8px]">Projected Clicks</span>
-                <span className="text-white font-black text-sm">
-                  {Math.round(adSpend / 150).toLocaleString()} <span className="text-[9px] text-slate-400 font-normal">(@ ₦150 CPC)</span>
+                <span className="text-slate-900 font-black text-sm">
+                  {Math.round(adSpend / 150).toLocaleString()} <span className="text-[9px] text-slate-500 font-normal">(@ ₦150 CPC)</span>
                 </span>
               </div>
               <div>
                 <span className="text-slate-500 block uppercase font-mono text-[8px]">Conversions</span>
-                <span className="text-white font-black text-sm">
+                <span className="text-slate-900 font-black text-sm">
                   {Math.round((adSpend / 150) * (convRate / 100)).toLocaleString()}
                 </span>
               </div>
               <div>
                 <span className="text-slate-500 block uppercase font-mono text-[8px]">CPA (Cost per Sale)</span>
-                <span className="text-indigo-400 font-black text-sm">
+                <span className="text-indigo-600 font-black text-sm">
                   ₦{Math.round(adSpend / Math.max(1, (adSpend / 150) * (convRate / 100))).toLocaleString()}
                 </span>
               </div>
               <div>
                 <span className="text-slate-500 block uppercase font-mono text-[8px]">Projected ROAS</span>
-                <span className={`font-black text-sm ${((((adSpend / 150) * (convRate / 100)) * aov) / adSpend) >= 1 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className={`font-black text-sm ${((((adSpend / 150) * (convRate / 100)) * aov) / adSpend) >= 1 ? 'text-emerald-600' : 'text-red-600'}`}>
                   {((((adSpend / 150) * (convRate / 100)) * aov) / adSpend).toFixed(2)}x
                 </span>
               </div>
@@ -1693,13 +1700,13 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* 2. AI AD COPY GENERATOR */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                <Sparkles className="w-4 h-4 text-indigo-400" /> AI Ad Copy Architect
+              <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                <Sparkles className="w-4 h-4 text-indigo-600" /> AI Ad Copy Architect
               </h4>
-              <span className="text-[9px] font-mono font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded">
+              <span className="text-[9px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded">
                 Generator
               </span>
             </div>
@@ -1707,7 +1714,7 @@ Pulse on Data. Impact on Brand.
             <div className="space-y-3 text-xs text-left">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Industry</label>
+                  <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Industry</label>
                   <select
                     value={marketingIndustry}
                     onChange={(e) => setMarketingIndustry(e.target.value)}
@@ -1721,7 +1728,7 @@ Pulse on Data. Impact on Brand.
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Ad Copy Tone</label>
+                  <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Ad Copy Tone</label>
                   <select
                     value={marketingTone}
                     onChange={(e) => setMarketingTone(e.target.value)}
@@ -1736,7 +1743,7 @@ Pulse on Data. Impact on Brand.
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Value Proposition / Main Offer</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Value Proposition / Main Offer</label>
                 <input
                   type="text"
                   value={marketingProposition}
@@ -1779,7 +1786,7 @@ Pulse on Data. Impact on Brand.
                   setGeneratedDescription(desc);
                   onTriggerNotification('High-converting ad copy generated successfully.');
                 }}
-                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 py-2 rounded-xl font-bold transition-all hover:scale-[1.01]"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl font-bold transition-all shadow-sm cursor-pointer"
               >
                 Assemble Optimized Copy Structure
               </button>
@@ -1787,17 +1794,17 @@ Pulse on Data. Impact on Brand.
           </div>
 
           {/* GENERATED PREVIEW CONTAINER */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-3 text-left">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 mt-3 text-left">
             <span className="text-[8px] font-mono text-slate-500 uppercase block">Meta Ads Manager Preview Studio</span>
             <div className="space-y-1">
-              <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
+              <div className="text-[10px] text-slate-500 uppercase font-bold font-mono tracking-wider flex justify-between">
                 <span>Generated Headlines</span>
-                <span className="text-[8px] text-indigo-400 font-normal">Max 30 Chars</span>
+                <span className="text-[8px] text-indigo-600 font-normal">Max 30 Chars</span>
               </div>
               {generatedHeadlines.map((h, i) => (
-                <div key={i} className="bg-slate-900 border border-slate-850 p-1.5 rounded text-[10px] font-mono text-white flex justify-between">
+                <div key={i} className="bg-white border border-slate-200 p-1.5 rounded text-[10px] font-mono text-slate-900 flex justify-between">
                   <span>{h}</span>
-                  <span className={`text-[8px] font-mono ${h.length <= 30 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  <span className={`text-[8px] font-mono font-bold ${h.length <= 30 ? 'text-emerald-700' : 'text-amber-700'}`}>
                     {h.length}/30
                   </span>
                 </div>
@@ -1805,11 +1812,11 @@ Pulse on Data. Impact on Brand.
             </div>
 
             <div className="space-y-1 pt-1">
-              <div className="text-[10px] text-slate-400 uppercase font-bold font-mono tracking-wider flex justify-between">
+              <div className="text-[10px] text-slate-500 uppercase font-bold font-mono tracking-wider flex justify-between">
                 <span>Primary Description Copy</span>
-                <span className="text-[8px] text-indigo-400 font-normal">Targeting 90 Chars</span>
+                <span className="text-[8px] text-indigo-600 font-normal">Targeting 90 Chars</span>
               </div>
-              <p className="text-[11px] font-sans text-slate-300 leading-relaxed bg-slate-900 border border-slate-850 p-2 rounded">
+              <p className="text-[11px] font-sans text-slate-700 leading-relaxed bg-white border border-slate-200 p-2 rounded">
                 {generatedDescription}
               </p>
             </div>
@@ -1817,12 +1824,12 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* 3. SEO TITLE & META DESCRIPTION AUDITOR */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-              <Globe className="w-4 h-4 text-teal-400" /> SEO Content Auditor
+            <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+              <Globe className="w-4 h-4 text-teal-600" /> SEO Content Auditor
             </h4>
-            <span className="text-[9px] font-mono font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 px-2 py-0.5 rounded">
+            <span className="text-[9px] font-mono font-bold bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded">
               Index Check
             </span>
           </div>
@@ -1830,11 +1837,11 @@ Pulse on Data. Impact on Brand.
           <div className="space-y-3.5 text-xs text-left">
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">SEO Page Title Tag</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">SEO Page Title Tag</label>
                 <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
                   seoTitle.length >= 50 && seoTitle.length <= 60 
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
-                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold' 
+                    : 'bg-amber-50 text-amber-700 border border-amber-200 font-bold'
                 }`}>
                   {seoTitle.length} Chars ({seoTitle.length >= 50 && seoTitle.length <= 60 ? 'Optimal' : 'Needs Adjusting'})
                 </span>
@@ -1850,11 +1857,11 @@ Pulse on Data. Impact on Brand.
 
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Meta Description Tag</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Meta Description Tag</label>
                 <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
                   seoDesc.length >= 145 && seoDesc.length <= 160 
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25' 
-                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/25'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold' 
+                    : 'bg-amber-50 text-amber-700 border border-amber-200 font-bold'
                 }`}>
                   {seoDesc.length} Chars ({seoDesc.length >= 145 && seoDesc.length <= 160 ? 'Optimal' : 'Needs Adjusting'})
                 </span>
@@ -1869,7 +1876,7 @@ Pulse on Data. Impact on Brand.
             </div>
 
             {/* VISUAL SEARCH ENGINE SERP PREVIEW */}
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-1">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1">
               <span className="text-[8px] font-mono text-slate-500 uppercase block">Google Desktop Search Snippet Preview</span>
               <p className="text-xs text-[#1a0dab] font-sans hover:underline cursor-pointer truncate">
                 {seoTitle || 'Insert Page Title'}
@@ -1886,20 +1893,20 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* 4. UTM CAMPAIGN LINK BUILDER */}
-        <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4 flex flex-col justify-between">
           <div className="space-y-3.5">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase font-mono tracking-wider">
-                <FileText className="w-4 h-4 text-emerald-400" /> UTM Link Builder
+              <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+                <FileText className="w-4 h-4 text-emerald-600" /> UTM Link Builder
               </h4>
-              <span className="text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
+              <span className="text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded">
                 Analytics
               </span>
             </div>
 
             <div className="space-y-3 text-xs text-left">
               <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-mono font-bold">Destination website URL</label>
+                <label className="text-[10px] text-slate-500 uppercase font-mono font-bold">Destination website URL</label>
                 <input
                   type="text"
                   value={utmUrl}
@@ -1910,7 +1917,7 @@ Pulse on Data. Impact on Brand.
 
               <div className="grid grid-cols-3 gap-2">
                 <div className="space-y-1">
-                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Source</label>
+                  <label className="text-[9px] text-slate-500 uppercase font-mono font-bold">Source</label>
                   <input
                     type="text"
                     value={utmSource}
@@ -1919,7 +1926,7 @@ Pulse on Data. Impact on Brand.
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Medium</label>
+                  <label className="text-[9px] text-slate-500 uppercase font-mono font-bold">Medium</label>
                   <input
                     type="text"
                     value={utmMedium}
@@ -1928,7 +1935,7 @@ Pulse on Data. Impact on Brand.
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] text-slate-400 uppercase font-mono font-bold">Campaign Name</label>
+                  <label className="text-[9px] text-slate-500 uppercase font-mono font-bold">Campaign Name</label>
                   <input
                     type="text"
                     value={utmCampaign}
@@ -1941,9 +1948,9 @@ Pulse on Data. Impact on Brand.
           </div>
 
           {/* UTM BUILD OUTPUT */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-slate-850 space-y-2 mt-4 text-left">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 mt-4 text-left">
             <span className="text-[8px] font-mono text-slate-500 uppercase block">Compiled Tracking URL Link</span>
-            <div className="bg-slate-900 border border-slate-850 p-2 rounded text-[10px] font-mono text-slate-300 select-all break-all leading-normal">
+            <div className="bg-white border border-slate-200 p-2 rounded text-[10px] font-mono text-slate-700 select-all break-all leading-normal">
               {utmUrl}?utm_source={utmSource}&utm_medium={utmMedium}&utm_campaign={utmCampaign}
             </div>
             <button
@@ -1954,7 +1961,7 @@ Pulse on Data. Impact on Brand.
                 onTriggerNotification('UTM campaign tracking link copied to clipboard!');
                 setTimeout(() => setIsCopiedUtm(false), 2000);
               }}
-              className="w-full bg-white hover:bg-slate-50 text-slate-950 py-1.5 rounded-lg font-bold text-xs cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-[0.98]"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-1.5 rounded-lg font-bold text-xs cursor-pointer shadow-sm flex items-center justify-center gap-1.5 active:scale-[0.98]"
             >
               <FileText className="w-3.5 h-3.5" />
               {isCopiedUtm ? 'Copied to Clipboard!' : 'Copy Tracking Link'}
@@ -2304,17 +2311,17 @@ Pulse on Data. Impact on Brand.
   const renderClientWorkspace = () => (
     <div className="space-y-8">
       {/* Unitary Client Header Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-lg">
+      <div className="bg-white border-2 border-indigo-500/30 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-sm text-slate-900">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-              <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">Unitary Client & Customer Operations Portal</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Unitary Client & Customer Operations Portal</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
               {currentUser.displayName || 'Client Executive Workspace'}
             </h2>
-            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
               Unified command center for hiring verified local artisans, managing service bids, launching digital marketing growth audits, and scheduling strategic consultations.
             </p>
           </div>
@@ -2322,14 +2329,14 @@ Pulse on Data. Impact on Brand.
           <div className="flex flex-wrap items-center gap-3 shrink-0">
             <button
               onClick={() => setIsPostGigModalOpen(true)}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
             >
               <Plus className="w-4 h-4 text-white" />
               <span>Post Service Request / Gig</span>
             </button>
             <button
               onClick={() => onNavigate('talents')}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs px-4 py-3 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition-all active:scale-95"
             >
               <Briefcase className="w-4 h-4 text-white" />
               <span>Browse Artisan Directory</span>
@@ -2339,13 +2346,13 @@ Pulse on Data. Impact on Brand.
       </div>
 
       {/* Unitary Section Navigation Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-200">
         <button
           onClick={() => setClientActiveTab('all')}
           className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap ${
             clientActiveTab === 'all'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
           }`}
         >
           All-in-One Dashboard
@@ -2355,10 +2362,10 @@ Pulse on Data. Impact on Brand.
           className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
             clientActiveTab === 'talents'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
           }`}
         >
-          <Briefcase className="w-3.5 h-3.5 text-emerald-400" />
+          <Briefcase className="w-3.5 h-3.5 text-emerald-600" />
           <span>Talent Hiring & Service Gigs</span>
         </button>
         <button
@@ -2366,10 +2373,10 @@ Pulse on Data. Impact on Brand.
           className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
             clientActiveTab === 'marketing'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
           }`}
         >
-          <Globe className="w-3.5 h-3.5 text-indigo-400" />
+          <Globe className="w-3.5 h-3.5 text-indigo-600" />
           <span>SEO Audits & Consultations</span>
         </button>
         <button
@@ -2377,10 +2384,10 @@ Pulse on Data. Impact on Brand.
           className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
             clientActiveTab === 'simulators'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-amber-400" />
+          <Zap className="w-3.5 h-3.5 text-amber-600" />
           <span>Growth Simulators & UTM</span>
         </button>
         <button
@@ -2388,37 +2395,37 @@ Pulse on Data. Impact on Brand.
           className={`px-4 py-2 rounded-xl text-xs font-black cursor-pointer transition-all whitespace-nowrap flex items-center gap-1.5 ${
             clientActiveTab === 'statements'
               ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-900 border border-slate-800'
+              : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200'
           }`}
         >
-          <FileText className="w-3.5 h-3.5 text-emerald-400" />
+          <FileText className="w-3.5 h-3.5 text-emerald-600" />
           <span>Financial Statements</span>
         </button>
       </div>
 
       {/* Global Client Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
-          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Active Hires & Orders</span>
-          <p className="text-2xl font-black text-emerald-400">{talentInquiries.length}</p>
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-1 shadow-sm">
+          <span className="block text-[10px] text-slate-500 font-mono uppercase font-bold">Active Hires & Orders</span>
+          <p className="text-2xl font-black text-emerald-600">{talentInquiries.length}</p>
           <p className="text-[10px] text-slate-500">Live Escrow Synced</p>
         </div>
 
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
-          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Posted Gigs</span>
-          <p className="text-2xl font-black text-blue-400">{gigOpportunities.length}</p>
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-1 shadow-sm">
+          <span className="block text-[10px] text-slate-500 font-mono uppercase font-bold">Posted Gigs</span>
+          <p className="text-2xl font-black text-blue-600">{gigOpportunities.length}</p>
           <p className="text-[10px] text-slate-500">Marketplace Bids Open</p>
         </div>
 
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
-          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Brand SEO Audits</span>
-          <p className="text-2xl font-black text-indigo-400">{audits.length}</p>
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-1 shadow-sm">
+          <span className="block text-[10px] text-slate-500 font-mono uppercase font-bold">Brand SEO Audits</span>
+          <p className="text-2xl font-black text-indigo-600">{audits.length}</p>
           <p className="text-[10px] text-slate-500">Generated Reports</p>
         </div>
 
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl space-y-1">
-          <span className="block text-[10px] text-slate-400 font-mono uppercase font-bold">Scheduled Meets</span>
-          <p className="text-2xl font-black text-amber-400">{appointments.length}</p>
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-1 shadow-sm">
+          <span className="block text-[10px] text-slate-500 font-mono uppercase font-bold">Scheduled Meets</span>
+          <p className="text-2xl font-black text-amber-600">{appointments.length}</p>
           <p className="text-[10px] text-slate-500">Google Meet Sessions</p>
         </div>
       </div>
@@ -2619,31 +2626,31 @@ Pulse on Data. Impact on Brand.
         <div className="space-y-6">
           {/* Brand Audit & Book Appointments CTA */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-              <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
-                <Globe className="w-4.5 h-4.5 text-indigo-400" /> Brand SEO & Performance Audits
+            <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+                <Globe className="w-4.5 h-4.5 text-indigo-600" /> Brand SEO & Performance Audits
               </h3>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 Submit your business domains! Our platform computes custom site speed, SEO rankings, and localized metadata metrics instantly.
               </p>
               <button
                 onClick={onOpenAuditModal}
-                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
               >
                 Request Site Brand Audit
               </button>
             </div>
 
-            <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-              <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
-                <Calendar className="w-4.5 h-4.5 text-emerald-400" /> Executive Growth Consultations
+            <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+              <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900">
+                <Calendar className="w-4.5 h-4.5 text-emerald-600" /> Executive Growth Consultations
               </h3>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
                 Schedule a 1-on-1 growth planning strategy meeting with a Pulzitive Executive Consultant. Auto-generates instant Google Meet coordinates.
               </p>
               <button
                 onClick={onOpenApptModal}
-                className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl cursor-pointer text-xs shadow-sm"
               >
                 Schedule Meet Session
               </button>
@@ -2652,32 +2659,32 @@ Pulse on Data. Impact on Brand.
 
           {/* Active Audits Display Results */}
           {audits.length > 0 && (
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-              <h3 className="text-sm font-bold text-white">Completed Audit Reports</h3>
+            <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+              <h3 className="text-sm font-bold text-slate-900">Completed Audit Reports</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {audits.map(audit => (
-                  <div key={audit.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 text-xs space-y-3">
-                    <div className="flex justify-between font-bold border-b border-slate-850 pb-2">
-                      <span className="truncate max-w-xs text-white">{audit.websiteUrl}</span>
-                      <span className="text-emerald-400 font-mono font-black">{audit.overallScore}% Score</span>
+                  <div key={audit.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-3">
+                    <div className="flex justify-between font-bold border-b border-slate-200 pb-2">
+                      <span className="truncate max-w-xs text-slate-900">{audit.websiteUrl}</span>
+                      <span className="text-emerald-700 font-mono font-black">{audit.overallScore}% Score</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-center text-[9px] font-mono">
-                      <div className="bg-slate-900 p-1.5 rounded">
+                      <div className="bg-white border border-slate-200 p-1.5 rounded">
                         <p className="text-slate-500 uppercase">SEO</p>
-                        <p className="font-bold text-white">{audit.seoScore}</p>
+                        <p className="font-bold text-slate-900">{audit.seoScore}</p>
                       </div>
-                      <div className="bg-slate-900 p-1.5 rounded">
+                      <div className="bg-white border border-slate-200 p-1.5 rounded">
                         <p className="text-slate-500 uppercase">SPEED</p>
-                        <p className="font-bold text-white">{audit.speedScore}</p>
+                        <p className="font-bold text-slate-900">{audit.speedScore}</p>
                       </div>
-                      <div className="bg-slate-900 p-1.5 rounded">
+                      <div className="bg-white border border-slate-200 p-1.5 rounded">
                         <p className="text-slate-500 uppercase">SOCIAL</p>
-                        <p className="font-bold text-white">{audit.socialScore}</p>
+                        <p className="font-bold text-slate-900">{audit.socialScore}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => window.print()}
-                      className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-semibold py-1.5 rounded-lg text-[10px] flex items-center justify-center gap-1 cursor-pointer"
+                      className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-1.5 rounded-lg text-[10px] flex items-center justify-center gap-1 cursor-pointer shadow-xs"
                     >
                       <FileText className="w-3.5 h-3.5" /> Download PDF Report
                     </button>
@@ -2689,21 +2696,21 @@ Pulse on Data. Impact on Brand.
 
           {/* Appointments List */}
           {appointments.length > 0 && (
-            <div className="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-4">
-              <h3 className="text-sm font-bold text-white">Scheduled Executive Strategy Meetings</h3>
+            <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 space-y-4">
+              <h3 className="text-sm font-bold text-slate-900">Scheduled Executive Strategy Meetings</h3>
               <div className="space-y-2">
                 {appointments.map(appt => (
-                  <div key={appt.id} className="bg-slate-950 p-4 rounded-xl border border-slate-850 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-3">
+                  <div key={appt.id} className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-3">
                     <div>
-                      <p className="font-bold text-white">{appt.serviceType}</p>
-                      <p className="text-[10px] text-slate-400">Date: {appt.dateTime ? new Date(appt.dateTime).toLocaleString() : 'N/A'}</p>
+                      <p className="font-bold text-slate-900">{appt.serviceType}</p>
+                      <p className="text-[10px] text-slate-500">Date: {appt.dateTime ? new Date(appt.dateTime).toLocaleString() : 'N/A'}</p>
                     </div>
                     {appt.googleMeetLink && (
                       <a
                         href={appt.googleMeetLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white px-3.5 py-1.5 rounded-lg text-[10px] border border-indigo-500/20 font-bold flex items-center gap-1 shrink-0 self-stretch sm:self-auto text-center justify-center"
+                        className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3.5 py-1.5 rounded-lg text-[10px] border border-indigo-200 font-bold flex items-center gap-1 shrink-0 self-stretch sm:self-auto text-center justify-center"
                       >
                         Join Google Meet <ExternalLink className="w-3 h-3" />
                       </a>
@@ -2749,7 +2756,7 @@ Pulse on Data. Impact on Brand.
       )}
 
       {/* Mini-Tools Workspace Section */}
-      <div className="mt-8 pt-6 border-t border-slate-800">
+      <div className="mt-8 pt-6 border-t border-slate-200">
         <MiniTools currentUser={currentUser} onBookAppointment={onOpenApptModal} />
       </div>
     </div>
@@ -2761,21 +2768,21 @@ Pulse on Data. Impact on Brand.
       
       {/* Platform Global statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl">
+        <div className="bg-white border border-slate-200 shadow-sm p-5 rounded-2xl">
           <span className="block text-[9px] text-slate-500 font-mono uppercase">Platform Revenue</span>
-          <p className="text-2xl font-black text-emerald-400 mt-1">₦350,000</p>
+          <p className="text-2xl font-black text-emerald-600 mt-1">₦350,000</p>
         </div>
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl">
+        <div className="bg-white border border-slate-200 shadow-sm p-5 rounded-2xl">
           <span className="block text-[9px] text-slate-500 font-mono uppercase">Total Commissions</span>
-          <p className="text-2xl font-black text-indigo-400 mt-1">₦47,500</p>
+          <p className="text-2xl font-black text-indigo-600 mt-1">₦47,500</p>
         </div>
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl">
+        <div className="bg-white border border-slate-200 shadow-sm p-5 rounded-2xl">
           <span className="block text-[9px] text-slate-500 font-mono uppercase">Active Bookings</span>
-          <p className="text-2xl font-black text-white mt-1">{appointments.length} Meetings</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">{appointments.length} Meetings</p>
         </div>
-        <div className="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl">
+        <div className="bg-white border border-slate-200 shadow-sm p-5 rounded-2xl">
           <span className="block text-[9px] text-slate-500 font-mono uppercase">Audit Leads</span>
-          <p className="text-2xl font-black text-emerald-400 mt-1">{audits.length} Sites</p>
+          <p className="text-2xl font-black text-emerald-600 mt-1">{audits.length} Sites</p>
         </div>
       </div>
 
@@ -2785,17 +2792,17 @@ Pulse on Data. Impact on Brand.
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Manage Appointments */}
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><Calendar className="w-4.5 h-4.5 text-emerald-400" /> Administrative Booking Logs</h3>
+        <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Calendar className="w-4.5 h-4.5 text-emerald-600" /> Administrative Booking Logs</h3>
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {appointments.length === 0 ? (
               <p className="text-xs text-slate-500 text-center py-4">No active client bookings registered.</p>
             ) : (
               appointments.map(appt => (
-                <div key={appt.id} className="bg-slate-950 p-3 rounded-xl border border-slate-850 text-xs">
-                  <p className="font-bold text-white">{appt.clientName}</p>
-                  <p className="text-[10px] text-slate-400">{appt.clientEmail}</p>
-                  <p className="text-[10px] font-semibold text-emerald-400 mt-1">{appt.serviceType}</p>
+                <div key={appt.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                  <p className="font-bold text-slate-900">{appt.clientName}</p>
+                  <p className="text-[10px] text-slate-500">{appt.clientEmail}</p>
+                  <p className="text-[10px] font-semibold text-emerald-700 mt-1">{appt.serviceType}</p>
                   <p className="text-[10px] text-slate-500">Date: {appt.dateTime ? new Date(appt.dateTime).toLocaleString() : 'N/A'}</p>
                 </div>
               ))
@@ -2804,28 +2811,28 @@ Pulse on Data. Impact on Brand.
         </div>
 
         {/* Manage Sponsorship grants */}
-        <div className="bg-slate-900/40 border border-slate-900 p-6 rounded-2xl space-y-4">
-          <h3 className="text-sm font-bold flex items-center gap-1.5"><DollarSign className="w-4.5 h-4.5 text-indigo-400" /> Authorize Student Sponsorship Grants</h3>
+        <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+          <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><DollarSign className="w-4.5 h-4.5 text-indigo-600" /> Authorize Student Sponsorship Grants</h3>
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {sponsorships.length === 0 ? (
               <p className="text-xs text-slate-500 text-center py-4">No active sponsorship requests.</p>
             ) : (
               sponsorships.map(req => (
-                <div key={req.id} className="bg-slate-950 p-3 rounded-xl border border-slate-850 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div key={req.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                   <div>
-                    <p className="font-bold text-white">{req.studentName}</p>
-                    <p className="text-[10px] text-slate-400">Needs: ₦{(req.fundingNeeded || 25000).toLocaleString()}</p>
+                    <p className="font-bold text-slate-900">{req.studentName}</p>
+                    <p className="text-[10px] text-slate-500">Needs: ₦{(req.fundingNeeded || 25000).toLocaleString()}</p>
                     <p className="text-[10px] text-slate-500 italic mt-0.5">"{req.reason}"</p>
                   </div>
                   {req.status === 'Pending' ? (
                     <button
                       onClick={() => handleApproveSponsorship(req.id)}
-                      className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold px-3 py-1 rounded text-[10px]"
+                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1 rounded text-[10px] shadow-xs cursor-pointer"
                     >
                       Disburse
                     </button>
                   ) : (
-                    <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-mono uppercase">Granted</span>
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2 py-0.5 rounded font-mono uppercase font-bold">Granted</span>
                   )}
                 </div>
               ))
@@ -2835,30 +2842,59 @@ Pulse on Data. Impact on Brand.
 
       </div>
 
+      {/* KINGDOM MEDIA SPECIALIST DISPATCH & SERMON OPERATIONS CONSOLE (Merged Super Admin Feature) */}
+      <div className="pt-4">
+        <EditorSpecialistConsole
+          tasks={adminMediaTasks}
+          onUpdateStatus={async (requestId, status, assignedEditorId, assignedEditorName) => {
+            try {
+              await updateMediaRequestStatus(requestId, status, assignedEditorId, assignedEditorName);
+              const refreshed = await getMediaRequests();
+              setAdminMediaTasks(refreshed);
+              onTriggerNotification(`Sermon task status updated to ${status}`);
+            } catch (err) {
+              console.error(err);
+              onTriggerNotification('Failed to update sermon status');
+            }
+          }}
+          onAddDeliverable={async (requestId, deliverable) => {
+            try {
+              await addMediaDeliverableFile(requestId, deliverable);
+              const refreshed = await getMediaRequests();
+              setAdminMediaTasks(refreshed);
+              onTriggerNotification(`Deliverable "${deliverable.fileName}" uploaded to church vault.`);
+            } catch (err) {
+              console.error(err);
+              onTriggerNotification('Failed to add deliverable');
+            }
+          }}
+        />
+      </div>
+
     </div>
   );
 
   return (
-    <div className="bg-slate-950 text-white min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-white text-slate-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Workspace Title bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-900 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
           <div>
-            <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-400 bg-slate-900 border border-emerald-500/10 px-2.5 py-1 rounded">
+            <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded font-bold">
               PULZITIVE SECURE PORTAL • {currentUser.role} ROLE
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white mt-3 flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-3 flex items-center gap-2">
               Welcome, {currentUser.displayName || 'Distinguished Guest'}
             </h1>
-            <p className="text-xs text-slate-400">Logged in as {currentUser.email}</p>
+            <p className="text-xs text-slate-500">Logged in as {currentUser.email}</p>
           </div>
           
           <button
             onClick={refreshDashboardData}
-            className="bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 px-4 py-2 rounded-xl text-xs cursor-pointer transition-all flex items-center justify-center gap-2 self-start"
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer transition-all flex items-center justify-center gap-2 self-start shadow-sm"
           >
-            <RefreshCw className="w-4 h-4 text-emerald-400" /> Refresh Workspace Data
+            <RefreshCw className="w-4 h-4 text-white" /> Refresh Workspace Data
           </button>
         </div>
 
@@ -2873,6 +2909,13 @@ Pulse on Data. Impact on Brand.
             currentUser.role === 'Sponsor') && renderStudentWorkspace()}
           {currentUser.role === 'Talent' && renderTalentWorkspace()}
           {currentUser.role === 'Client' && renderClientWorkspace()}
+          {currentUser.role === 'Minister' && (
+            <MinisterDashboard 
+              currentUser={currentUser} 
+              onTriggerNotification={onTriggerNotification} 
+              onNavigate={onNavigate} 
+            />
+          )}
           {currentUser.role === 'Admin' && renderAdminWorkspace()}
           {/* Fallback for unlisted roles */}
           {currentUser.role !== 'Student' &&
@@ -2883,6 +2926,7 @@ Pulse on Data. Impact on Brand.
            currentUser.role !== 'Sponsor' &&
            currentUser.role !== 'Talent' &&
            currentUser.role !== 'Client' &&
+           currentUser.role !== 'Minister' &&
            currentUser.role !== 'Admin' &&
            renderTalentWorkspace()}
         </div>
@@ -2892,7 +2936,7 @@ Pulse on Data. Impact on Brand.
       {/* POST SERVICE GIG / REQUEST MODAL */}
       <AnimatePresence>
         {isPostGigModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -2926,7 +2970,7 @@ Pulse on Data. Impact on Brand.
                     placeholder="e.g., Toyota Camry Engine Diagnostic & Overhaul"
                     value={gigTitle}
                     onChange={(e) => setGigTitle(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
 
@@ -2936,7 +2980,7 @@ Pulse on Data. Impact on Brand.
                     <select
                       value={gigCategory}
                       onChange={(e) => setGigCategory(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     >
                       <optgroup label="Artisans & Technicians">
                         {ARTISAN_CATEGORIES.map(cat => (
@@ -2959,7 +3003,7 @@ Pulse on Data. Impact on Brand.
                       placeholder="e.g., Ikeja, Lagos"
                       value={gigLocation}
                       onChange={(e) => setGigLocation(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     />
                   </div>
                 </div>
@@ -2974,7 +3018,7 @@ Pulse on Data. Impact on Brand.
                       required
                       value={gigBudgetUsd}
                       onChange={(e) => setGigBudgetUsd(Number(e.target.value))}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     />
                     <span className="text-[10px] text-slate-400 font-mono mt-1 block">~₦{(gigBudgetUsd * 600).toLocaleString()} NGN</span>
                   </div>
@@ -2984,7 +3028,7 @@ Pulse on Data. Impact on Brand.
                     <select
                       value={gigType}
                       onChange={(e) => setGigType(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     >
                       <option value="Fixed Price">Fixed Price</option>
                       <option value="Hourly">Hourly</option>
@@ -2997,7 +3041,7 @@ Pulse on Data. Impact on Brand.
                     <select
                       value={gigUrgency}
                       onChange={(e) => setGigUrgency(e.target.value as any)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                     >
                       <option value="Immediate (24-48 hrs)">Immediate (24-48 hrs)</option>
                       <option value="This Week">This Week</option>
@@ -3014,7 +3058,7 @@ Pulse on Data. Impact on Brand.
                     placeholder="Describe the issue, required tools/materials, timeline, or special instructions..."
                     value={gigDescription}
                     onChange={(e) => setGigDescription(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-4 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 

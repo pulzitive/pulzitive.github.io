@@ -41,74 +41,74 @@ export function CompleteProfileModal({ isOpen, user, onSave }: CompleteProfileMo
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-white max-h-[92vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-slate-900 max-h-[92vh] overflow-y-auto"
       >
         <div className="text-center mb-5">
-          <div className="bg-emerald-500 text-slate-950 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+          <div className="bg-emerald-50 text-emerald-600 border border-emerald-200 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
             <Sparkles className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold">Complete Your Profile</h3>
-          <p className="text-xs text-gray-400 mt-1">
+          <h3 className="text-lg font-bold text-slate-900">Complete Your Profile</h3>
+          <p className="text-xs text-slate-500 mt-1">
             Welcome to the Pulzitive Portal! Before you access your **{user.role}** workspace, please set up your account.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Full Display Name</label>
+            <label className="block text-slate-700 font-bold mb-1">Full Display Name</label>
             <input
               type="text"
               required
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="e.g., Adebayo Oluwaseun"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Contact Phone Number</label>
+            <label className="block text-slate-700 font-bold mb-1">Contact Phone Number</label>
             <input
               type="tel"
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="e.g., +234 801 111 2222"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           {user.role === 'Client' && (
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Company/Organization Name</label>
+              <label className="block text-slate-700 font-bold mb-1">Company/Organization Name</label>
               <input
                 type="text"
                 required
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="e.g., Pulzitive Limited"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Professional Bio / Profile Goals</label>
+            <label className="block text-slate-700 font-bold mb-1">Professional Bio / Profile Goals</label>
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Tell us about yourself or your goals in the Academy/Agency..."
-              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400 h-20 resize-none"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400 h-20 resize-none"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer transition-colors mt-2 shadow-sm"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl cursor-pointer transition-all mt-2 shadow-md"
           >
             Save Profile & Launch Workspace
           </button>
@@ -156,80 +156,80 @@ export function BookAppointmentModal({ isOpen, onClose, onBook, clientEmail = ''
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-white relative max-h-[92vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-slate-900 relative max-h-[92vh] overflow-y-auto"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 cursor-pointer">
           <X className="w-5 h-5" />
         </button>
 
         <div className="mb-4">
-          <h3 className="text-base font-bold flex items-center gap-2 text-white">
-            <Calendar className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
+            <Calendar className="w-5 h-5 text-emerald-600" />
             Book Brand Strategy Meeting
           </h3>
-          <p className="text-[10px] text-gray-400 mt-1">
+          <p className="text-[10px] text-slate-500 mt-1">
             Schedule a 1-on-1 advertising and digital marketing strategy review. Google Meet links are generated instantly.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Your Name</label>
+            <label className="block text-slate-700 font-bold mb-1">Your Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Pulzitive Customer"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Your Email</label>
+              <label className="block text-slate-700 font-bold mb-1">Your Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="client@mail.com"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Company Name</label>
+              <label className="block text-slate-700 font-bold mb-1">Company Name</label>
               <input
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Optional"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Preferred Date & Time</label>
+            <label className="block text-slate-700 font-bold mb-1">Preferred Date & Time</label>
             <input
               type="datetime-local"
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Services of Interest</label>
+            <label className="block text-slate-700 font-bold mb-1">Services of Interest</label>
             <select
               value={service}
               onChange={(e) => setService(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
             >
               <option value="Search Engine Marketing (SEM)">Search Engine Marketing (SEM)</option>
               <option value="Web Development">Web Development</option>
@@ -246,7 +246,7 @@ export function BookAppointmentModal({ isOpen, onClose, onBook, clientEmail = ''
 
           <button
             type="submit"
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 font-bold py-2 rounded-xl cursor-pointer transition-colors shadow-sm"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl cursor-pointer transition-all shadow-md"
           >
             Confirm Booking & Schedule Meeting
           </button>
@@ -289,91 +289,91 @@ export function BrandAuditModal({ isOpen, onClose, onSubmit, clientEmail = '', c
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-white relative max-h-[92vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-slate-900 relative max-h-[92vh] overflow-y-auto"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 cursor-pointer">
           <X className="w-5 h-5" />
         </button>
 
         <div className="mb-4">
-          <h3 className="text-base font-bold flex items-center gap-2 text-white">
-            <Globe className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
+            <Globe className="w-5 h-5 text-emerald-600" />
             Request Free Brand Audit
           </h3>
-          <p className="text-[10px] text-gray-400 mt-1">
+          <p className="text-[10px] text-slate-500 mt-1">
             Submit your domain! Our automated scraping logs evaluate SEO metrics, site speed, and conversion pathways.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Full Name</label>
+            <label className="block text-slate-700 font-bold mb-1">Full Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Pulzitive Customer"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Email Address</label>
+            <label className="block text-slate-700 font-bold mb-1">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="client@company.com"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Website URL</label>
+            <label className="block text-slate-700 font-bold mb-1">Website URL</label>
             <input
               type="url"
               required
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://example.com"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Industry</label>
+              <label className="block text-slate-700 font-bold mb-1">Industry</label>
               <input
                 type="text"
                 required
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
                 placeholder="e.g., Edtech, Finance"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Primary Growth Goal</label>
+              <label className="block text-slate-700 font-bold mb-1">Primary Growth Goal</label>
               <input
                 type="text"
                 required
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder="e.g., Increase signups"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 font-bold py-2 rounded-xl cursor-pointer transition-colors shadow-sm"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl cursor-pointer transition-all shadow-md"
           >
             Submit Audit Request & Scrape Site
           </button>
@@ -448,41 +448,41 @@ export function MergedAuditStrategyModal({ isOpen, onClose, onSubmit, clientEmai
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-white relative max-h-[92vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-slate-900 relative max-h-[92vh] overflow-y-auto"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 cursor-pointer">
           <X className="w-5 h-5" />
         </button>
 
         {/* Progress header */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[9px] font-mono font-bold tracking-widest text-emerald-400 uppercase">
+            <span className="text-[9px] font-mono font-bold tracking-widest text-emerald-700 uppercase">
               Unified Strategy Portal • Step {step} of 2
             </span>
             <div className="flex gap-1">
-              <span className={`w-6 h-1 rounded-full ${step >= 1 ? 'bg-emerald-500' : 'bg-slate-700'}`} />
-              <span className={`w-6 h-1 rounded-full ${step >= 2 ? 'bg-emerald-500' : 'bg-slate-700'}`} />
+              <span className={`w-6 h-1 rounded-full ${step >= 1 ? 'bg-emerald-500' : 'bg-slate-200'}`} />
+              <span className={`w-6 h-1 rounded-full ${step >= 2 ? 'bg-emerald-500' : 'bg-slate-200'}`} />
             </div>
           </div>
-          <h3 className="text-sm font-extrabold flex items-center gap-2 text-white">
+          <h3 className="text-sm font-extrabold flex items-center gap-2 text-slate-900">
             {step === 1 ? (
               <>
-                <Globe className="w-5 h-5 text-emerald-400" />
+                <Globe className="w-5 h-5 text-emerald-600" />
                 1. Free Website Performance Audit
               </>
             ) : (
               <>
-                <Calendar className="w-5 h-5 text-emerald-400" />
+                <Calendar className="w-5 h-5 text-emerald-600" />
                 2. Schedule Your Strategy Meeting
               </>
             )}
           </h3>
-          <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+          <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
             {step === 1 
               ? "We'll scrape your website url to grade SEO, mobile speed, tracking pixels, and conversion funnels."
               : "Schedule a strategy session with Pulzitive consultants to receive your diagnostic audit report."
@@ -493,69 +493,69 @@ export function MergedAuditStrategyModal({ isOpen, onClose, onSubmit, clientEmai
         {step === 1 ? (
           <form onSubmit={handleNext} className="space-y-3.5 text-xs">
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Full Name</label>
+              <label className="block text-slate-700 font-semibold mb-1">Full Name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Pulzitive Customer"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Email Address</label>
+              <label className="block text-slate-700 font-semibold mb-1">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="client@company.com"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Website URL</label>
+              <label className="block text-slate-700 font-semibold mb-1">Website URL</label>
               <input
                 type="url"
                 required
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Industry</label>
+                <label className="block text-slate-700 font-semibold mb-1">Industry</label>
                 <input
                   type="text"
                   required
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
                   placeholder="e.g., Edtech, Finance"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
                 />
               </div>
               <div>
-                <label className="block text-slate-400 font-semibold mb-1">Growth Goal</label>
+                <label className="block text-slate-700 font-semibold mb-1">Growth Goal</label>
                 <input
                   type="text"
                   required
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                   placeholder="e.g., Lead acquisition"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-white hover:bg-slate-50 text-slate-950 font-extrabold py-2.5 rounded-xl cursor-pointer border border-slate-200 transition-colors mt-4 flex items-center justify-center gap-1 text-xs shadow-sm"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3 rounded-xl cursor-pointer transition-all mt-4 flex items-center justify-center gap-1 text-xs shadow-md"
             >
               Continue to Strategy Booking <ChevronRight className="w-4 h-4" />
             </button>
@@ -563,33 +563,33 @@ export function MergedAuditStrategyModal({ isOpen, onClose, onSubmit, clientEmai
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Company/Brand Name (Optional)</label>
+              <label className="block text-slate-700 font-semibold mb-1">Company/Brand Name (Optional)</label>
               <input
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="e.g., Pulzitive Ltd"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Preferred Meeting Date & Time</label>
+              <label className="block text-slate-700 font-semibold mb-1">Preferred Meeting Date & Time</label>
               <input
                 type="datetime-local"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 font-semibold mb-1">Service Focus Areas</label>
+              <label className="block text-slate-700 font-semibold mb-1">Service Focus Areas</label>
               <select
                 value={service}
                 onChange={(e) => setService(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
               >
                 <option value="Search Engine Marketing (SEM)">Search Engine Marketing (SEM)</option>
                 <option value="Paid Ads Dominance (Meta/LinkedIn)">Paid Ads Dominance (Meta/LinkedIn)</option>
@@ -604,13 +604,13 @@ export function MergedAuditStrategyModal({ isOpen, onClose, onSubmit, clientEmai
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-1/3 bg-white hover:bg-slate-100 text-slate-900 border border-slate-200 font-bold py-2.5 rounded-xl cursor-pointer transition-colors text-center text-xs shadow-sm"
+                className="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-xl cursor-pointer transition-colors text-center text-xs"
               >
                 Back
               </button>
               <button
                 type="submit"
-                className="w-2/3 bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-extrabold py-2.5 rounded-xl cursor-pointer transition-colors text-center text-xs shadow-sm"
+                className="w-2/3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2.5 rounded-xl cursor-pointer transition-all text-center text-xs shadow-md"
               >
                 Confirm Booking & Scrape Site
               </button>
@@ -655,58 +655,58 @@ export function ManageStudentModal({ isOpen, onClose, onSave, courses, mode }: M
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-white relative max-h-[92vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl text-slate-900 relative max-h-[92vh] overflow-y-auto"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 cursor-pointer">
           <X className="w-5 h-5" />
         </button>
 
         <div className="mb-4">
-          <h3 className="text-base font-bold flex items-center gap-2 text-white">
-            <BookOpen className="w-5 h-5 text-emerald-400" />
+          <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
+            <BookOpen className="w-5 h-5 text-emerald-600" />
             {mode} Course Student Roster
           </h3>
-          <p className="text-[10px] text-gray-400 mt-1">
+          <p className="text-[10px] text-slate-500 mt-1">
             Add student accounts manually. This creates active access tokens and sets commissions.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Student Full Name</label>
+            <label className="block text-slate-700 font-semibold mb-1">Student Full Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Adebayo Oluwaseun"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Student Email Address</label>
+            <label className="block text-slate-700 font-semibold mb-1">Student Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="student@example.com"
-              className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900 placeholder-slate-400"
+              className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 placeholder-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Select Course</label>
+              <label className="block text-slate-700 font-semibold mb-1">Select Course</label>
               <select
                 value={courseId}
                 onChange={(e) => setCourseId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
               >
                 {courses.map(c => (
                   <option key={c.id} value={c.id}>{c.title}</option>
@@ -714,11 +714,11 @@ export function ManageStudentModal({ isOpen, onClose, onSave, courses, mode }: M
               </select>
             </div>
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Access Payer</label>
+              <label className="block text-slate-700 font-semibold mb-1">Access Payer</label>
               <select
                 value={payerType}
                 onChange={(e) => setPayerType(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 text-slate-900"
+                className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900"
               >
                 <option value="self">Self Paid</option>
                 <option value="parent">Parent Financed</option>
@@ -730,7 +730,7 @@ export function ManageStudentModal({ isOpen, onClose, onSave, courses, mode }: M
 
           <button
             type="submit"
-            className="w-full bg-white hover:bg-slate-50 text-slate-950 font-bold py-2 rounded-xl cursor-pointer transition-colors shadow-sm"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl cursor-pointer transition-all shadow-md mt-2"
           >
             {mode} Student & Authorize Course
           </button>
@@ -1010,14 +1010,14 @@ export function PremiumPurchaseModal({ isOpen, onClose, amount, planName, curren
         className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl text-slate-800 relative max-h-[92vh] overflow-y-auto"
       >
         {/* Header */}
-        <div className="bg-slate-950 text-white p-4 flex items-center justify-between">
+        <div className="bg-slate-50 text-slate-900 p-4 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
               <span>PayPal</span>
             </div>
             <span className="text-xs font-semibold">Merchant Checkout</span>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white cursor-pointer">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-700 cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1649,14 +1649,13 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
         </button>
 
         {/* Modal Decorative Banner */}
-        <div className="bg-slate-950 text-white px-6 py-6 border-b border-slate-800 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-indigo-500/20 mix-blend-color-dodge opacity-50 pointer-events-none" />
+        <div className="bg-slate-50 text-slate-900 px-6 py-6 border-b border-slate-200 relative overflow-hidden">
           <div className="relative z-10">
-            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider">
+            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider">
               Pulzitive Digital Academy
             </span>
-            <h3 className="text-xl font-black tracking-tight mt-1">Start Your 14-Day Free Trial</h3>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <h3 className="text-xl font-black tracking-tight mt-1 text-slate-900">Start Your 14-Day Free Trial</h3>
+            <p className="text-[11px] text-slate-500 mt-1">
               Join the digital marketing learning hub, connect with custom AI mentors, and build live career assets.
             </p>
           </div>
@@ -1666,10 +1665,10 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
             {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex-1 flex items-center gap-1.5">
                 <div className={`h-1.5 rounded-full flex-grow transition-all ${
-                  step >= s ? 'bg-emerald-400' : 'bg-slate-800'
+                  step >= s ? 'bg-emerald-500' : 'bg-slate-200'
                 }`} />
                 <span className={`text-[9px] font-mono font-bold ${
-                  step === s ? 'text-emerald-400' : 'text-slate-500'
+                  step === s ? 'text-emerald-700' : 'text-slate-400'
                 }`}>
                   {s === 1 && "Account"}
                   {s === 2 && "Schedule"}
@@ -1703,7 +1702,7 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
                   >
                     Create Free Account
                     {authMode === 'signup' && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-950 rounded-full" />
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-full" />
                     )}
                   </button>
                   <button 
@@ -1714,7 +1713,7 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
                   >
                     I Have an Account
                     {authMode === 'signin' && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-950 rounded-full" />
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-full" />
                     )}
                   </button>
                 </div>
@@ -1729,66 +1728,66 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
                 <form onSubmit={authMode === 'signup' ? handleSignUp : handleSignIn} className="space-y-3.5">
                   {authMode === 'signup' && (
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
+                      <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Full Name</label>
                       <input 
                         type="text"
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Adebayo Oluwaseun"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
+                    <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Email Address</label>
                     <input 
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. yourname@domain.com"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:bg-white"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                     />
                   </div>
 
                   {authMode === 'signup' && (
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Phone Number</label>
+                      <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Phone Number</label>
                       <input 
                         type="tel"
                         required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="e.g. +234 801 234 5678"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Password</label>
+                    <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Password</label>
                     <input 
                       type="password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="At least 6 characters"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:bg-white"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                     />
                   </div>
 
                   {authMode === 'signup' && (
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Confirm Password</label>
+                      <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Confirm Password</label>
                       <input 
                         type="password"
                         required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-type password"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                       />
                     </div>
                   )}
@@ -1796,7 +1795,7 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
                   <button 
                     type="submit"
                     disabled={isAuthLoading}
-                    className="w-full bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-950 border border-slate-200 font-extrabold text-xs py-3 rounded-xl cursor-pointer transition-colors mt-2 shadow-sm"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-extrabold text-xs py-3 rounded-xl cursor-pointer transition-all mt-2 shadow-md"
                   >
                     {isAuthLoading ? "Processing Account..." : authMode === 'signup' ? "Create Account & Continue" : "Sign In & Continue"}
                   </button>
@@ -1889,7 +1888,7 @@ export function FreeTrialModal({ isOpen, onClose, currentUser, onUserChanged, in
 
                   <button 
                     type="submit"
-                    className="w-full bg-white hover:bg-slate-50 text-slate-950 border border-slate-200 font-extrabold text-xs py-3 rounded-xl cursor-pointer transition-colors flex items-center justify-center gap-1 shadow-sm"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs py-3 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-1 shadow-md"
                   >
                     <span>Proceed to Card Connection</span>
                     <ChevronRight className="w-4 h-4" />

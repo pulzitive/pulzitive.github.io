@@ -1,6 +1,6 @@
 {
   "name": "Pulzitive",
-  "description": "Full-stack web application combining digital marketing agency services, a Marketing Academy learning hub, a digital resource marketplace, student dashboards, and AI tutor support.",
+  "description": "Full-stack web application combining digital marketing agency services, Gospel Ministry & Pastor Media Suite, Marketing Academy learning hub, digital resource marketplace, student dashboards, and AI tutor support.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

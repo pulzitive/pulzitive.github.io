@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Briefcase, ExternalLink, ShieldCheck, TrendingUp, Sparkles, 
-  Search, Filter, ArrowRight, Award, Zap, Building, LayoutGrid, Download
+  Search, Filter, ArrowRight, Award, Zap, Building, LayoutGrid, Download,
+  Globe, BarChart2
 } from 'lucide-react';
+import { AnimatedHeroTitle } from '../components/AnimatedHeroTitle';
 import { clientsList, ClientPortfolio } from '../data/clients';
 
 interface PortfolioPageProps {
@@ -42,34 +44,59 @@ export default function PortfolioPage({
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-850 relative overflow-hidden">
+    <div className="min-h-screen bg-white text-slate-900 relative overflow-hidden">
       {/* Decorative Background Glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-20 right-1/4 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white">
-        <div className="max-w-7xl mx-auto text-center space-y-6">
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-tight">
-            Our Elite Client <span className="text-emerald-600">Portfolio</span>
-          </h1>
-          <p className="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
+      <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white overflow-hidden">
+        {/* Floating Background Icons */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
+          <div className="absolute top-1/4 left-[8%] opacity-20 animate-bounce" style={{ animationDuration: '6s' }}>
+            <TrendingUp className="w-16 h-16 text-emerald-600" />
+          </div>
+          <div className="absolute bottom-1/4 right-[8%] opacity-20 animate-pulse" style={{ animationDuration: '4s' }}>
+            <Globe className="w-20 h-20 text-indigo-600" />
+          </div>
+          <div className="absolute top-1/3 right-[15%] opacity-15 animate-bounce" style={{ animationDuration: '8s' }}>
+            <BarChart2 className="w-14 h-14 text-pink-600" />
+          </div>
+          <div className="absolute bottom-1/3 left-[15%] opacity-15 animate-pulse" style={{ animationDuration: '5s' }}>
+            <Sparkles className="w-12 h-12 text-teal-600" />
+          </div>
+          <div className="absolute top-1/2 left-[5%] opacity-15 animate-pulse" style={{ animationDuration: '7s' }}>
+            <Award className="w-14 h-14 text-amber-500" />
+          </div>
+          <div className="absolute bottom-1/2 right-[6%] opacity-15 animate-bounce" style={{ animationDuration: '9s' }}>
+            <Briefcase className="w-14 h-14 text-blue-600" />
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto text-center space-y-6 relative z-10">
+          <AnimatedHeroTitle 
+            primaryText="Our Elite Client"
+            highlightText="Portfolio & Case Studies."
+            dark={false}
+            className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-tight"
+          />
+          <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
             Discover how Pulzitive drives exponential growth, ranks industry-leading brands on Page 1 of Google, and designs conversion-engineered lead pipelines.
           </p>
           
           <div className="pt-4 flex flex-wrap justify-center gap-4">
             <button
               onClick={onOpenMergedModal}
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold px-6 py-3 rounded-xl text-xs cursor-pointer shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center gap-2"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs cursor-pointer shadow-sm hover:shadow-md transition-all flex items-center gap-2"
             >
-              <span>Get Free Audits</span>
-              <ArrowRight className="w-4 h-4" />
+              <span className="text-white font-extrabold">Get Free Audits</span>
+              <ArrowRight className="w-4 h-4 text-white" />
             </button>
             <a
               href="https://drive.google.com/file/d/1_Pulzitive_Resume_Executive_Summary/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-600 hover:bg-blue-500 text-white font-extrabold px-6 py-3 rounded-xl text-xs cursor-pointer shadow-lg transition-all flex items-center gap-2 active:scale-95"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-6 py-3 rounded-xl text-xs cursor-pointer shadow-sm transition-all flex items-center gap-2 active:scale-95"
             >
               <Download className="w-4 h-4 text-white" />
               <span>Download Resume</span>
@@ -90,7 +117,7 @@ export default function PortfolioPage({
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold cursor-pointer whitespace-nowrap transition-all ${
                   selectedCategory === cat 
-                    ? 'bg-emerald-500 text-slate-950 shadow-sm' 
+                    ? 'bg-emerald-500 text-white font-bold shadow-sm' 
                     : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                 }`}
               >

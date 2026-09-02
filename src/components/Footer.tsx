@@ -72,17 +72,17 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
   };
 
   return (
-    <footer className="bg-slate-50 text-slate-600 border-t border-slate-200 py-12 px-4 sm:px-6 lg:px-8 mt-auto">
+    <footer className="bg-white text-slate-600 border-t border-slate-200 py-12 px-4 sm:px-6 lg:px-8 mt-auto">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         
         {/* About column */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
-            <span className="font-extrabold text-slate-950 text-sm tracking-tight">Pulzitive</span>
+            <span className="font-extrabold text-slate-900 text-sm tracking-tight">Pulzitive</span>
           </div>
-          <p className="text-xs leading-relaxed text-slate-500">
-            A premier brand communication, Digital Marketing Intelligence, Advertising Agency with integrated learning paths and talents pool.
+          <p className="text-xs leading-relaxed text-slate-600 font-medium">
+            A premier brand communication, Digital Marketing Intelligence, Advertising Agency with integrated learning paths, talents pool and ministers hub.
           </p>
           <div className="flex flex-wrap gap-3 text-slate-400 text-xs">
             <a href="https://instagram.com/pulzitive" target="_blank" rel="noopener noreferrer" title="Instagram" className="hover:text-emerald-600 transition-colors">
@@ -137,8 +137,8 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
           <form onSubmit={handleSubscribe} className="space-y-3">
             {step === 1 ? (
               <>
-                <p className="text-[11px] text-slate-500 font-medium">Ready to Start Your Marketing Journey? (Step 1 of 2):</p>
-                <p className="text-[10px] text-slate-400 leading-normal">Enter your email to receive free marketing checklists, specialized curriculum updates, and custom learning roadmaps!</p>
+                <p className="text-[11px] text-slate-600 font-medium">Ready to Start Your Marketing Journey? (Step 1 of 2):</p>
+                <p className="text-[10px] text-slate-500 leading-normal">Enter your email to receive free marketing checklists, specialized curriculum updates, and custom learning roadmaps!</p>
                 <div className="flex gap-1.5">
                   <input
                     type="email"
@@ -151,15 +151,15 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
                   />
                   <button
                     type="submit"
-                    className="bg-white text-slate-950 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
                   >
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-white" />
                   </button>
                 </div>
               </>
             ) : (
               <>
-                <p className="text-[11px] text-slate-500 flex justify-between items-center font-medium">
+                <p className="text-[11px] text-slate-600 flex justify-between items-center font-medium">
                   <span>Ready to Start Your Technical Adventure? (Step 2 of 2):</span>
                   <button 
                     type="button" 
@@ -182,9 +182,9 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-white text-slate-950 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center shrink-0 disabled:opacity-60 shadow-xs"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center shrink-0 disabled:opacity-60 shadow-xs"
                   >
-                    {subscribed ? 'Joined!' : isSubmitting ? '...' : <Send className="w-3.5 h-3.5" />}
+                    {subscribed ? 'Joined!' : isSubmitting ? '...' : <Send className="w-3.5 h-3.5 text-white" />}
                   </button>
                 </div>
               </>
@@ -207,14 +207,14 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
 
       </div>
 
-      <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-400 gap-4">
+      <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-500 gap-4">
         <p>Pulzitive Platform © 2026. All Rights Reserved.</p>
         <div className="flex gap-4">
-          <button onClick={() => onNavigate('privacy')} className="hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none p-0">Privacy Policy</button>
-          <button onClick={() => onNavigate('terms')} className="hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none p-0">Terms of Use</button>
-          <button onClick={() => onNavigate('sitemap')} className="hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none p-0">Sitemap</button>
+          <button onClick={() => onNavigate('privacy')} className="hover:text-slate-900 transition-colors cursor-pointer bg-transparent border-none p-0">Privacy Policy</button>
+          <button onClick={() => onNavigate('terms')} className="hover:text-slate-900 transition-colors cursor-pointer bg-transparent border-none p-0">Terms of Use</button>
+          <button onClick={() => onNavigate('sitemap')} className="hover:text-slate-900 transition-colors cursor-pointer bg-transparent border-none p-0">Sitemap</button>
           {onOpenAdminLogin && (
-            <button onClick={onOpenAdminLogin} className="text-emerald-600 hover:text-emerald-500 font-bold transition-colors cursor-pointer bg-transparent border-none p-0">Admin Login</button>
+            <button onClick={onOpenAdminLogin} className="text-emerald-600 hover:text-emerald-700 font-bold transition-colors cursor-pointer bg-transparent border-none p-0">Admin Login</button>
           )}
         </div>
       </div>

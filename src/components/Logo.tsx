@@ -76,7 +76,7 @@ export default function Logo({ className = '', size = 'md', showText = true }: L
       </svg>
       
       {showText && (
-        <span className="font-sans font-black tracking-tight text-white hover:text-emerald-400 transition-colors text-base sm:text-lg">
+        <span className="font-sans font-black tracking-tight text-slate-900 hover:text-emerald-600 transition-colors text-base sm:text-lg">
           Pulzitive
         </span>
       )}
