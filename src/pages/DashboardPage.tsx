@@ -1085,7 +1085,7 @@ Pulse on Data. Impact on Brand.
 
       {/* AI PARENTING TIPS VIA GEMINI */}
       <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
-        <h3 className="text-sm font-bold flex items-center gap-1.5 text-slate-900"><Brain className="w-4.5 h-4.5 text-indigo-600" /> Gemini AI Parenting Advisor</h3>
+        <h3 className="text-sm font-bold text-slate-900">Gemini AI Parenting Advisor</h3>
         <p className="text-[10px] text-slate-500">Query the Gemini model for short, actionable technical learning tips for kids.</p>
         
         <button

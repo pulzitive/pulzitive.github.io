@@ -51,28 +51,6 @@ export default function PortfolioPage({
 
       {/* Hero Section */}
       <section className="relative pt-24 pb-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200 bg-white overflow-hidden">
-        {/* Floating Background Icons */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
-          <div className="absolute top-1/4 left-[8%] opacity-20 animate-bounce" style={{ animationDuration: '6s' }}>
-            <TrendingUp className="w-16 h-16 text-emerald-600" />
-          </div>
-          <div className="absolute bottom-1/4 right-[8%] opacity-20 animate-pulse" style={{ animationDuration: '4s' }}>
-            <Globe className="w-20 h-20 text-indigo-600" />
-          </div>
-          <div className="absolute top-1/3 right-[15%] opacity-15 animate-bounce" style={{ animationDuration: '8s' }}>
-            <BarChart2 className="w-14 h-14 text-pink-600" />
-          </div>
-          <div className="absolute bottom-1/3 left-[15%] opacity-15 animate-pulse" style={{ animationDuration: '5s' }}>
-            <Sparkles className="w-12 h-12 text-teal-600" />
-          </div>
-          <div className="absolute top-1/2 left-[5%] opacity-15 animate-pulse" style={{ animationDuration: '7s' }}>
-            <Award className="w-14 h-14 text-amber-500" />
-          </div>
-          <div className="absolute bottom-1/2 right-[6%] opacity-15 animate-bounce" style={{ animationDuration: '9s' }}>
-            <Briefcase className="w-14 h-14 text-blue-600" />
-          </div>
-        </div>
-
         <div className="max-w-7xl mx-auto text-center space-y-6 relative z-10">
           <AnimatedHeroTitle 
             primaryText="Our Elite Client"

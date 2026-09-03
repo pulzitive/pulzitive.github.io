@@ -722,28 +722,6 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
       {/* HERO SECTION */}
       <section className="relative overflow-hidden bg-white border-b border-slate-200 text-slate-900 pt-10 pb-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,_var(--tw-gradient-stops))] from-emerald-50/80 via-transparent to-transparent pointer-events-none" />
-        
-        {/* Floating Background Icons */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
-          <div className="absolute top-1/4 left-[8%] opacity-[0.07] animate-bounce" style={{ animationDuration: '6s' }}>
-            <Briefcase className="w-16 h-16 text-emerald-600" />
-          </div>
-          <div className="absolute bottom-1/4 right-[8%] opacity-[0.07] animate-pulse" style={{ animationDuration: '4s' }}>
-            <UserCheck className="w-20 h-20 text-indigo-600" />
-          </div>
-          <div className="absolute top-1/3 right-[15%] opacity-[0.06] animate-bounce" style={{ animationDuration: '8s' }}>
-            <Star className="w-14 h-14 text-pink-600" />
-          </div>
-          <div className="absolute bottom-1/3 left-[15%] opacity-[0.06] animate-pulse" style={{ animationDuration: '5s' }}>
-            <Sparkles className="w-12 h-12 text-teal-600" />
-          </div>
-          <div className="absolute top-1/2 left-[5%] opacity-[0.05] animate-pulse" style={{ animationDuration: '7s' }}>
-            <Award className="w-14 h-14 text-amber-500" />
-          </div>
-          <div className="absolute bottom-1/2 right-[6%] opacity-[0.05] animate-bounce" style={{ animationDuration: '9s' }}>
-            <Globe className="w-14 h-14 text-blue-600" />
-          </div>
-        </div>
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center flex flex-col items-center justify-center space-y-5">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight max-w-3xl">
@@ -1730,7 +1708,7 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
           </div>
         )}
 
-        {/* PULZITIVE ACADEMY & SKILL LABS FEATURED CARD ABOVE FOOTER (CLEAN WHITE BACKGROUND WITH BRAND GREEN & BLUE) */}
+        {/* ACADEMY & SKILL LABS FEATURED CARD ABOVE FOOTER (CLEAN WHITE BACKGROUND WITH BRAND GREEN & BLUE) */}
         <div className="bg-white border-2 border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden text-slate-900 my-10">
           {/* Subtle ambient radial light */}
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -1740,10 +1718,6 @@ export default function TalentsPage({ currentUser, onNavigate, onCheckout, onOpe
             {/* Banner Header */}
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pb-6 border-b border-slate-200">
               <div className="space-y-2 max-w-2xl">
-                <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono font-extrabold px-3 py-1 rounded-full">
-                  <GraduationCap className="w-4 h-4 text-emerald-600" />
-                  <span>PULZITIVE ACADEMY & SKILL LABS</span>
-                </div>
                 <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-tight">
                   Master High-Demand Skills. Get Certified & Listed as a Verified Talent!
                 </h2>

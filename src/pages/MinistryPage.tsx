@@ -589,11 +589,11 @@ export const MinistryPage: React.FC<MinistryPageProps> = ({
                   handleOpenAuth('signup', 'media');
                 }
               }}
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm shadow-xl shadow-emerald-600/20 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 hover:border-emerald-500 font-black text-sm shadow-xl shadow-slate-200/50 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Video className="w-4 h-4 text-white" />
-              <span className="text-white font-bold">Get Started with Sunday Sermon Editing</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <Video className="w-4 h-4 text-emerald-600" />
+              <span className="text-slate-900 font-bold">Get Started with Sunday Sermon Editing</span>
+              <ArrowRight className="w-4 h-4 text-emerald-600" />
             </button>
           </div>
         </div>

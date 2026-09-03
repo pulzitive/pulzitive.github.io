@@ -32,30 +32,8 @@ export const MinistryHero: React.FC<MinistryHeroProps> = ({
 }) => {
   return (
     <div className="relative overflow-hidden w-full text-slate-900 py-10 md:py-16 text-center">
-      {/* Background Accent Gradients & Animated Floating Icons */}
+      {/* Background Accent Gradients */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-emerald-100/50 via-teal-100/40 to-blue-100/50 blur-3xl pointer-events-none -z-10" />
-
-      {/* Floating Background Icons */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-1/4 left-[8%] opacity-[0.07] animate-bounce" style={{ animationDuration: '6s' }}>
-          <Video className="w-16 h-16 text-emerald-600" />
-        </div>
-        <div className="absolute bottom-1/4 right-[8%] opacity-[0.07] animate-pulse" style={{ animationDuration: '4s' }}>
-          <Flame className="w-20 h-20 text-teal-600" />
-        </div>
-        <div className="absolute top-1/3 right-[15%] opacity-[0.06] animate-bounce" style={{ animationDuration: '8s' }}>
-          <Tv className="w-14 h-14 text-indigo-600" />
-        </div>
-        <div className="absolute bottom-1/3 left-[15%] opacity-[0.06] animate-pulse" style={{ animationDuration: '5s' }}>
-          <HeartHandshake className="w-12 h-12 text-emerald-700" />
-        </div>
-        <div className="absolute top-1/2 left-[5%] opacity-[0.05] animate-pulse" style={{ animationDuration: '7s' }}>
-          <Sparkles className="w-14 h-14 text-amber-500" />
-        </div>
-        <div className="absolute bottom-1/2 right-[6%] opacity-[0.05] animate-bounce" style={{ animationDuration: '9s' }}>
-          <Globe className="w-14 h-14 text-blue-600" />
-        </div>
-      </div>
 
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
         {/* Title */}
@@ -97,11 +75,11 @@ export const MinistryHero: React.FC<MinistryHeroProps> = ({
             <button
               id="hero-register-pastor-btn"
               onClick={() => onOpenAuthModal('signup', 'media')}
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-xl shadow-emerald-600/25 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 hover:border-emerald-500 font-black text-sm sm:text-base shadow-xl shadow-slate-200/50 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
-              <Video className="w-5 h-5 text-white" />
-              <span className="text-white font-extrabold tracking-wide">Register Church / Minister</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <Video className="w-5 h-5 text-emerald-600" />
+              <span className="text-slate-900 font-extrabold tracking-wide">Register Church / Minister</span>
+              <ArrowRight className="w-4 h-4 text-emerald-600" />
             </button>
           </div>
         )}

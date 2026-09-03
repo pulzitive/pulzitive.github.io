@@ -197,30 +197,10 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
 
   return (
     <div className="bg-white text-slate-900 min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Decorative Blobs & Animated Floating Icons */}
+      {/* Background Decorative Blobs */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-10 right-1/4 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-3xl"></div>
-        
-        {/* Floating Background Icons */}
-        <div className="absolute top-1/4 left-[8%] opacity-20 animate-bounce" style={{ animationDuration: '6s' }}>
-          <ShieldCheck className="w-16 h-16 text-emerald-500" />
-        </div>
-        <div className="absolute bottom-1/4 right-[8%] opacity-20 animate-pulse" style={{ animationDuration: '4s' }}>
-          <Award className="w-20 h-20 text-indigo-500" />
-        </div>
-        <div className="absolute top-1/3 right-[15%] opacity-15 animate-bounce" style={{ animationDuration: '8s' }}>
-          <Layers className="w-14 h-14 text-pink-500" />
-        </div>
-        <div className="absolute bottom-1/3 left-[15%] opacity-15 animate-pulse" style={{ animationDuration: '5s' }}>
-          <Video className="w-12 h-12 text-teal-500" />
-        </div>
-        <div className="absolute top-1/2 left-[5%] opacity-15 animate-pulse" style={{ animationDuration: '7s' }}>
-          <CreditCard className="w-14 h-14 text-emerald-500" />
-        </div>
-        <div className="absolute bottom-1/2 right-[6%] opacity-15 animate-bounce" style={{ animationDuration: '9s' }}>
-          <Zap className="w-14 h-14 text-amber-500" />
-        </div>
       </div>
 
       {/* Header */}

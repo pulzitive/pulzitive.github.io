@@ -453,20 +453,6 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none">
           <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
-          
-          {/* Floating Background Icons */}
-          <div className="absolute top-1/4 left-[8%] opacity-[0.05] animate-bounce" style={{ animationDuration: '6s' }}>
-            <TrendingUp className="w-16 h-16 text-emerald-600" />
-          </div>
-          <div className="absolute bottom-1/4 right-[8%] opacity-[0.05] animate-pulse" style={{ animationDuration: '4s' }}>
-            <Megaphone className="w-20 h-20 text-indigo-600" />
-          </div>
-          <div className="absolute top-1/3 right-[15%] opacity-[0.04] animate-bounce" style={{ animationDuration: '8s' }}>
-            <BarChart2 className="w-14 h-14 text-pink-600" />
-          </div>
-          <div className="absolute bottom-1/3 left-[15%] opacity-[0.04] animate-pulse" style={{ animationDuration: '5s' }}>
-            <Share2 className="w-12 h-12 text-teal-600" />
-          </div>
         </div>
  
         <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
@@ -965,10 +951,6 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
         >
           {/* Header */}
           <div className="text-center space-y-3 mb-8 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
-              <Globe className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-              <span>Escrow & Freelance Hub</span>
-            </div>
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900">
               Hire Us on Leading Freelance Platforms
             </h2>
@@ -1085,20 +1067,6 @@ export default function HomePage({ onNavigate, onOpenAuditModal, onOpenApptModal
 
       {/* 6. PERSUASIVE AGENCY ADVERTISEMENT */}
       <section className="bg-slate-50 text-slate-900 border-t border-slate-200 py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Floating Background Icons */}
-        <div className="absolute top-12 left-12 opacity-[0.08] animate-pulse">
-          <TrendingUp className="w-16 h-16 text-emerald-600" />
-        </div>
-        <div className="absolute bottom-12 right-12 opacity-[0.08] animate-bounce" style={{ animationDuration: '6s' }}>
-          <Megaphone className="w-20 h-20 text-indigo-600" />
-        </div>
-        <div className="absolute top-1/3 right-[15%] opacity-[0.08] animate-pulse">
-          <Share2 className="w-14 h-14 text-pink-600" />
-        </div>
-        <div className="absolute bottom-1/3 left-[15%] opacity-[0.08] animate-bounce" style={{ animationDuration: '8s' }}>
-          <Code className="w-12 h-12 text-teal-600" />
-        </div>
-
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
 

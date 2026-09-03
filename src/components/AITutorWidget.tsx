@@ -158,16 +158,11 @@ export default function AITutorWidget() {
           >
             {/* Header */}
             <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="bg-emerald-500 p-1.5 rounded-lg flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-slate-900" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm tracking-wide">Pulzitive AI Tutor</h3>
-                  <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span className="text-[10px] text-gray-300 font-mono">Gemini 3.5 Flash Active</span>
-                  </div>
+              <div>
+                <h3 className="font-semibold text-sm tracking-wide">Pulzitive AI Tutor</h3>
+                <div className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span className="text-[10px] text-gray-300 font-mono">Gemini 3.5 Flash Active</span>
                 </div>
               </div>
               <button 
@@ -311,8 +306,8 @@ export default function AITutorWidget() {
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
         {!isOpen && (
-          <span className="absolute -top-1 -right-1 bg-emerald-500 text-[9px] text-slate-900 font-bold px-1.5 py-0.5 rounded-full uppercase flex items-center gap-0.5 animate-bounce">
-            <Sparkles className="w-2.5 h-2.5" /> Tutor
+          <span className="absolute -top-1 -right-1 bg-emerald-500 text-[9px] text-slate-900 font-bold px-1.5 py-0.5 rounded-full uppercase">
+            Tutor
           </span>
         )}
       </motion.button>
