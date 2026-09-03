@@ -19,6 +19,7 @@ import {
   Youtube,
   Store,
   Video,
+  Bot,
   ArrowRight
 } from 'lucide-react';
 import Logo from './Logo';
@@ -102,6 +103,9 @@ export default function Footer({ onNavigate, onOpenAdminLogin }: FooterProps) {
             </a>
             <a href="https://linkedin.com/company/pulzitive" target="_blank" rel="noopener noreferrer" title="LinkedIn" className="hover:text-emerald-600 transition-colors">
               <Linkedin className="w-4 h-4" />
+            </a>
+            <a href="https://www.reddit.com/user/pulzitive" target="_blank" rel="noopener noreferrer" title="Reddit" className="hover:text-emerald-600 transition-colors">
+              <Bot className="w-4 h-4" />
             </a>
             <a href="https://g.page/pulzitive" target="_blank" rel="noopener noreferrer" title="Google Business Profile" className="hover:text-emerald-600 transition-colors">
               <Store className="w-4 h-4" />

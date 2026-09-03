@@ -106,6 +106,19 @@ export default function App() {
     };
   }, []);
 
+  // Google Analytics measurement tracking on page navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      const pagePath = activePage === 'home' ? '/' : `/${activePage}`;
+      const pageTitle = `Pulzitive - ${activePage.charAt(0).toUpperCase() + activePage.slice(1)}`;
+      (window as any).gtag('config', 'G-2B1TCGP04R', {
+        page_title: pageTitle,
+        page_location: window.location.href,
+        page_path: pagePath,
+      });
+    }
+  }, [activePage]);
+
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   
   // Database mock states synced from firebase
